@@ -46,8 +46,12 @@ module.exports = {
    */
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
+    '@nuxtjs/svg',
     '@nuxtjs/axios',
-    '@nuxtjs/pwa'
+    ['nuxt-rfg-icon', {
+      masterPicture: 'static/icon.png'
+    }],
+    '@nuxtjs/pwa',
   ],
   /*
    ** Axios module configuration
@@ -64,13 +68,13 @@ module.exports = {
       dark: true,
       themes: {
         dark: {
-          primary: colors.blue.darken2,
+          primary: colors.red.darken2,
           accent: colors.grey.darken3,
           secondary: colors.amber.darken3,
           info: colors.teal.lighten1,
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
-          success: colors.green.accent3
+          success: colors.green.accent3,
         }
       }
     }
@@ -82,6 +86,6 @@ module.exports = {
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) {}
+    extend(config, ctx) { }
   }
 }

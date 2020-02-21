@@ -1,0 +1,16 @@
+{
+	"name" : "Bontefilmkever Beta",
+	"short_name" : "BFK Beta",
+	"theme_color" : "#1e2129",
+	"background_color" : "#1e2129",
+	"display" : "standalone",
+	"Scope" : "./",
+	"start_url" : ".",
+	"icons" : [
+		{
+			"src": "https://beta.bontefilmkever.ga/images/icons/icon_short_centered_512.png",
+			"sizes": "512x512"
+		}
+	],
+	"lang" : "en"
+}
