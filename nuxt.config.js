@@ -46,7 +46,7 @@ module.exports = {
    */
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
-    '@nuxtjs/svg',
+    // '@nuxtjs/svg',
     '@nuxtjs/axios',
     ['nuxt-rfg-icon', {
       masterPicture: 'static/icon.png'
@@ -58,6 +58,14 @@ module.exports = {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {},
+
+  pwa: {
+    manifest: {
+      name: 'Bontefilmkever',
+      short_name: 'BFK',
+      lang: 'en'
+    }
+  },
   /*
    ** vuetify module configuration
    ** https://github.com/nuxt-community/vuetify-module
@@ -86,6 +94,18 @@ module.exports = {
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) { }
+    extend(config, ctx) {
+      config.module.rules.push(
+        {
+          test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
+          loader: 'file-loader'
+        }
+      )
+      if (ctx.isDev) {
+        config.mode = 'development'
+      } else if (ctx.isClient) {
+        config.optimization.splitChunks.maxSize = 200000;
+      }
+    }
   }
 }
