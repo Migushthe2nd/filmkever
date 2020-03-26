@@ -28,8 +28,15 @@ module.exports = {
             { charset: 'utf-8' },
             {
                 name: 'viewport',
-                content: 'width=device-width, initial-scale=1',
-                theme_color: '#d50000'
+                content: 'width=device-width, initial-scale=1'
+            },
+            {
+                name: 'theme-color',
+                content: '#d50000'
+            },
+            {
+                name: 'msapplication-TileColor',
+                content: '#d50000'
             },
             {
                 hid: 'description',
