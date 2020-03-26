@@ -111,7 +111,9 @@ module.exports = {
             name: process.env.APP_TITLE,
             short_name: process.env.APP_TITLE_SHORT,
             description: process.env.APP_DESCRIPTION,
-            lang: 'en'
+            lang: 'en',
+            theme_color: '#d50000',
+            background_color: '#121212'
         }
     },
     /*
