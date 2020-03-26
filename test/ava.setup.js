@@ -8,9 +8,9 @@ Vue.config.productionTip = false
 window.Date = global.Date = Date
 
 hooks('vue')
-  .plugin('vue')
-  .push()
+    .plugin('vue')
+    .push()
 hooks(['vue', 'js'])
-  .exclude(({ filename }) => filename.match(/\/node_modules\//))
-  .plugin('babel')
-  .push()
+    .exclude(({ filename }) => filename.match(/\/node_modules\//))
+    .plugin('babel')
+    .push()

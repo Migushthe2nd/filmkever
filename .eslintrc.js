@@ -19,6 +19,16 @@ module.exports = {
   ],
   // add your custom rules here
   rules: {
-    'nuxt/no-cjs-in-config': 'off'
+    'nuxt/no-cjs-in-config': 'off',
+    // "function-paren-newline": ["error", "never"],
+    "max-len": ["off", 180, 4, {
+      ignoreUrls: true,
+      ignoreComments: true,
+      ignoreRegExpLiterals: true,
+      ignoreDestructuring: true,
+      properties: "never",
+      ignoreStrings: true,
+      ignoreTemplateLiterals: true
+    }],
   }
 }

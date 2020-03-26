@@ -1,0 +1,598 @@
+
+query me {
+    me {
+        uuid
+        username
+        email
+        joined
+        last_logged_in
+        role
+    }
+}
+
+query emailAvailable($email: String!) {
+    emailAvailable(email: $email)
+}
+
+query movie($traktID: Int!) {
+    movie(traktID: $traktID) {
+        title
+        year
+        ids {
+            trakt
+            slug
+            imdb
+            tmdb
+            tvdb
+        }
+        tagline
+        overview
+        released
+        runtime
+        country
+        updated_at
+        trailer
+        homepage
+        status
+        rating
+        language
+        genres
+        certification
+        images {
+            poster
+            background
+            logo
+        }
+        user_data {
+            watch_data {
+                finished
+                time_modified
+                time_watched
+                position
+                length
+            }
+            watchlist_data {
+                added
+                time_added
+            }
+        }
+    }
+}
+
+query show($traktID: Int!) {
+    show(traktID: $traktID) {
+        title
+        year
+        ids {
+            trakt
+            slug
+            imdb
+            tmdb
+            tvdb
+        }
+        overview
+        first_aired
+        airs {
+            day
+            time
+            timezone
+        }
+        aired_episodes
+        runtime
+        network
+        country
+        updated_at
+        trailer
+        status
+        rating
+        certification
+        language
+        genres
+        images {
+            poster
+            background
+            logo
+        }
+        user_data {
+            watch_data {
+                finished
+                traktid
+                season
+                episode_number
+                time_modified
+                time_watched
+                position
+                length
+            }
+            watchlist_data {
+                added
+                time_added
+            }
+        }
+    }
+}
+
+query episode($traktID: Int!) {
+    episode(traktID: $traktID) {
+        title
+        season
+        number
+        ids {
+            trakt
+            tmdb
+            tvdb
+        }
+        overview
+        first_aired
+        rating
+        runtime
+        images {
+            background
+        }
+        user_data {
+            watch_data {
+                finished
+                time_modified
+                time_watched
+                position
+                length
+            }
+        }
+    }
+}
+
+query seasonsAndEpisodes($traktID: Int!, $saveTmdbID: Int) {
+    seasonsAndEpisodes(traktID: $traktID, saveTmdbID: $saveTmdbID) {
+        number
+        ids {
+            trakt
+            tmdb
+            tvdb
+        }
+        episodes {
+            season
+            number
+            title
+            ids {
+                trakt
+                tmdb
+                tvdb
+            }
+            user_data {
+                watch_data {
+                    finished
+                    time_modified
+                    time_watched
+                    position
+                    length
+                }
+            }
+        }
+    }
+}
+
+mutation register($username: String!, $email: String!, $password: String!) {
+    register(username: $username, email: $email, password: $password) {
+        user {
+            uuid
+            username
+            email
+            joined
+            last_logged_in
+            role
+        }
+    }
+}
+
+mutation login($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
+        user {
+            uuid
+            username
+            email
+            joined
+            last_logged_in
+            role
+        }
+    }
+}
+
+mutation logout {
+  logout
+}
+
+mutation progress($mediatype: String!, $traktID: Int!, $finished: Boolean, $length: Int, $position: Int) {
+    progress(mediatype: $mediatype, traktID: $traktID, finished: $finished, length: $length, position: $position)
+}
+
+mutation watchlist($mediatype: String!, $traktID: Int!, $state: Boolean) {
+    watchlist(mediatype: $mediatype, traktID: $traktID, state: $state)
+}
+
+query searchMovies($page: Int, $query: String) {
+    searchMovies(page: $page, query: $query) {
+        pagination {
+            item_count
+            page
+            page_count
+        }
+        items {
+            title
+            year
+            ids {
+                trakt
+                slug
+                imdb
+                tmdb
+                tvdb
+            }
+            tagline
+            overview
+            released
+            runtime
+            country
+            updated_at
+            trailer
+            homepage
+            status
+            rating
+            language
+            genres
+            certification
+            images {
+                poster
+                background
+                logo
+            }
+            user_data {
+                watch_data {
+                    finished
+                    time_modified
+                    time_watched
+                    position
+                    length
+                }
+                watchlist_data {
+                    added
+                    time_added
+                }
+            }
+        }
+    }
+}
+
+query searchShows($page: Int, $query: String) {
+    searchShows(page: $page, query: $query) {
+        pagination {
+            item_count
+            page
+            page_count
+        }
+        items {
+            title
+            year
+            ids {
+                trakt
+                slug
+                imdb
+                tmdb
+                tvdb
+            }
+            overview
+            first_aired
+            airs {
+                day
+                time
+                timezone
+            }
+            aired_episodes
+            runtime
+            network
+            country
+            updated_at
+            trailer
+            status
+            rating
+            certification
+            language
+            genres
+            images {
+                poster
+                background
+                logo
+            }
+            user_data {
+                watch_data {
+                    finished
+                    traktid
+                    season
+                    episode_number
+                    time_modified
+                    time_watched
+                    position
+                    length
+                }
+                watchlist_data {
+                    added
+                    time_added
+                }
+            }
+        }
+    }
+}
+
+query trendingMovies($page: Int) {
+    trendingMovies(page: $page) {
+        pagination {
+            item_count
+            page
+            page_count
+        }
+        items {
+            title
+            year
+            ids {
+                trakt
+                slug
+                imdb
+                tmdb
+                tvdb
+            }
+            tagline
+            overview
+            released
+            runtime
+            country
+            updated_at
+            trailer
+            homepage
+            status
+            rating
+            language
+            genres
+            certification
+            images {
+                poster
+                background
+                logo
+            }
+            user_data {
+                watch_data {
+                    finished
+                    time_modified
+                    time_watched
+                    position
+                    length
+                }
+                watchlist_data {
+                    added
+                    time_added
+                }
+            }
+        }
+    }
+}
+
+query trendingShows($page: Int) {
+    trendingShows(page: $page) {
+        pagination {
+            item_count
+            page
+            page_count
+        }
+        items {
+            title
+            year
+            ids {
+                trakt
+                slug
+                imdb
+                tmdb
+                tvdb
+            }
+            overview
+            first_aired
+            airs {
+                day
+                time
+                timezone
+            }
+            aired_episodes
+            runtime
+            network
+            country
+            updated_at
+            trailer
+            status
+            rating
+            certification
+            language
+            genres
+            images {
+                poster
+                background
+                logo
+            }
+            user_data {
+                watch_data {
+                    finished
+                    traktid
+                    season
+                    episode_number
+                    time_modified
+                    time_watched
+                    position
+                    length
+                }
+                watchlist_data {
+                    added
+                    time_added
+                }
+            }
+        }
+    }
+}
+
+query boxofficeMovies($page: Int) {
+    boxofficeMovies(page: $page) {
+        pagination {
+            item_count
+            page
+            page_count
+        }
+        items {
+            title
+            year
+            ids {
+                trakt
+                slug
+                imdb
+                tmdb
+                tvdb
+            }
+            tagline
+            overview
+            released
+            runtime
+            country
+            updated_at
+            trailer
+            homepage
+            status
+            rating
+            language
+            genres
+            certification
+            images {
+                poster
+                background
+                logo
+            }
+            user_data {
+                watch_data {
+                    finished
+                    time_modified
+                    time_watched
+                    position
+                    length
+                }
+                watchlist_data {
+                    added
+                    time_added
+                }
+            }
+        }
+    }
+}
+
+query popularMovies($page: Int) {
+    popularMovies(page: $page) {
+        pagination {
+            item_count
+            page
+            page_count
+        }
+        items {
+            title
+            year
+            ids {
+                trakt
+                slug
+                imdb
+                tmdb
+                tvdb
+            }
+            tagline
+            overview
+            released
+            runtime
+            country
+            updated_at
+            trailer
+            homepage
+            status
+            rating
+            language
+            genres
+            certification
+            images {
+                poster
+                background
+                logo
+            }
+            user_data {
+                watch_data {
+                    finished
+                    time_modified
+                    time_watched
+                    position
+                    length
+                }
+                watchlist_data {
+                    added
+                    time_added
+                }
+            }
+        }
+    }
+}
+
+query popularShows($page: Int) {
+    popularShows(page: $page) {
+        pagination {
+            item_count
+            page
+            page_count
+        }
+        items {
+            title
+            year
+            ids {
+                trakt
+                slug
+                imdb
+                tmdb
+                tvdb
+            }
+            overview
+            first_aired
+            airs {
+                day
+                time
+                timezone
+            }
+            aired_episodes
+            runtime
+            network
+            country
+            updated_at
+            trailer
+            status
+            rating
+            certification
+            language
+            genres
+            images {
+                poster
+                background
+                logo
+            }
+            user_data {
+                watch_data {
+                    finished
+                    traktid
+                    season
+                    episode_number
+                    time_modified
+                    time_watched
+                    position
+                    length
+                }
+                watchlist_data {
+                    added
+                    time_added
+                }
+            }
+        }
+    }
+}

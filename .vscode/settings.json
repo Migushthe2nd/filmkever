@@ -1,0 +1,6 @@
+{
+    "vetur.validation.template": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    }
+}
