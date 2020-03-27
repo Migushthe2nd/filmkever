@@ -336,6 +336,31 @@ export default {
                 })
                 .then(() => {
                     this.$parent.isWatchlist = !this.$parent.isWatchlist
+                    if (this.$parent.mediatype === 'movie') {
+                        if (this.$parent.isWatchlist) {
+                            this.$store.commit(
+                                'ADD_MOVIE_WATCHLIST',
+                                this.summary
+                            )
+                        } else {
+                            this.$store.commit(
+                                'REMOVE_MOVIE_WATCHLIST',
+                                this.summary
+                            )
+                        }
+                    } else if (this.$parent.mediatype === 'show') {
+                        if (this.$parent.isWatchlist) {
+                            this.$store.commit(
+                                'ADD_SHOW_WATCHLIST',
+                                this.summary
+                            )
+                        } else {
+                            this.$store.commit(
+                                'REMOVE_SHOW_WATCHLIST',
+                                this.summary
+                            )
+                        }
+                    }
                     doLoad = false
                     this.loading_watchlist = false
                 })

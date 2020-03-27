@@ -24,7 +24,7 @@ export default {
         }
     },
     created() {
-        this.loadTrendingShows()
+        this.loadResults()
     },
     methods: {
         loadResults() {

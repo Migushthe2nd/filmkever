@@ -94,9 +94,15 @@ export default {
                     this.summary = response.data.movie
 
                     if (
-                        this.summary.user_data &&
-                        this.summary.user_data.watchlist_data &&
-                        this.summary.user_data.watchlist_data.added === true
+                        this.$store.state.movieWatchlist.some(
+                            (storeSummary) =>
+                                storeSummary.ids.trakt ===
+                                this.summary.ids.trakt
+                        ) ||
+                        (this.summary.user_data &&
+                            this.summary.user_data.watchlist_data &&
+                            this.summary.user_data.watchlist_data.added ===
+                                true)
                     ) {
                         this.isWatchlist = true
                     }
@@ -129,9 +135,15 @@ export default {
                     this.summary = response.data.show
 
                     if (
-                        this.summary.user_data &&
-                        this.summary.user_data.watchlist_data &&
-                        this.summary.user_data.watchlist_data.added === true
+                        this.$store.state.showWatchlist.some(
+                            (storeSummary) =>
+                                storeSummary.ids.trakt ===
+                                this.summary.ids.trakt
+                        ) ||
+                        (this.summary.user_data &&
+                            this.summary.user_data.watchlist_data &&
+                            this.summary.user_data.watchlist_data.added ===
+                                true)
                     ) {
                         this.isWatchlist = true
                     }

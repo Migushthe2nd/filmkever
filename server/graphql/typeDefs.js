@@ -184,6 +184,7 @@ module.exports = gql`
         limit: Int
         page: Int
         page_count: Int
+        lastID: Int
     }
 
     type MoviePage {
@@ -211,12 +212,14 @@ module.exports = gql`
 
         # Movies
         searchMovies(page: Int, query: String): MoviePage
+        watchlistMovies(page: Int, lastID: Int): MoviePage
         trendingMovies(page: Int): MoviePage
         boxofficeMovies(page: Int): MoviePage
         popularMovies(page: Int): MoviePage
 
         # Shows
         searchShows(page: Int, query: String): ShowPage
+        watchlistShows(page: Int, lastID: Int): ShowPage
         trendingShows(page: Int): ShowPage
         popularShows(page: Int): ShowPage
     }

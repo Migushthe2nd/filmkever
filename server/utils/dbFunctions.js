@@ -231,6 +231,27 @@ module.exports = (pgp, db) => {
                     }
                 }
             },
+            watchlist: async (mediatype, uuid, pageSize, lastID, callback) => {
+                try {
+                    const results = await db.any(
+                        `
+                        SELECT traktID, id
+                        FROM users_watchlist_data
+                        WHERE uuid = $1 AND mediatype = $2 AND id > $4
+                        ORDER BY time_added DESC
+                        LIMIT $3
+                    `,
+                        [uuid, mediatype, pageSize, lastID || 0]
+                    )
+                    if (results) {
+                        callback(results)
+                    } else {
+                        callback(null)
+                    }
+                } catch (error) {
+                    consola.error(error)
+                }
+            },
             watchlist_data: {
                 get: async (traktID, mediatype, uuid, callback) => {
                     try {

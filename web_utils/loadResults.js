@@ -5,6 +5,7 @@ export default {
         return {
             items: [],
             page: 1,
+            lastID: null,
             resultAmount: null,
             limitReached: false,
             error: null
@@ -84,6 +85,70 @@ export default {
                     }
                     this.items = this.items.concat(
                         response.data.searchShows.items
+                    )
+                })
+                .catch((error) => {
+                    this.parseErrors(error)
+                })
+        },
+        loadWatchlistMovies() {
+            this.$apollo
+                .query({
+                    query: queries.watchlistMovies,
+                    variables: {
+                        page: this.page,
+                        lastID: this.lastID
+                    }
+                })
+                .then((response) => {
+                    if (this.resultAmount === null) {
+                        this.resultAmount =
+                            response.data.watchlistMovies.pagination.item_count
+                    }
+                    if (
+                        response.data.watchlistMovies.pagination.page_count ===
+                        response.data.watchlistMovies.pagination.page
+                    ) {
+                        this.limitReached = true
+                    } else {
+                        this.page++
+                        this.lastID =
+                            response.data.watchlistMovies.pagination.lastID
+                    }
+                    this.items = this.items.concat(
+                        response.data.watchlistMovies.items
+                    )
+                })
+                .catch((error) => {
+                    this.parseErrors(error)
+                })
+        },
+        loadWatchlistShows() {
+            this.$apollo
+                .query({
+                    query: queries.watchlistShows,
+                    variables: {
+                        page: this.page,
+                        lastID: this.lastID
+                    }
+                })
+                .then((response) => {
+                    if (this.resultAmount === null) {
+                        this.resultAmount =
+                            response.data.watchlistShows.pagination.item_count
+                    }
+                    if (
+                        response.data.watchlistShows.pagination.page_count ===
+                        response.data.watchlistShows.pagination.page
+                    ) {
+                        this.limitReached = true
+                    } else {
+                        this.page++
+                        this.lastID =
+                            response.data.watchlistShows.pagination.lastID
+                    }
+                    this.items = this.items.concat(
+                        response.data.watchlistShows.items
                     )
                 })
                 .catch((error) => {

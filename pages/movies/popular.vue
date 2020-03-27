@@ -24,7 +24,7 @@ export default {
         }
     },
     created() {
-        this.loadPopularMovies()
+        this.loadResults()
     },
     methods: {
         loadResults() {

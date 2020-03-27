@@ -15,21 +15,25 @@ export default {
     mixins: [loadResults],
     data() {
         return {
-            title: 'Box Office Movies',
-            subtitle:
-                'The top 10 grossing movies in the U.S. box office last weekend',
+            title: 'Your Movies Watchlist',
+            subtitle: 'Ordered by last watched',
             mediatype: 'movie',
             displayResultsCount: false,
             displayItemRank: false,
-            autoLoadMoreResults: true
+            autoLoadMoreResults: true,
+            localStoreList: this.$store.state.movieWatchlist
         }
     },
     created() {
-        this.loadResults()
+        if (!this.$store.state.loggedIn) {
+            this.$router.replace('/')
+        } else {
+            this.loadResults()
+        }
     },
     methods: {
         loadResults() {
-            this.loadBoxofficeMovies()
+            this.loadWatchlistMovies()
         }
     }
 }

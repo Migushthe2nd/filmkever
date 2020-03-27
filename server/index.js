@@ -20,12 +20,12 @@ const joinMonsterMetadata = require('./graphql/joinMonsterMetadata')
 const { pgp, db } = require('./utils/db')
 const dbFunctions = require('./utils/dbFunctions')(pgp, db)
 const Trakt = require('./utils/Trakt')(db)
-const TraktFunctions = require('./utils/TraktFunctions')(db, dbFunctions, Trakt)
+const functions = require('./utils/functions')(db, dbFunctions, Trakt)
 const resolvers = require('./graphql/resolvers')(
     pgp,
     db,
     dbFunctions,
-    TraktFunctions
+    functions
 )
 const typeDefs = require('./graphql/typeDefs')
 const { errorName, errorType } = require('./utils/errorTypes')

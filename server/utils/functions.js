@@ -54,7 +54,51 @@ const originalSize = function(link) {
 }
 
 module.exports = (db, dbFunctions, Trakt) => {
-    return {
+    function movieSummary(traktID) {
+        const start = new Date()
+        const hrstart = process.hrtime()
+        return new Promise(async (resolve, reject) => {
+            try {
+                const result = await Trakt.client.cached.movies.summary({
+                    id: traktID,
+                    extended: 'full',
+                    'system:tll': 3600 * 24
+                })
+                resolve(result)
+            } catch (err) {
+                reject(err)
+            }
+
+            const end = new Date() - start
+            const hrend = process.hrtime(hrstart)
+
+            if (benchmark) {
+                consola.info('Execution time movies.summary: %dms', end)
+                consola.info(
+                    'Execution time (hr): %ds %dms',
+                    hrend[0],
+                    hrend[1] / 1000000
+                )
+            }
+        })
+    }
+
+    function showSummary(traktID) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const result = await Trakt.client.cached.shows.summary({
+                    id: traktID,
+                    extended: 'full',
+                    'system:tll': 3600 * 24
+                })
+                resolve(result)
+            } catch (err) {
+                reject(err)
+            }
+        })
+    }
+
+    const functions = {
         user: {
             watch_data: {
                 get: (summary, traktID, mediatype, uuid) => {
@@ -374,35 +418,47 @@ module.exports = (db, dbFunctions, Trakt) => {
         },
         general: {
             movies: {
-                summary: (traktID) => {
-                    const start = new Date()
-                    const hrstart = process.hrtime()
+                summary: movieSummary,
+                watchlist: (uuid, page, lastID) => {
                     return new Promise((resolve, reject) => {
-                        try {
-                            const result = Trakt.client.cached.movies.summary({
-                                id: traktID,
-                                extended: 'full',
-                                'system:tll': 3600 * 24
-                            })
-                            resolve(result)
-                        } catch (err) {
-                            reject(err)
+                        const newItems = {
+                            items: []
                         }
+                        dbFunctions.user.watchlist(
+                            'movie',
+                            uuid,
+                            pageSize,
+                            lastID,
+                            (response) => {
+                                const promises = []
+                                for (let i = 0; i < response.length; i++) {
+                                    promises.push(
+                                        movieSummary(response[i].traktid)
+                                    )
+                                }
 
-                        const end = new Date() - start
-                        const hrend = process.hrtime(hrstart)
+                                Promise.all(promises).then((results) => {
+                                    for (let i = 0; i < results.length; i++) {
+                                        newItems.items[i] = results[i].data
+                                    }
 
-                        if (benchmark) {
-                            consola.info(
-                                'Execution time movies.summary: %dms',
-                                end
-                            )
-                            consola.info(
-                                'Execution time (hr): %ds %dms',
-                                hrend[0],
-                                hrend[1] / 1000000
-                            )
-                        }
+                                    newItems.pagination = {
+                                        item_count: response.length,
+                                        page,
+                                        page_count:
+                                            response.length === pageSize
+                                                ? null
+                                                : page,
+                                        lastID:
+                                            response.length > 0
+                                                ? response[response.length - 1]
+                                                      .id
+                                                : null
+                                    }
+                                    resolve(newItems)
+                                })
+                            }
+                        )
                     })
                 },
                 trending: (page) => {
@@ -1331,20 +1387,47 @@ module.exports = (db, dbFunctions, Trakt) => {
                 }
             },
             shows: {
-                summary: (traktID) => {
-                    return new Promise(async (resolve, reject) => {
-                        try {
-                            const result = await Trakt.client.cached.shows.summary(
-                                {
-                                    id: traktID,
-                                    extended: 'full',
-                                    'system:tll': 3600 * 24
-                                }
-                            )
-                            resolve(result)
-                        } catch (err) {
-                            reject(err)
+                summary: showSummary,
+                watchlist: (uuid, page, lastID) => {
+                    return new Promise((resolve, reject) => {
+                        const newItems = {
+                            items: []
                         }
+                        dbFunctions.user.watchlist(
+                            'show',
+                            uuid,
+                            pageSize,
+                            lastID,
+                            (response) => {
+                                const promises = []
+                                for (let i = 0; i < response.length; i++) {
+                                    promises.push(
+                                        showSummary(response[i].traktid)
+                                    )
+                                }
+
+                                Promise.all(promises).then((results) => {
+                                    for (let i = 0; i < results.length; i++) {
+                                        newItems.items[i] = results[i].data
+                                    }
+
+                                    newItems.pagination = {
+                                        item_count: response.length,
+                                        page,
+                                        page_count:
+                                            response.length === pageSize
+                                                ? null
+                                                : page,
+                                        lastID:
+                                            response.length > 0
+                                                ? response[response.length - 1]
+                                                      .id
+                                                : null
+                                    }
+                                    resolve(newItems)
+                                })
+                            }
+                        )
                     })
                 },
                 episode: (traktID, season, episode) => {
@@ -2100,4 +2183,6 @@ module.exports = (db, dbFunctions, Trakt) => {
             }
         }
     }
+
+    return functions
 }

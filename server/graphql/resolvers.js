@@ -4,7 +4,7 @@ const joinMonster = require('join-monster').default
 const graphqlFields = require('graphql-fields')
 const { errorName } = require('../utils/errorTypes')
 
-module.exports = (pgp, db, dbFunctions, TraktFunctions) => {
+module.exports = (pgp, db, dbFunctions, functions) => {
     return {
         Query: {
             allUsers: (parent, args, context, info) => {
@@ -38,11 +38,9 @@ module.exports = (pgp, db, dbFunctions, TraktFunctions) => {
                 const getUserData = !!graphqlFields(info).user_data
 
                 try {
-                    summary = await TraktFunctions.general.movies.summary(
-                        traktID
-                    )
+                    summary = await functions.general.movies.summary(traktID)
                     if (getImages && summary && summary.data) {
-                        await TraktFunctions.general.movies.images(summary.data)
+                        await functions.general.movies.images(summary.data)
                     }
                 } catch (err) {
                     if (err.toString().includes('404')) {
@@ -56,11 +54,11 @@ module.exports = (pgp, db, dbFunctions, TraktFunctions) => {
                     const uuid = context.req.user.uuid
                     summary.data.user_data = {}
                     await Promise.all([
-                        TraktFunctions.user.watch_data.getMovieBULK(
+                        functions.user.watch_data.getMovieBULK(
                             [summary.data],
                             uuid
                         ),
-                        TraktFunctions.user.watchlist_data.getBULK(
+                        functions.user.watchlist_data.getBULK(
                             [summary.data],
                             'movie',
                             uuid
@@ -76,11 +74,9 @@ module.exports = (pgp, db, dbFunctions, TraktFunctions) => {
                 const getUserData = !!graphqlFields(info).user_data
 
                 try {
-                    summary = await TraktFunctions.general.shows.summary(
-                        traktID
-                    )
+                    summary = await functions.general.shows.summary(traktID)
                     if (getImages && summary && summary.data) {
-                        await TraktFunctions.general.shows.images(summary.data)
+                        await functions.general.shows.images(summary.data)
                     }
                 } catch (err) {
                     if (err.toString().includes('404')) {
@@ -94,11 +90,11 @@ module.exports = (pgp, db, dbFunctions, TraktFunctions) => {
                     const uuid = context.req.user.uuid
                     summary.data.user_data = {}
                     await Promise.all([
-                        TraktFunctions.user.watch_data.getShowBULK(
+                        functions.user.watch_data.getShowBULK(
                             [summary.data],
                             uuid
                         ),
-                        TraktFunctions.user.watchlist_data.getBULK(
+                        functions.user.watchlist_data.getBULK(
                             [summary.data],
                             'show',
                             uuid
@@ -122,13 +118,13 @@ module.exports = (pgp, db, dbFunctions, TraktFunctions) => {
                     throw new Error(errorName.EPISODE_NOT_INDEXED)
                 } else {
                     try {
-                        summary = await TraktFunctions.general.shows.episode(
+                        summary = await functions.general.shows.episode(
                             dbData.showid,
                             dbData.season,
                             dbData.episode
                         )
                         if (getImages && summary && summary.data) {
-                            await TraktFunctions.general.shows.episodeImages(
+                            await functions.general.shows.episodeImages(
                                 summary.data,
                                 dbData.tmdbid,
                                 dbData.season,
@@ -150,13 +146,13 @@ module.exports = (pgp, db, dbFunctions, TraktFunctions) => {
                     const uuid = context.req.user.uuid
                     summary.data.user_data = {}
                     await Promise.all([
-                        TraktFunctions.user.watch_data.get(
+                        functions.user.watch_data.get(
                             summary,
                             traktID,
                             'episode',
                             uuid
                         ),
-                        TraktFunctions.user.watchlist_data.get(
+                        functions.user.watchlist_data.get(
                             summary,
                             traktID,
                             'episode',
@@ -176,9 +172,7 @@ module.exports = (pgp, db, dbFunctions, TraktFunctions) => {
                 let seasons = []
                 const getUserData = !!graphqlFields(info).episodes.user_data
                 try {
-                    seasons = await TraktFunctions.general.shows.episodes(
-                        traktID
-                    )
+                    seasons = await functions.general.shows.episodes(traktID)
                     if (
                         context.req.isAuthenticated() &&
                         getUserData &&
@@ -186,7 +180,7 @@ module.exports = (pgp, db, dbFunctions, TraktFunctions) => {
                     ) {
                         const uuid = context.req.user.uuid
                         await Promise.all([
-                            TraktFunctions.user.watch_data.episodes.get(
+                            functions.user.watch_data.episodes.get(
                                 seasons.data,
                                 uuid
                             )
@@ -208,19 +202,14 @@ module.exports = (pgp, db, dbFunctions, TraktFunctions) => {
                 const getUserData = !!graphqlFields(info).items.user_data
 
                 try {
-                    items = await TraktFunctions.general.movies.search(
-                        page,
-                        query
-                    )
+                    items = await functions.general.movies.search(page, query)
                     if (
                         getImages &&
                         items &&
                         items.items &&
                         items.items.length > 0
                     ) {
-                        await TraktFunctions.general.movies.imagesBULK(
-                            items.items
-                        )
+                        await functions.general.movies.imagesBULK(items.items)
                     }
                 } catch (err) {
                     if (err.toString().includes('404')) {
@@ -239,11 +228,11 @@ module.exports = (pgp, db, dbFunctions, TraktFunctions) => {
                 ) {
                     const uuid = context.req.user.uuid
                     await Promise.all([
-                        TraktFunctions.user.watch_data.getMovieBULK(
+                        functions.user.watch_data.getMovieBULK(
                             items.items,
                             uuid
                         ),
-                        TraktFunctions.user.watchlist_data.getBULK(
+                        functions.user.watchlist_data.getBULK(
                             items.items,
                             'movie',
                             uuid
@@ -253,17 +242,70 @@ module.exports = (pgp, db, dbFunctions, TraktFunctions) => {
 
                 return items
             },
+            watchlistMovies: async (
+                parent,
+                { page, lastID },
+                context,
+                info
+            ) => {
+                if (context.req.isAuthenticated()) {
+                    const uuid = context.req.user.uuid
+                    let items
+                    const getImages = !!graphqlFields(info).items.images
+                    const getUserData = !!graphqlFields(info).items.user_data
+
+                    try {
+                        items = await functions.general.movies.watchlist(
+                            uuid,
+                            page,
+                            lastID
+                        )
+                        if (getImages && items.items.length > 0) {
+                            await functions.general.movies.imagesBULK(
+                                items.items
+                            )
+                        }
+                    } catch (err) {
+                        if (err.toString().includes('404')) {
+                            throw new Error(errorName.ITEM_NOT_EXIST)
+                        } else {
+                            throw new Error(errorName.UNKNOWN)
+                        }
+                    }
+
+                    if (
+                        getUserData &&
+                        items &&
+                        items.items &&
+                        items.items.length > 0
+                    ) {
+                        await Promise.all([
+                            functions.user.watch_data.getMovieBULK(
+                                items.items,
+                                uuid
+                            ),
+                            functions.user.watchlist_data.getBULK(
+                                items.items,
+                                'movie',
+                                uuid
+                            )
+                        ])
+                    }
+
+                    return items
+                } else {
+                    throw new Error(errorName.UNAUTHORIZED)
+                }
+            },
             trendingMovies: async (parent, { page }, context, info) => {
                 let items
                 const getImages = !!graphqlFields(info).items.images
                 const getUserData = !!graphqlFields(info).items.user_data
 
                 try {
-                    items = await TraktFunctions.general.movies.trending(page)
+                    items = await functions.general.movies.trending(page)
                     if (getImages && items.items.length > 0) {
-                        await TraktFunctions.general.movies.imagesBULK(
-                            items.items
-                        )
+                        await functions.general.movies.imagesBULK(items.items)
                     }
                 } catch (err) {
                     if (err.toString().includes('404')) {
@@ -282,11 +324,11 @@ module.exports = (pgp, db, dbFunctions, TraktFunctions) => {
                 ) {
                     const uuid = context.req.user.uuid
                     await Promise.all([
-                        TraktFunctions.user.watch_data.getMovieBULK(
+                        functions.user.watch_data.getMovieBULK(
                             items.items,
                             uuid
                         ),
-                        TraktFunctions.user.watchlist_data.getBULK(
+                        functions.user.watchlist_data.getBULK(
                             items.items,
                             'movie',
                             uuid
@@ -302,16 +344,14 @@ module.exports = (pgp, db, dbFunctions, TraktFunctions) => {
                 const getUserData = !!graphqlFields(info).items.user_data
 
                 try {
-                    items = await TraktFunctions.general.movies.boxoffice(page)
+                    items = await functions.general.movies.boxoffice(page)
                     if (
                         getImages &&
                         items &&
                         items.items &&
                         items.items.length > 0
                     ) {
-                        await TraktFunctions.general.movies.imagesBULK(
-                            items.items
-                        )
+                        await functions.general.movies.imagesBULK(items.items)
                     }
                 } catch (err) {
                     if (err.toString().includes('404')) {
@@ -330,11 +370,11 @@ module.exports = (pgp, db, dbFunctions, TraktFunctions) => {
                 ) {
                     const uuid = context.req.user.uuid
                     await Promise.all([
-                        TraktFunctions.user.watch_data.getMovieBULK(
+                        functions.user.watch_data.getMovieBULK(
                             items.items,
                             uuid
                         ),
-                        TraktFunctions.user.watchlist_data.getBULK(
+                        functions.user.watchlist_data.getBULK(
                             items.items,
                             'movie',
                             uuid
@@ -350,16 +390,14 @@ module.exports = (pgp, db, dbFunctions, TraktFunctions) => {
                 const getUserData = !!graphqlFields(info).items.user_data
 
                 try {
-                    items = await TraktFunctions.general.movies.popular(page)
+                    items = await functions.general.movies.popular(page)
                     if (
                         getImages &&
                         items &&
                         items.items &&
                         items.items.length > 0
                     ) {
-                        await TraktFunctions.general.movies.imagesBULK(
-                            items.items
-                        )
+                        await functions.general.movies.imagesBULK(items.items)
                     }
                 } catch (err) {
                     if (err.toString().includes('404')) {
@@ -378,11 +416,11 @@ module.exports = (pgp, db, dbFunctions, TraktFunctions) => {
                 ) {
                     const uuid = context.req.user.uuid
                     await Promise.all([
-                        TraktFunctions.user.watch_data.getMovieBULK(
+                        functions.user.watch_data.getMovieBULK(
                             items.items,
                             uuid
                         ),
-                        TraktFunctions.user.watchlist_data.getBULK(
+                        functions.user.watchlist_data.getBULK(
                             items.items,
                             'movie',
                             uuid
@@ -398,19 +436,14 @@ module.exports = (pgp, db, dbFunctions, TraktFunctions) => {
                 const getUserData = !!graphqlFields(info).items.user_data
 
                 try {
-                    items = await TraktFunctions.general.shows.search(
-                        page,
-                        query
-                    )
+                    items = await functions.general.shows.search(page, query)
                     if (
                         getImages &&
                         items &&
                         items.items &&
                         items.items.length > 0
                     ) {
-                        await TraktFunctions.general.shows.imagesBULK(
-                            items.items
-                        )
+                        await functions.general.shows.imagesBULK(items.items)
                     }
                 } catch (err) {
                     if (err.toString().includes('404')) {
@@ -429,11 +462,11 @@ module.exports = (pgp, db, dbFunctions, TraktFunctions) => {
                 ) {
                     const uuid = context.req.user.uuid
                     await Promise.all([
-                        TraktFunctions.user.watch_data.getShowBULK(
+                        functions.user.watch_data.getShowBULK(
                             items.items,
                             uuid
                         ),
-                        TraktFunctions.user.watchlist_data.getBULK(
+                        functions.user.watchlist_data.getBULK(
                             items.items,
                             'show',
                             uuid
@@ -443,22 +476,70 @@ module.exports = (pgp, db, dbFunctions, TraktFunctions) => {
 
                 return items
             },
+            watchlistShows: async (parent, { page, lastID }, context, info) => {
+                if (context.req.isAuthenticated()) {
+                    const uuid = context.req.user.uuid
+                    let items
+                    const getImages = !!graphqlFields(info).items.images
+                    const getUserData = !!graphqlFields(info).items.user_data
+
+                    try {
+                        items = await functions.general.shows.watchlist(
+                            uuid,
+                            page,
+                            lastID
+                        )
+                        if (getImages && items.items.length > 0) {
+                            await functions.general.shows.imagesBULK(
+                                items.items
+                            )
+                        }
+                    } catch (err) {
+                        if (err.toString().includes('404')) {
+                            throw new Error(errorName.ITEM_NOT_EXIST)
+                        } else {
+                            throw new Error(errorName.UNKNOWN)
+                        }
+                    }
+
+                    if (
+                        getUserData &&
+                        items &&
+                        items.items &&
+                        items.items.length > 0
+                    ) {
+                        await Promise.all([
+                            functions.user.watch_data.getShowBULK(
+                                items.items,
+                                uuid
+                            ),
+                            functions.user.watchlist_data.getBULK(
+                                items.items,
+                                'show',
+                                uuid
+                            )
+                        ])
+                    }
+
+                    return items
+                } else {
+                    throw new Error(errorName.UNAUTHORIZED)
+                }
+            },
             trendingShows: async (parent, { page }, context, info) => {
                 let items
                 const getImages = !!graphqlFields(info).items.images
                 const getUserData = !!graphqlFields(info).items.user_data
 
                 try {
-                    items = await TraktFunctions.general.shows.trending(page)
+                    items = await functions.general.shows.trending(page)
                     if (
                         getImages &&
                         items &&
                         items.items &&
                         items.items.length > 0
                     ) {
-                        await TraktFunctions.general.shows.imagesBULK(
-                            items.items
-                        )
+                        await functions.general.shows.imagesBULK(items.items)
                     }
                 } catch (err) {
                     if (err.toString().includes('404')) {
@@ -477,11 +558,11 @@ module.exports = (pgp, db, dbFunctions, TraktFunctions) => {
                 ) {
                     const uuid = context.req.user.uuid
                     await Promise.all([
-                        TraktFunctions.user.watch_data.getShowBULK(
+                        functions.user.watch_data.getShowBULK(
                             items.items,
                             uuid
                         ),
-                        TraktFunctions.user.watchlist_data.getBULK(
+                        functions.user.watchlist_data.getBULK(
                             items.items,
                             'show',
                             uuid
@@ -497,16 +578,14 @@ module.exports = (pgp, db, dbFunctions, TraktFunctions) => {
                 const getUserData = !!graphqlFields(info).items.user_data
 
                 try {
-                    items = await TraktFunctions.general.shows.popular(page)
+                    items = await functions.general.shows.popular(page)
                     if (
                         getImages &&
                         items &&
                         items.items &&
                         items.items.length > 0
                     ) {
-                        await TraktFunctions.general.shows.imagesBULK(
-                            items.items
-                        )
+                        await functions.general.shows.imagesBULK(items.items)
                     }
                 } catch (err) {
                     if (err.toString().includes('404')) {
@@ -525,11 +604,11 @@ module.exports = (pgp, db, dbFunctions, TraktFunctions) => {
                 ) {
                     const uuid = context.req.user.uuid
                     await Promise.all([
-                        TraktFunctions.user.watch_data.getShowBULK(
+                        functions.user.watch_data.getShowBULK(
                             items.items,
                             uuid
                         ),
-                        TraktFunctions.user.watchlist_data.getBULK(
+                        functions.user.watchlist_data.getBULK(
                             items.items,
                             'show',
                             uuid
@@ -543,14 +622,14 @@ module.exports = (pgp, db, dbFunctions, TraktFunctions) => {
             //     if (context.req.isAuthenticated()) {
             //         const uuid = context.req.user.uuid
             //         consola.log(mediatype, traktID, uuid)
-            //         TraktFunctions.general.movies
+            //         functions.general.movies
             //             .userdata(traktID)
             //             .then((res) => {
             //                 consola.log(res.data)
             //                 return res.data
             //             })
             //         if (context.req.isAuthenticated()) {
-            //             // TraktFunctions.general.users.UserWatchData.get()
+            //             // functions.general.users.UserWatchData.get()
             //         }
             //     } else {
             //         throw new Error(errorName.UNAUTHORIZED)
@@ -625,7 +704,7 @@ module.exports = (pgp, db, dbFunctions, TraktFunctions) => {
                 if (context.req.isAuthenticated()) {
                     const uuid = context.req.user.uuid
                     return new Promise((resolve, reject) => {
-                        TraktFunctions.user.watch_data
+                        functions.user.watch_data
                             .set(
                                 uuid,
                                 mediatype,
@@ -654,7 +733,7 @@ module.exports = (pgp, db, dbFunctions, TraktFunctions) => {
                 if (context.req.isAuthenticated()) {
                     const uuid = context.req.user.uuid
                     return new Promise((resolve, reject) => {
-                        TraktFunctions.user.watchlist_data
+                        functions.user.watchlist_data
                             .set(uuid, mediatype, traktID, state)
                             .then(() => {
                                 resolve(state)

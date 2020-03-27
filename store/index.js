@@ -2,7 +2,10 @@ export const state = () => ({
     loggedIn: false,
     user: null,
     searchQuery: null,
-    currSearchType: null
+    currSearchType: null,
+
+    movieWatchlist: [],
+    showWatchlist: []
 })
 
 export const mutations = {
@@ -19,6 +22,23 @@ export const mutations = {
     },
     UPDATE_SEARCH_QUERY(state, query) {
         state.searchQuery = query
+    },
+
+    ADD_MOVIE_WATCHLIST(state, summary) {
+        state.movieWatchlist.push(summary)
+    },
+    REMOVE_MOVIE_WATCHLIST(state, summary) {
+        state.movieWatchlist = state.movieWatchlist.filter(
+            (storeSummary) => storeSummary.ids.trakt !== summary.ids.trakt
+        )
+    },
+    ADD_SHOW_WATCHLIST(state, summary) {
+        state.showWatchlist.push(summary)
+    },
+    REMOVE_SHOW_WATCHLIST(state, summary) {
+        state.showWatchlist = state.showWatchlist.filter(
+            (storeSummary) => storeSummary.ids.trakt !== summary.ids.trakt
+        )
     }
 }
 

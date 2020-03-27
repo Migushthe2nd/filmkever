@@ -24,7 +24,7 @@ export default {
         }
     },
     created() {
-        this.loadPopularShows()
+        this.loadResults()
     },
     methods: {
         loadResults() {
