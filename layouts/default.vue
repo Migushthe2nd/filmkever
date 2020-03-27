@@ -86,6 +86,12 @@
                             <v-icon>mdi-face</v-icon>
                         </v-list-item-icon>
                     </v-list-item>
+                    <v-list-item dense router exact to="/party">
+                        <v-list-item-title>Party</v-list-item-title>
+                        <v-list-item-icon>
+                            <v-icon>mdi-account-group</v-icon>
+                        </v-list-item-icon>
+                    </v-list-item>
                     <v-list-item dense router exact to="/account/settings">
                         <v-list-item-title>Settings</v-list-item-title>
                         <v-list-item-icon>

@@ -1,16 +1,16 @@
 <template>
     <div>
-        <oneList />
+        <resultsList />
     </div>
 </template>
 
 <script>
-import oneList from '@/layouts/oneList.vue'
+import resultsList from '@/layouts/resultsList.vue'
 import loadResults from '@/web_utils/loadResults.js'
 
 export default {
     components: {
-        oneList
+        resultsList
     },
     mixins: [loadResults],
     data() {

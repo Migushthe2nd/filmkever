@@ -1,17 +1,17 @@
 <template>
     <div>
-        <oneList />
+        <resultsList />
     </div>
 </template>
 
 <script>
-import oneList from '@/layouts/oneList.vue'
+import resultsList from '@/layouts/resultsList.vue'
 import loadResults from '@/web_utils/loadResults.js'
 import searchRefresher from '@/web_utils/searchRefresher.js'
 
 export default {
     components: {
-        oneList
+        resultsList
     },
     mixins: [loadResults, searchRefresher],
     data() {
