@@ -5,6 +5,8 @@ module.exports = {
     env: {
         APP_TITLE: process.env.APP_TITLE || 'AppTitle',
         APP_TITLE_SHORT: process.env.APP_TITLE_SHORT || 'AppTitle',
+        APP_FEEDBACK_URL: process.env.APP_FEEDBACK_URL,
+        APP_DISCORD_INVITE: process.env.APP_DISCORD_INVITE,
         APP_BASE_URL: process.env.VUE_APP_BASE_URL || '/',
         // APP_API_ROOT:
         //     process.env.VUE_APP_ROOT_API || 'http://localhost:3000/api',

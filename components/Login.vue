@@ -233,18 +233,20 @@ export default {
     props: {
         value: Boolean
     },
-    data: () => ({
-        APP_TITLE: process.env.APP_TITLE,
-        username: '',
-        email: '',
-        password: '',
-        repeatPassword: '',
-        passwordError: '',
-        Error: '',
-        loading: false,
-        loadingValue: 0,
-        step: 0
-    }),
+    data() {
+        return {
+            APP_TITLE: process.env.APP_TITLE,
+            username: '',
+            email: '',
+            password: '',
+            repeatPassword: '',
+            passwordError: '',
+            Error: '',
+            loading: false,
+            loadingValue: 0,
+            step: 0
+        }
+    },
     computed: {
         currentTitle() {
             switch (this.step) {
