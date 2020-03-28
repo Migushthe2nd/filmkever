@@ -465,6 +465,7 @@ module.exports = (db, dbFunctions, Trakt) => {
                     return new Promise(async (resolve, reject) => {
                         const items = await Trakt.client.cached.movies.trending(
                             {
+                                extended: 'full',
                                 page,
                                 limit: pageSize
                             }
@@ -489,6 +490,7 @@ module.exports = (db, dbFunctions, Trakt) => {
                 popular: (page) => {
                     return new Promise(async (resolve, reject) => {
                         const items = await Trakt.client.cached.movies.popular({
+                            extended: 'full',
                             page,
                             limit: pageSize
                         })
@@ -513,6 +515,7 @@ module.exports = (db, dbFunctions, Trakt) => {
                     return new Promise(async (resolve, reject) => {
                         const items = await Trakt.client.cached.movies.boxoffice(
                             {
+                                extended: 'full',
                                 page,
                                 limit: pageSize
                             }
@@ -538,6 +541,7 @@ module.exports = (db, dbFunctions, Trakt) => {
                     return new Promise(async (resolve, reject) => {
                         const anticipated = await Trakt.client.cached.movies.anticipated(
                             {
+                                extended: 'full',
                                 page,
                                 limit: pageSize,
                                 'system:tll': 3600 * 24
@@ -563,6 +567,7 @@ module.exports = (db, dbFunctions, Trakt) => {
                 search: (page, query) => {
                     return new Promise(async (resolve, reject) => {
                         const items = await Trakt.client.cached.search.text({
+                            extended: 'full',
                             type: 'movie',
                             query,
                             page,
@@ -1430,10 +1435,10 @@ module.exports = (db, dbFunctions, Trakt) => {
                         try {
                             const result = await Trakt.client.cached.episodes.summary(
                                 {
+                                    extended: 'full',
                                     id: traktID,
                                     season,
-                                    episode,
-                                    extended: 'full'
+                                    episode
                                 }
                             )
                             resolve(result)
@@ -1467,8 +1472,8 @@ module.exports = (db, dbFunctions, Trakt) => {
                     return new Promise(async (resolve, reject) => {
                         const recommended = await Trakt.client.cached.recommendations.shows.get(
                             {
-                                username: 'me',
                                 extended: 'full',
+                                username: 'me',
                                 page,
                                 limit: pageSize
                             }
@@ -1479,6 +1484,7 @@ module.exports = (db, dbFunctions, Trakt) => {
                 trending: (page) => {
                     return new Promise(async (resolve, reject) => {
                         const items = await Trakt.client.cached.shows.trending({
+                            extended: 'full',
                             page,
                             limit: pageSize
                         })
@@ -1502,6 +1508,7 @@ module.exports = (db, dbFunctions, Trakt) => {
                 popular: (page) => {
                     return new Promise(async (resolve, reject) => {
                         const items = await Trakt.client.cached.shows.popular({
+                            extended: 'full',
                             page,
                             limit: pageSize
                         })
@@ -1538,6 +1545,7 @@ module.exports = (db, dbFunctions, Trakt) => {
                 search: (page, query) => {
                     return new Promise(async (resolve, reject) => {
                         const items = await Trakt.client.cached.search.text({
+                            extended: 'full',
                             type: 'show',
                             query,
                             page,
