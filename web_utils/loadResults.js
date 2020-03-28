@@ -41,10 +41,8 @@ export default {
                     }
                 })
                 .then((response) => {
-                    if (this.resultAmount === null) {
-                        this.resultAmount =
-                            response.data.searchMovies.pagination.item_count
-                    }
+                    this.resultAmount =
+                        response.data.searchMovies.pagination.item_count
                     if (
                         response.data.searchMovies.pagination.page_count ===
                         response.data.searchMovies.pagination.page
@@ -71,10 +69,8 @@ export default {
                     }
                 })
                 .then((response) => {
-                    if (this.resultAmount === null) {
-                        this.resultAmount =
-                            response.data.searchShows.pagination.item_count
-                    }
+                    this.resultAmount =
+                        response.data.searchShows.pagination.item_count
                     if (
                         response.data.searchShows.pagination.page_count ===
                         response.data.searchShows.pagination.page
@@ -101,10 +97,8 @@ export default {
                     }
                 })
                 .then((response) => {
-                    if (this.resultAmount === null) {
-                        this.resultAmount =
-                            response.data.watchlistMovies.pagination.item_count
-                    }
+                    this.resultAmount =
+                        response.data.watchlistMovies.pagination.item_count
                     if (
                         response.data.watchlistMovies.pagination.page_count ===
                         response.data.watchlistMovies.pagination.page
@@ -133,10 +127,8 @@ export default {
                     }
                 })
                 .then((response) => {
-                    if (this.resultAmount === null) {
-                        this.resultAmount =
-                            response.data.watchlistShows.pagination.item_count
-                    }
+                    this.resultAmount =
+                        response.data.watchlistShows.pagination.item_count
                     if (
                         response.data.watchlistShows.pagination.page_count ===
                         response.data.watchlistShows.pagination.page
@@ -164,10 +156,8 @@ export default {
                     }
                 })
                 .then((response) => {
-                    if (this.resultAmount === null) {
-                        this.resultAmount =
-                            response.data.trendingMovies.pagination.item_count
-                    }
+                    this.resultAmount =
+                        response.data.trendingMovies.pagination.item_count
                     if (
                         response.data.trendingMovies.pagination.page_count ===
                         response.data.trendingMovies.pagination.page
@@ -193,10 +183,8 @@ export default {
                     }
                 })
                 .then((response) => {
-                    if (this.resultAmount === null) {
-                        this.resultAmount =
-                            response.data.trendingShows.pagination.item_count
-                    }
+                    this.resultAmount =
+                        response.data.trendingShows.pagination.item_count
                     if (
                         response.data.trendingShows.pagination.page_count ===
                         response.data.trendingShows.pagination.page
@@ -223,10 +211,8 @@ export default {
                     }
                 })
                 .then((response) => {
-                    if (this.resultAmount === null) {
-                        this.resultAmount =
-                            response.data.boxofficeMovies.pagination.item_count
-                    }
+                    this.resultAmount =
+                        response.data.boxofficeMovies.pagination.item_count
                     if (
                         response.data.boxofficeMovies.pagination.page_count ===
                         response.data.boxofficeMovies.pagination.page
@@ -252,10 +238,8 @@ export default {
                     }
                 })
                 .then((response) => {
-                    if (this.resultAmount === null) {
-                        this.resultAmount =
-                            response.data.popularMovies.pagination.item_count
-                    }
+                    this.resultAmount =
+                        response.data.popularMovies.pagination.item_count
                     if (
                         response.data.popularMovies.pagination.page_count ===
                         response.data.popularMovies.pagination.page
@@ -281,10 +265,8 @@ export default {
                     }
                 })
                 .then((response) => {
-                    if (this.resultAmount === null) {
-                        this.resultAmount =
-                            response.data.popularShows.pagination.item_count
-                    }
+                    this.resultAmount =
+                        response.data.popularShows.pagination.item_count
                     if (
                         response.data.popularShows.pagination.page_count ===
                         response.data.popularShows.pagination.page
