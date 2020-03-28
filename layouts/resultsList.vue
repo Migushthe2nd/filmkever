@@ -14,7 +14,7 @@
 
         <v-row dense>
             <v-col
-                v-for="(item, i) in items"
+                v-for="(item, i) in $parent.items"
                 :key="i"
                 cols="12"
                 sm="6"
@@ -153,11 +153,6 @@ export default {
     computed: {
         error() {
             return this.$parent.error
-        },
-        items() {
-            return this.$parent.localStoreList
-                ? this.$parent.localStoreList.concat(this.$parent.items)
-                : this.$parent.items
         }
     },
     methods: {

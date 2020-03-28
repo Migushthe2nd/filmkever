@@ -332,35 +332,28 @@ export default {
                         mediatype: this.$parent.mediatype,
                         traktID: this.summary.ids.trakt,
                         state: !this.$parent.isWatchlist
-                    }
+                    },
+                    refetchQueries: [
+                        {
+                            query:
+                                this.$parent.mediatype === 'movie'
+                                    ? queries.watchlistMovies
+                                    : queries.watchlistShows,
+                            variables: { page: 1, lastID: null }
+                        },
+                        {
+                            query:
+                                this.$parent.mediatype === 'movie'
+                                    ? queries.movie
+                                    : queries.show,
+                            variables: {
+                                traktID: this.summary.ids.trakt
+                            }
+                        }
+                    ]
                 })
                 .then(() => {
                     this.$parent.isWatchlist = !this.$parent.isWatchlist
-                    if (this.$parent.mediatype === 'movie') {
-                        if (this.$parent.isWatchlist) {
-                            this.$store.commit(
-                                'ADD_MOVIE_WATCHLIST',
-                                this.summary
-                            )
-                        } else {
-                            this.$store.commit(
-                                'REMOVE_MOVIE_WATCHLIST',
-                                this.summary
-                            )
-                        }
-                    } else if (this.$parent.mediatype === 'show') {
-                        if (this.$parent.isWatchlist) {
-                            this.$store.commit(
-                                'ADD_SHOW_WATCHLIST',
-                                this.summary
-                            )
-                        } else {
-                            this.$store.commit(
-                                'REMOVE_SHOW_WATCHLIST',
-                                this.summary
-                            )
-                        }
-                    }
                     doLoad = false
                     this.loading_watchlist = false
                 })

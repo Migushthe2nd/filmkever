@@ -16,20 +16,20 @@ export default {
     data() {
         return {
             title: 'Your Shows Watchlist',
-            subtitle: 'Ordered by last watched',
+            subtitle: 'Ordered by last added',
             mediatype: 'show',
             displayResultsCount: false,
             displayItemRank: false,
-            autoLoadMoreResults: true,
-            localStoreList: this.$store.state.showWatchlist
+            autoLoadMoreResults: true
+        }
+    },
+    beforeCreate() {
+        if (!this.$store.state.loggedIn) {
+            this.$router.replace('/')
         }
     },
     created() {
-        if (!this.$store.state.loggedIn) {
-            this.$router.replace('/')
-        } else {
-            this.loadResults()
-        }
+        this.loadResults()
     },
     methods: {
         loadResults() {
