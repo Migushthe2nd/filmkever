@@ -323,6 +323,121 @@ query searchShows($page: Int, $query: String) {
     }
 }
 
+query continueMovies($page: Int, $lastTime: String) {
+    continueMovies(page: $page, lastTime: $lastTime) {
+        pagination {
+            item_count
+            page
+            page_count
+            lastTime
+        }
+        items {
+            title
+            year
+            ids {
+                trakt
+                slug
+                imdb
+                tmdb
+                tvdb
+            }
+            tagline
+            overview
+            released
+            runtime
+            country
+            updated_at
+            trailer
+            homepage
+            status
+            rating
+            language
+            genres
+            certification
+            images {
+                poster
+                background
+                logo
+            }
+            user_data {
+                watch_data {
+                    finished
+                    time_modified
+                    time_watched
+                    position
+                    length
+                }
+                watchlist_data {
+                    added
+                    time_added
+                }
+            }
+        }
+    }
+}
+
+query continueShows($page: Int, $lastTime: String, $lastID: Int) {
+    continueShows(page: $page, lastTime: $lastTime, lastID: $lastID) {
+        pagination {
+            item_count
+            page
+            page_count
+            lastTime
+            lastID
+        }
+        items {
+            title
+            year
+            ids {
+                trakt
+                slug
+                imdb
+                tmdb
+                tvdb
+            }
+            overview
+            first_aired
+            airs {
+                day
+                time
+                timezone
+            }
+            aired_episodes
+            runtime
+            network
+            country
+            updated_at
+            trailer
+            status
+            rating
+            certification
+            language
+            genres
+            images {
+                poster
+                background
+                logo
+            }
+            user_data {
+                watch_data {
+                    finished
+                    traktid
+                    season
+                    episode_number
+                    time_modified
+                    time_watched
+                    position
+                    length
+                }
+                watchlist_data {
+                    added
+                    time_added
+                }
+            }
+        }
+    }
+}
+
 query watchlistMovies($page: Int, $lastID: Int) {
     watchlistMovies(page: $page, lastID: $lastID) {
         pagination {

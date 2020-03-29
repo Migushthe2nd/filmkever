@@ -337,18 +337,25 @@ export default {
                         {
                             query:
                                 this.$parent.mediatype === 'movie'
-                                    ? queries.watchlistMovies
-                                    : queries.watchlistShows,
-                            variables: { page: 1, lastID: null }
-                        },
-                        {
-                            query:
-                                this.$parent.mediatype === 'movie'
                                     ? queries.movie
                                     : queries.show,
                             variables: {
                                 traktID: this.summary.ids.trakt
                             }
+                        },
+                        {
+                            query:
+                                this.$parent.mediatype === 'movie'
+                                    ? queries.continueMovies
+                                    : queries.continueShows,
+                            variables: { page: 1, lastID: null }
+                        },
+                        {
+                            query:
+                                this.$parent.mediatype === 'movie'
+                                    ? queries.watchlistMovies
+                                    : queries.watchlistShows,
+                            variables: { page: 1, lastID: null }
                         }
                     ]
                 })

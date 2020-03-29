@@ -184,6 +184,7 @@ module.exports = gql`
         limit: Int
         page: Int
         page_count: Int
+        lastTime: String
         lastID: Int
     }
 
@@ -212,6 +213,7 @@ module.exports = gql`
 
         # Movies
         searchMovies(page: Int, query: String): MoviePage
+        continueMovies(page: Int, lastTime: String): MoviePage
         watchlistMovies(page: Int, lastID: Int): MoviePage
         trendingMovies(page: Int): MoviePage
         boxofficeMovies(page: Int): MoviePage
@@ -219,6 +221,7 @@ module.exports = gql`
 
         # Shows
         searchShows(page: Int, query: String): ShowPage
+        continueShows(page: Int, lastTime: String, lastID: Int): ShowPage
         watchlistShows(page: Int, lastID: Int): ShowPage
         trendingShows(page: Int): ShowPage
         popularShows(page: Int): ShowPage

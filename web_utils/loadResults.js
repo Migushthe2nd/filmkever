@@ -6,6 +6,7 @@ export default {
             items: [],
             page: 1,
             lastID: null,
+            lastTime: null,
             resultAmount: null,
             limitReached: false,
             error: null
@@ -81,6 +82,69 @@ export default {
                     }
                     this.items = this.items.concat(
                         response.data.searchShows.items
+                    )
+                })
+                .catch((error) => {
+                    this.parseErrors(error)
+                })
+        },
+        loadContinueMovies() {
+            this.$apollo
+                .query({
+                    query: queries.continueMovies,
+                    variables: {
+                        page: this.page,
+                        lastTime: this.lastTime
+                    }
+                })
+                .then((response) => {
+                    this.resultAmount =
+                        response.data.continueMovies.pagination.item_count
+                    if (
+                        response.data.continueMovies.pagination.page_count ===
+                        response.data.continueMovies.pagination.page
+                    ) {
+                        this.limitReached = true
+                    } else {
+                        this.page++
+                        this.lastTime =
+                            response.data.continueMovies.pagination.lastTime
+                    }
+                    this.items = this.items.concat(
+                        response.data.continueMovies.items
+                    )
+                })
+                .catch((error) => {
+                    this.parseErrors(error)
+                })
+        },
+        loadContinueShows() {
+            this.$apollo
+                .query({
+                    query: queries.continueShows,
+                    variables: {
+                        page: this.page,
+                        lastID: this.lastID,
+                        lastTime: this.lastTime
+                    }
+                })
+                .then((response) => {
+                    this.resultAmount =
+                        response.data.continueShows.pagination.item_count
+                    if (
+                        response.data.continueShows.pagination.page_count ===
+                        response.data.continueShows.pagination.page
+                    ) {
+                        this.limitReached = true
+                    } else {
+                        this.page++
+                        this.lastID =
+                            response.data.continueShows.pagination.lastID
+                        this.lastTime =
+                            response.data.continueShows.pagination.lastTime
+                    }
+                    this.items = this.items.concat(
+                        response.data.continueShows.items
                     )
                 })
                 .catch((error) => {

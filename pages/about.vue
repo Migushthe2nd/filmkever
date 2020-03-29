@@ -1,5 +1,5 @@
 <template>
-    <v-layout column justify-center align-center>
+    <v-layout column justify-center align-center pa-3>
         <v-card max-width="600">
             <v-card-title class="headline">
                 About

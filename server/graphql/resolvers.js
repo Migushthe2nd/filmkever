@@ -146,13 +146,13 @@ module.exports = (pgp, db, dbFunctions, functions) => {
                     const uuid = context.req.user.uuid
                     summary.data.user_data = {}
                     await Promise.all([
-                        functions.user.watch_data.get(
+                        functions.user.watch_data.getOne(
                             summary,
                             traktID,
                             'episode',
                             uuid
                         ),
-                        functions.user.watchlist_data.get(
+                        functions.user.watchlist_data.getOne(
                             summary,
                             traktID,
                             'episode',
@@ -180,7 +180,7 @@ module.exports = (pgp, db, dbFunctions, functions) => {
                     ) {
                         const uuid = context.req.user.uuid
                         await Promise.all([
-                            functions.user.watch_data.episodes.get(
+                            functions.user.watch_data.getEpisodeBULK(
                                 seasons.data,
                                 uuid
                             )
@@ -241,6 +241,61 @@ module.exports = (pgp, db, dbFunctions, functions) => {
                 }
 
                 return items
+            },
+            continueMovies: async (
+                parent,
+                { page, lastTime },
+                context,
+                info
+            ) => {
+                if (context.req.isAuthenticated()) {
+                    const uuid = context.req.user.uuid
+                    let items
+                    const getImages = !!graphqlFields(info).items.images
+                    const getUserData = !!graphqlFields(info).items.user_data
+
+                    try {
+                        items = await functions.general.movies.continue(
+                            uuid,
+                            page,
+                            lastTime
+                        )
+                        if (getImages && items.items.length > 0) {
+                            await functions.general.movies.imagesBULK(
+                                items.items
+                            )
+                        }
+                    } catch (err) {
+                        if (err.toString().includes('404')) {
+                            throw new Error(errorName.ITEM_NOT_EXIST)
+                        } else {
+                            throw new Error(errorName.UNKNOWN)
+                        }
+                    }
+
+                    if (
+                        getUserData &&
+                        items &&
+                        items.items &&
+                        items.items.length > 0
+                    ) {
+                        await Promise.all([
+                            functions.user.watch_data.getMovieBULK(
+                                items.items,
+                                uuid
+                            ),
+                            functions.user.watchlist_data.getBULK(
+                                items.items,
+                                'movie',
+                                uuid
+                            )
+                        ])
+                    }
+
+                    return items
+                } else {
+                    throw new Error(errorName.UNAUTHORIZED)
+                }
             },
             watchlistMovies: async (
                 parent,
@@ -475,6 +530,62 @@ module.exports = (pgp, db, dbFunctions, functions) => {
                 }
 
                 return items
+            },
+            continueShows: async (
+                parent,
+                { page, lastTime, lastID },
+                context,
+                info
+            ) => {
+                if (context.req.isAuthenticated()) {
+                    const uuid = context.req.user.uuid
+                    let items
+                    const getImages = !!graphqlFields(info).items.images
+                    const getUserData = !!graphqlFields(info).items.user_data
+
+                    try {
+                        items = await functions.general.shows.continue(
+                            uuid,
+                            page,
+                            lastTime,
+                            lastID
+                        )
+                        if (getImages && items.items.length > 0) {
+                            await functions.general.shows.imagesBULK(
+                                items.items
+                            )
+                        }
+                    } catch (err) {
+                        if (err.toString().includes('404')) {
+                            throw new Error(errorName.ITEM_NOT_EXIST)
+                        } else {
+                            throw new Error(errorName.UNKNOWN)
+                        }
+                    }
+
+                    if (
+                        getUserData &&
+                        items &&
+                        items.items &&
+                        items.items.length > 0
+                    ) {
+                        await Promise.all([
+                            // functions.user.watch_data.getShowBULK(
+                            //     items.items,
+                            //     uuid
+                            // ),
+                            functions.user.watchlist_data.getBULK(
+                                items.items,
+                                'show',
+                                uuid
+                            )
+                        ])
+                    }
+
+                    return items
+                } else {
+                    throw new Error(errorName.UNAUTHORIZED)
+                }
             },
             watchlistShows: async (parent, { page, lastID }, context, info) => {
                 if (context.req.isAuthenticated()) {

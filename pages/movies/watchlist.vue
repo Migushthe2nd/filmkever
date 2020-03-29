@@ -15,7 +15,7 @@ export default {
     mixins: [loadResults],
     data() {
         return {
-            title: 'Your Movies Watchlist',
+            title: 'Movies on your watchlist',
             subtitle: 'Ordered by last added',
             mediatype: 'movie',
             displayResultsCount: false,

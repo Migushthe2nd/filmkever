@@ -42,7 +42,6 @@ const canBeIncreased = function(link) {
 }
 
 const originalSize = function(link) {
-    consola.log(link)
     if (link.match('media-amazon.com')) {
         link = link.replace(/@\._.+\./gm, '@.')
     } else if (link.match('fanart')) {
@@ -101,10 +100,10 @@ module.exports = (db, dbFunctions, Trakt) => {
     const functions = {
         user: {
             watch_data: {
-                get: (summary, traktID, mediatype, uuid) => {
+                getOne: (summary, traktID, mediatype, uuid) => {
                     return new Promise((resolve, reject) => {
                         try {
-                            dbFunctions.user.watch_data.get(
+                            dbFunctions.user.watch_data.getOne(
                                 traktID,
                                 mediatype,
                                 uuid,
@@ -221,6 +220,91 @@ module.exports = (db, dbFunctions, Trakt) => {
                         }
                     })
                 },
+                getEpisodeBULK: (seasons, uuid) => {
+                    return new Promise((resolve, reject) => {
+                        try {
+                            dbFunctions.user.watch_data.getEpisodeBULK(
+                                seasons,
+                                uuid,
+                                (error, results) => {
+                                    if (error) throw error
+                                    for (let i = 0; i < seasons.length; i++) {
+                                        for (
+                                            let j = 0;
+                                            j < seasons[i].episodes.length;
+                                            j++
+                                        ) {
+                                            let hasData = false
+                                            for (
+                                                let r = 0;
+                                                r < results.length;
+                                                r++
+                                            ) {
+                                                if (
+                                                    results[r].traktid ===
+                                                    seasons[i].episodes[j].ids
+                                                        .trakt
+                                                ) {
+                                                    hasData = true
+                                                    if (
+                                                        !seasons[i].episodes[j]
+                                                            .user_data
+                                                    ) {
+                                                        seasons[i].episodes[
+                                                            j
+                                                        ].user_data = {}
+                                                    }
+
+                                                    if (
+                                                        !seasons[i].episodes[j]
+                                                            .user_data
+                                                            .watch_data
+                                                    ) {
+                                                        seasons[i].episodes[
+                                                            j
+                                                        ].user_data.watch_data = []
+                                                    }
+
+                                                    seasons[i].episodes[
+                                                        j
+                                                    ].user_data.watch_data.push(
+                                                        results[r]
+                                                    )
+                                                }
+                                            }
+                                            if (!hasData) {
+                                                if (
+                                                    !seasons[i].episodes[j]
+                                                        .user_data
+                                                ) {
+                                                    seasons[i].episodes[
+                                                        j
+                                                    ].user_data = {}
+                                                }
+
+                                                if (
+                                                    !seasons[i].episodes[j]
+                                                        .user_data.watch_data
+                                                ) {
+                                                    seasons[i].episodes[
+                                                        j
+                                                    ].user_data.watch_data = [
+                                                        {
+                                                            finished: null
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        }
+                                    }
+                                    resolve()
+                                }
+                            )
+                        } catch (e) {
+                            consola.error(e)
+                        }
+                    })
+                },
                 set: (uuid, mediatype, traktID, finished, length, position) => {
                     return new Promise((resolve, reject) => {
                         try {
@@ -241,107 +325,13 @@ module.exports = (db, dbFunctions, Trakt) => {
                             consola.error(e)
                         }
                     })
-                },
-                episodes: {
-                    get: (seasons, uuid) => {
-                        return new Promise((resolve, reject) => {
-                            try {
-                                dbFunctions.user.watch_data.episodes.get(
-                                    seasons,
-                                    uuid,
-                                    (error, results) => {
-                                        if (error) throw error
-                                        for (
-                                            let i = 0;
-                                            i < seasons.length;
-                                            i++
-                                        ) {
-                                            for (
-                                                let j = 0;
-                                                j < seasons[i].episodes.length;
-                                                j++
-                                            ) {
-                                                let hasData = false
-                                                for (
-                                                    let r = 0;
-                                                    r < results.length;
-                                                    r++
-                                                ) {
-                                                    if (
-                                                        results[r].traktid ===
-                                                        seasons[i].episodes[j]
-                                                            .ids.trakt
-                                                    ) {
-                                                        hasData = true
-                                                        if (
-                                                            !seasons[i]
-                                                                .episodes[j]
-                                                                .user_data
-                                                        ) {
-                                                            seasons[i].episodes[
-                                                                j
-                                                            ].user_data = {}
-                                                        }
-
-                                                        if (
-                                                            !seasons[i]
-                                                                .episodes[j]
-                                                                .user_data
-                                                                .watch_data
-                                                        ) {
-                                                            seasons[i].episodes[
-                                                                j
-                                                            ].user_data.watch_data = []
-                                                        }
-
-                                                        seasons[i].episodes[
-                                                            j
-                                                        ].user_data.watch_data.push(
-                                                            results[r]
-                                                        )
-                                                    }
-                                                }
-                                                if (!hasData) {
-                                                    if (
-                                                        !seasons[i].episodes[j]
-                                                            .user_data
-                                                    ) {
-                                                        seasons[i].episodes[
-                                                            j
-                                                        ].user_data = {}
-                                                    }
-
-                                                    if (
-                                                        !seasons[i].episodes[j]
-                                                            .user_data
-                                                            .watch_data
-                                                    ) {
-                                                        seasons[i].episodes[
-                                                            j
-                                                        ].user_data.watch_data = [
-                                                            {
-                                                                finished: null
-                                                            }
-                                                        ]
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        resolve()
-                                    }
-                                )
-                            } catch (e) {
-                                consola.error(e)
-                            }
-                        })
-                    }
                 }
             },
             watchlist_data: {
-                get: (summary, traktID, mediatype, uuid) => {
+                getOne: (summary, traktID, mediatype, uuid) => {
                     return new Promise((resolve, reject) => {
                         try {
-                            dbFunctions.user.watchlist_data.get(
+                            dbFunctions.user.watchlist_data.getOne(
                                 traktID,
                                 mediatype,
                                 uuid,
@@ -419,12 +409,55 @@ module.exports = (db, dbFunctions, Trakt) => {
         general: {
             movies: {
                 summary: movieSummary,
+                continue: (uuid, page, lastTime, lastID) => {
+                    return new Promise((resolve, reject) => {
+                        const newItems = {
+                            items: []
+                        }
+                        dbFunctions.user.watch_data.getAll(
+                            'movie',
+                            uuid,
+                            pageSize,
+                            lastTime,
+                            lastID,
+                            (response) => {
+                                const promises = []
+                                for (let i = 0; i < response.length; i++) {
+                                    promises.push(
+                                        movieSummary(response[i].traktid)
+                                    )
+                                }
+
+                                Promise.all(promises).then((results) => {
+                                    for (let i = 0; i < results.length; i++) {
+                                        newItems.items[i] = results[i].data
+                                    }
+
+                                    newItems.pagination = {
+                                        item_count: response.length,
+                                        page,
+                                        page_count:
+                                            response.length === pageSize
+                                                ? null
+                                                : page,
+                                        lastTime: null,
+                                        lastID:
+                                            response.length > 0
+                                                ? response[0].id
+                                                : null
+                                    }
+                                    resolve(newItems)
+                                })
+                            }
+                        )
+                    })
+                },
                 watchlist: (uuid, page, lastID) => {
                     return new Promise((resolve, reject) => {
                         const newItems = {
                             items: []
                         }
-                        dbFunctions.user.watchlist(
+                        dbFunctions.user.watchlist_data.getAll(
                             'movie',
                             uuid,
                             pageSize,
@@ -441,7 +474,6 @@ module.exports = (db, dbFunctions, Trakt) => {
                                     for (let i = 0; i < results.length; i++) {
                                         newItems.items[i] = results[i].data
                                     }
-
                                     newItems.pagination = {
                                         item_count: response.length,
                                         page,
@@ -1388,12 +1420,64 @@ module.exports = (db, dbFunctions, Trakt) => {
             },
             shows: {
                 summary: showSummary,
+                continue: (uuid, page, lastTime, lastID) => {
+                    return new Promise((resolve, reject) => {
+                        const newItems = {
+                            items: []
+                        }
+                        dbFunctions.user.watch_data.getAll(
+                            'show',
+                            uuid,
+                            pageSize,
+                            lastTime,
+                            lastID,
+                            (response) => {
+                                const promises = []
+                                for (let i = 0; i < response.length; i++) {
+                                    promises.push(
+                                        showSummary(response[i].traktid)
+                                    )
+                                }
+
+                                Promise.all(promises).then((results) => {
+                                    for (let i = 0; i < results.length; i++) {
+                                        newItems.items[i] = results[i].data
+                                        newItems.items[i].user_data = {}
+                                        newItems.items[i].user_data.watch_data =
+                                            response[i].watch_data
+                                    }
+
+                                    newItems.pagination = {
+                                        item_count: response.length,
+                                        page,
+                                        page_count:
+                                            response.length === pageSize
+                                                ? null
+                                                : page,
+                                        lastTime:
+                                            response.length > 0
+                                                ? response[response.length - 1]
+                                                      .min_time
+                                                : null,
+                                        lastID:
+                                            response.length > 0
+                                                ? response[response.length - 1]
+                                                      .traktid
+                                                : null
+                                    }
+                                    consola.log(newItems.pagination)
+                                    resolve(newItems)
+                                })
+                            }
+                        )
+                    })
+                },
                 watchlist: (uuid, page, lastID) => {
                     return new Promise((resolve, reject) => {
                         const newItems = {
                             items: []
                         }
-                        dbFunctions.user.watchlist(
+                        dbFunctions.user.watchlist_data.getAll(
                             'show',
                             uuid,
                             pageSize,

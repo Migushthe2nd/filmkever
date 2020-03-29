@@ -15,8 +15,8 @@ export default {
     mixins: [loadResults],
     data() {
         return {
-            title: 'Shows on your watchlist',
-            subtitle: 'Ordered by last added',
+            title: 'Shows you are watching',
+            subtitle: 'Ordered by last modified',
             mediatype: 'show',
             displayResultsCount: false,
             displayItemRank: false,
@@ -33,7 +33,7 @@ export default {
     },
     methods: {
         loadResults() {
-            this.loadWatchlistShows()
+            this.loadContinueShows()
         }
     }
 }
