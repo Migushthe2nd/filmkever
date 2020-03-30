@@ -183,32 +183,17 @@ module.exports = (db, dbFunctions, Trakt) => {
                                     if (error) throw error
                                     for (let i = 0; i < items.length; i++) {
                                         for (
-                                            let r = 0;
-                                            r < sqlData.length;
-                                            r++
+                                            let j = 0;
+                                            j < sqlData.length;
+                                            j++
                                         ) {
                                             if (
-                                                sqlData[r].showid ===
-                                                items[i].ids.trakt
+                                                items[i].ids.trakt ===
+                                                sqlData[j].traktid
                                             ) {
-                                                if (!items[i].user_data) {
-                                                    items[i].user_data = {}
-                                                }
-
-                                                if (
-                                                    !items[i].user_data
-                                                        .watch_data
-                                                ) {
-                                                    items[
-                                                        i
-                                                    ].user_data.watch_data = []
-                                                }
-
-                                                items[
-                                                    i
-                                                ].user_data.watch_data.push(
-                                                    sqlData[r]
-                                                )
+                                                items[i].user_data = {}
+                                                items[i].user_data.watch_data =
+                                                    sqlData[j].watch_data
                                             }
                                         }
                                     }

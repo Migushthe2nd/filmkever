@@ -154,75 +154,38 @@ module.exports = (pgp, db) => {
                 },
                 getShowBULK: async (items, uuid, callback) => {
                     try {
-                        const csEpisodes = new pgp.helpers.ColumnSet(
-                            ['showid'],
-                            {
-                                table: 'trakt_episodes'
-                            }
-                        )
-
                         const valuesEpisodes = []
                         for (let i = 0; i < items.length; i++) {
-                            valuesEpisodes.push({
-                                showid: items[i].ids.trakt
-                            })
+                            valuesEpisodes.push(items[i].ids.trakt)
                         }
 
-                        const queryEpisodes = () =>
-                            pgp.helpers.values(valuesEpisodes, csEpisodes)
-
-                        const episodes = await db.any(
+                        const results = await db.any(
                             `
-                            SELECT rows.showid, rows.traktid, rows.season, rows.episode_number
-                            FROM trakt_episodes rows
-                            JOIN ( 
-                                values${queryEpisodes()}
-                            ) AS l(showid) ON l.showid = rows.showid;
-                        `
-                        )
-
-                        if (episodes.length > 0) {
-                            const cs = new pgp.helpers.ColumnSet(
-                                [
-                                    'uuid',
-                                    'traktid',
-                                    'showid',
-                                    'mediatype',
-                                    'season',
-                                    'episode_number'
-                                ],
-                                {
-                                    table: 'users_watch_data'
-                                }
-                            )
-
-                            const values = []
-                            for (let i = 0; i < episodes.length; i++) {
-                                values.push({
-                                    uuid,
-                                    traktid: episodes[i].traktid,
-                                    showid: episodes[i].showid,
-                                    mediatype: 'episode',
-                                    season: episodes[i].season,
-                                    episode_number: episodes[i].episode_number
-                                })
-                            }
-
-                            const query = () => pgp.helpers.values(values, cs)
-
-                            const results = await db.any(`
-                                SELECT rows.*, l.showid, l.season, l.episode_number, (rows.time_watched IS NOT NULL) as finished
-                                FROM users_watch_data rows
-                                JOIN ( 
-                                    values${query()}
-                                ) AS l(uuid, traktid, showid, mediatype, season, episode_number) ON l.uuid::uuid = rows.uuid AND l.traktid = rows.traktid AND l.mediatype = rows.mediatype
+                                SELECT a.showid as traktid, MAX(b.time_modified) as time_modified,
+                                array_agg(jsonb_build_object(
+                                    'traktid', b.traktid,
+                                    'time_modified', b.time_modified,
+                                    'length', b.length,
+                                    'position', b.position,
+                                    'time_watched', b.time_watched,
+                                    'season', a.season,
+                                    'episode_number', a.episode_number,
+                                    'finished', b.time_watched IS NOT NULL
+                                ) ORDER BY b.time_modified) as watch_data
+                                FROM trakt_episodes a
+                                INNER JOIN users_watch_data b
+                                on a.traktid = b.traktid
+                                WHERE
+                                    b.uuid = $1
+                                    AND b.mediatype = 'episode'
+                                    AND a.showid = ANY ($2)
+                                GROUP BY a.showid
                                 ORDER BY time_modified DESC;
-                            `)
-                            if (results) {
-                                callback(null, results)
-                            } else {
-                                callback(null, [])
-                            }
+                            `,
+                            [uuid, valuesEpisodes]
+                        )
+                        if (results && results.length > 0) {
+                            callback(null, results)
                         } else {
                             callback(null, [])
                         }
