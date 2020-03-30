@@ -1,6 +1,9 @@
 <template>
     <div>
-        <resultsList />
+        <resultsList
+            :items="popularMoviesItems"
+            :load-results="loadPopularMovies"
+        />
     </div>
 </template>
 
@@ -18,17 +21,10 @@ export default {
             title: 'All-Time Popular Movies',
             subtitle: 'The all-time most popular movies',
             mediatype: 'movie',
+            params: {},
             displayResultsCount: true,
             displayItemRank: true,
             autoLoadMoreResults: true
-        }
-    },
-    created() {
-        this.loadResults()
-    },
-    methods: {
-        loadResults() {
-            this.loadPopularMovies()
         }
     }
 }

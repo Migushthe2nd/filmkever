@@ -175,7 +175,8 @@
             <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
             <router-link to="/">
                 <LogoFull
-                    class="logo d-block ml-1 mr-1"
+                    ref="logo"
+                    class="logo d-block mx-2"
                     height="30"
                     width="auto"
                 />
@@ -521,12 +522,16 @@ body {
         filter: blur(8px);
     }
 }
+.logo {
+    transition: 0.3s ease-in-out;
+}
 </style>
 
 <style lang="scss">
 @import '~vuetify/src/styles/styles.sass';
 .logo {
     user-select: none;
+    width: auto;
     fill: map-get($red, 'accent-4');
 }
 </style>

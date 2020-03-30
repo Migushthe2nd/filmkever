@@ -218,6 +218,7 @@ module.exports = gql`
         trendingMovies(page: Int): MoviePage
         boxofficeMovies(page: Int): MoviePage
         popularMovies(page: Int): MoviePage
+        playedMovies(page: Int, period: String): MoviePage
 
         # Shows
         searchShows(page: Int, query: String): ShowPage
@@ -225,6 +226,7 @@ module.exports = gql`
         watchlistShows(page: Int, lastID: Int): ShowPage
         trendingShows(page: Int): ShowPage
         popularShows(page: Int): ShowPage
+        playedShows(page: Int, period: String): ShowPage
     }
 
     type Mutation {

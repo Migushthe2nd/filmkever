@@ -1,6 +1,9 @@
 <template>
     <div>
-        <resultsList />
+        <resultsList
+            :items="trendingMoviesItems"
+            :load-results="loadTrendingMovies"
+        />
     </div>
 </template>
 
@@ -18,17 +21,10 @@ export default {
             title: 'Trending Movies',
             subtitle: 'Movies being watched right now',
             mediatype: 'movie',
+            params: {},
             displayResultsCount: true,
             displayItemRank: true,
             autoLoadMoreResults: true
-        }
-    },
-    created() {
-        this.loadResults()
-    },
-    methods: {
-        loadResults() {
-            this.loadTrendingMovies()
         }
     }
 }

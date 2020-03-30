@@ -1,6 +1,9 @@
 <template>
     <div>
-        <resultsList />
+        <resultsList
+            :items="trendingShowsItems"
+            :load-results="loadTrendingShows"
+        />
     </div>
 </template>
 
@@ -18,17 +21,10 @@ export default {
             title: 'Trending Shows',
             subtitle: 'Shows being watched right now',
             mediatype: 'show',
+            params: {},
             displayResultsCount: true,
             displayItemRank: true,
             autoLoadMoreResults: true
-        }
-    },
-    created() {
-        this.loadResults()
-    },
-    methods: {
-        loadResults() {
-            this.loadTrendingShows()
         }
     }
 }

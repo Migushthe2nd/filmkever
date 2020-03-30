@@ -1,6 +1,9 @@
 <template>
     <div>
-        <resultsList />
+        <resultsList
+            :items="boxofficeMoviesItems"
+            :load-results="loadBoxofficeMovies"
+        />
     </div>
 </template>
 
@@ -19,17 +22,10 @@ export default {
             subtitle:
                 'The top 10 grossing movies in the U.S. box office last weekend',
             mediatype: 'movie',
+            params: {},
             displayResultsCount: false,
             displayItemRank: false,
             autoLoadMoreResults: true
-        }
-    },
-    created() {
-        this.loadResults()
-    },
-    methods: {
-        loadResults() {
-            this.loadBoxofficeMovies()
         }
     }
 }

@@ -832,3 +832,117 @@ query popularShows($page: Int) {
         }
     }
 }
+
+query playedMovies($page: Int, $period: String) {
+    playedMovies(page: $page, period: $period) {
+        pagination {
+            item_count
+            limit
+            page
+            page_count
+        }
+        items {
+            title
+            year
+            ids {
+                trakt
+                slug
+                imdb
+                tmdb
+                tvdb
+            }
+            tagline
+            overview
+            released
+            runtime
+            country
+            updated_at
+            trailer
+            homepage
+            status
+            rating
+            language
+            genres
+            certification
+            images {
+                poster
+                background
+                logo
+            }
+            user_data {
+                watch_data {
+                    finished
+                    time_modified
+                    time_watched
+                    position
+                    length
+                }
+                watchlist_data {
+                    added
+                    time_added
+                }
+            }
+        }
+    }
+}
+
+query playedShows($page: Int, $period: String) {
+    playedShows(page: $page, period: $period) {
+        pagination {
+            item_count
+            limit
+            page
+            page_count
+        }
+        items {
+            title
+            year
+            ids {
+                trakt
+                slug
+                imdb
+                tmdb
+                tvdb
+            }
+            overview
+            first_aired
+            airs {
+                day
+                time
+                timezone
+            }
+            aired_episodes
+            runtime
+            network
+            country
+            updated_at
+            trailer
+            status
+            rating
+            certification
+            language
+            genres
+            images {
+                poster
+                background
+                logo
+            }
+            user_data {
+                watch_data {
+                    finished
+                    traktid
+                    season
+                    episode_number
+                    time_modified
+                    time_watched
+                    position
+                    length
+                }
+                watchlist_data {
+                    added
+                    time_added
+                }
+            }
+        }
+    }
+}

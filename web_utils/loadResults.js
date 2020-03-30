@@ -3,8 +3,20 @@ import queries from '@/web_utils/queries.gql'
 export default {
     data() {
         return {
-            items: [],
             page: 1,
+            searchMoviesItems: [],
+            searchShowsItems: [],
+            continueMoviesItems: [],
+            continueShowsItems: [],
+            watchlistMoviesItems: [],
+            watchlistShowsItems: [],
+            trendingMoviesItems: [],
+            trendingShowsItems: [],
+            boxofficeMoviesItems: [],
+            popularMoviesItems: [],
+            popularShowsItems: [],
+            playedMoviesItems: [],
+            playedShowsItems: [],
             lastID: null,
             lastTime: null,
             resultAmount: null,
@@ -15,7 +27,18 @@ export default {
     methods: {
         clearList() {
             this.page = 1
-            this.items = []
+            this.searchMoviesItems = []
+            this.searchShowsItems = []
+            this.continueMoviesItems = []
+            this.continueShowsItems = []
+            this.watchlistMoviesItems = []
+            this.watchlistShowsItems = []
+            this.trendingMoviesItems = []
+            this.trendingShowsItems = []
+            this.boxofficeMoviesItems = []
+            this.popularMoviesItems = []
+            this.popularShowsItems = []
+
             this.resultAmount = null
         },
         parseErrors(error) {
@@ -52,7 +75,7 @@ export default {
                     } else {
                         this.page++
                     }
-                    this.items = this.items.concat(
+                    this.searchMoviesItems = this.searchMoviesItems.concat(
                         response.data.searchMovies.items
                     )
                 })
@@ -80,7 +103,7 @@ export default {
                     } else {
                         this.page++
                     }
-                    this.items = this.items.concat(
+                    this.searchShowsItems = this.searchShowsItems.concat(
                         response.data.searchShows.items
                     )
                 })
@@ -110,7 +133,7 @@ export default {
                         this.lastTime =
                             response.data.continueMovies.pagination.lastTime
                     }
-                    this.items = this.items.concat(
+                    this.continueMoviesItems = this.continueMoviesItems.concat(
                         response.data.continueMovies.items
                     )
                 })
@@ -143,7 +166,7 @@ export default {
                         this.lastTime =
                             response.data.continueShows.pagination.lastTime
                     }
-                    this.items = this.items.concat(
+                    this.continueShowsItems = this.continueShowsItems.concat(
                         response.data.continueShows.items
                     )
                 })
@@ -173,7 +196,7 @@ export default {
                         this.lastID =
                             response.data.watchlistMovies.pagination.lastID
                     }
-                    this.items = this.items.concat(
+                    this.watchlistMoviesItems = this.watchlistMoviesItems.concat(
                         response.data.watchlistMovies.items
                     )
                 })
@@ -203,7 +226,7 @@ export default {
                         this.lastID =
                             response.data.watchlistShows.pagination.lastID
                     }
-                    this.items = this.items.concat(
+                    this.watchlistShowsItems = this.watchlistShowsItems.concat(
                         response.data.watchlistShows.items
                     )
                 })
@@ -230,7 +253,7 @@ export default {
                     } else {
                         this.page++
                     }
-                    this.items = this.items.concat(
+                    this.trendingMoviesItems = this.trendingMoviesItems.concat(
                         response.data.trendingMovies.items
                     )
                 })
@@ -257,7 +280,7 @@ export default {
                     } else {
                         this.page++
                     }
-                    this.items = this.items.concat(
+                    this.trendingShowsItems = this.trendingShowsItems.concat(
                         response.data.trendingShows.items
                     )
                 })
@@ -285,7 +308,7 @@ export default {
                     } else {
                         this.page++
                     }
-                    this.items = this.items.concat(
+                    this.boxofficeMoviesItems = this.boxofficeMoviesItems.concat(
                         response.data.boxofficeMovies.items
                     )
                 })
@@ -312,7 +335,7 @@ export default {
                     } else {
                         this.page++
                     }
-                    this.items = this.items.concat(
+                    this.popularMoviesItems = this.popularMoviesItems.concat(
                         response.data.popularMovies.items
                     )
                 })
@@ -339,8 +362,64 @@ export default {
                     } else {
                         this.page++
                     }
-                    this.items = this.items.concat(
+                    this.popularShowsItems = this.popularShowsItems.concat(
                         response.data.popularShows.items
+                    )
+                })
+                .catch((error) => {
+                    this.parseErrors(error)
+                })
+        },
+        loadPlayedMovies({ period }) {
+            this.$apollo
+                .query({
+                    query: queries.playedMovies,
+                    variables: {
+                        page: this.page,
+                        period
+                    }
+                })
+                .then((response) => {
+                    this.resultAmount =
+                        response.data.playedMovies.pagination.item_count
+                    if (
+                        response.data.playedMovies.pagination.page_count ===
+                        response.data.playedMovies.pagination.page
+                    ) {
+                        this.limitReached = true
+                    } else {
+                        this.page++
+                    }
+                    this.playedMoviesItems = this.playedMoviesItems.concat(
+                        response.data.playedMovies.items
+                    )
+                })
+                .catch((error) => {
+                    this.parseErrors(error)
+                })
+        },
+        loadPlayedShows({ period }) {
+            this.$apollo
+                .query({
+                    query: queries.playedShows,
+                    variables: {
+                        page: this.page,
+                        period
+                    }
+                })
+                .then((response) => {
+                    this.resultAmount =
+                        response.data.playedShows.pagination.item_count
+                    if (
+                        response.data.playedShows.pagination.page_count ===
+                        response.data.playedShows.pagination.page
+                    ) {
+                        this.limitReached = true
+                    } else {
+                        this.page++
+                    }
+                    this.playedShowsItems = this.playedShowsItems.concat(
+                        response.data.playedShows.items
                     )
                 })
                 .catch((error) => {

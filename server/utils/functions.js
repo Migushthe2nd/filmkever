@@ -528,6 +528,31 @@ module.exports = (db, dbFunctions, Trakt) => {
                         resolve(newItems)
                     })
                 },
+                played: (page, period) => {
+                    return new Promise(async (resolve, reject) => {
+                        const items = await Trakt.client.cached.movies.played({
+                            extended: 'full',
+                            page,
+                            period,
+                            limit: pageSize
+                        })
+                        const newItems = {
+                            items: []
+                        }
+                        for (let i = 0; i < items.data.length; i++) {
+                            newItems.items[i] = items.data[i].movie
+                        }
+                        newItems.pagination = {
+                            item_count: parseInt(
+                                items.pagination['item-count']
+                            ),
+                            limit: items.pagination.limit,
+                            page: items.pagination.page,
+                            page_count: parseInt(items.pagination['page-count'])
+                        }
+                        resolve(newItems)
+                    })
+                },
                 boxoffice: (page) => {
                     return new Promise(async (resolve, reject) => {
                         const items = await Trakt.client.cached.movies.boxoffice(
@@ -1586,6 +1611,31 @@ module.exports = (db, dbFunctions, Trakt) => {
                         }
                         for (let i = 0; i < items.data.length; i++) {
                             newItems.items[i] = items.data[i]
+                        }
+                        newItems.pagination = {
+                            item_count: parseInt(
+                                items.pagination['item-count']
+                            ),
+                            limit: items.pagination.limit,
+                            page: items.pagination.page,
+                            page_count: parseInt(items.pagination['page-count'])
+                        }
+                        resolve(newItems)
+                    })
+                },
+                played: (page, period) => {
+                    return new Promise(async (resolve, reject) => {
+                        const items = await Trakt.client.cached.shows.played({
+                            extended: 'full',
+                            page,
+                            period,
+                            limit: pageSize
+                        })
+                        const newItems = {
+                            items: []
+                        }
+                        for (let i = 0; i < items.data.length; i++) {
+                            newItems.items[i] = items.data[i].show
                         }
                         newItems.pagination = {
                             item_count: parseInt(

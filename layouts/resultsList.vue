@@ -3,7 +3,7 @@
         <h1 class="display-1 font-weight-bold">
             {{ $parent.title }}
             <span
-                v-if="$parent.displayResultsCount && $parent.items.length > 0"
+                v-if="$parent.displayResultsCount && items.length > 0"
                 class="subtitle-1 ms-1"
                 >({{ $parent.resultAmount }} Results)</span
             >
@@ -14,7 +14,7 @@
 
         <v-row dense>
             <v-col
-                v-for="(item, i) in $parent.items"
+                v-for="(item, i) in items"
                 :key="i"
                 cols="12"
                 sm="6"
@@ -33,8 +33,7 @@
                         <div
                             v-if="
                                 $parent.autoLoadMoreResults &&
-                                    i ==
-                                        Object.keys($parent.items).length - 1 &&
+                                    i == Object.keys(items).length - 1 &&
                                     $parent.page !== 1 &&
                                     !$parent.limitReached
                             "
@@ -74,7 +73,13 @@
                                     cover
                                     lazy-src="/images/posterPlaceholder.png"
                                     :src="w154(item.images.poster[0])"
-                                    @error="src = w154(item.images.poster[0])"
+                                    @error="
+                                        src = w154(
+                                            item.images.poster[1]
+                                                ? item.images.poster[1]
+                                                : item.images.poster[0]
+                                        )
+                                    "
                                 />
                                 <LogoShort v-else class="logo" />
                             </v-avatar>
@@ -150,15 +155,28 @@ export default {
         LogoShort
     },
     mixins: [imageFunctions, progressFunctions],
+    props: {
+        items: {
+            type: Array,
+            default: null
+        },
+        loadResults: {
+            type: Function,
+            default: null
+        }
+    },
     computed: {
         error() {
             return this.$parent.error
         }
     },
+    created() {
+        this.loadResults()
+    },
     methods: {
         loadMoreResults(entries, observer, isIntersecting) {
             if (isIntersecting) {
-                this.$parent.loadResults()
+                this.loadResults(this.$parent.params)
             }
         },
         rankColor(i) {

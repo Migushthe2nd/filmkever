@@ -485,6 +485,53 @@ module.exports = (pgp, db, dbFunctions, functions) => {
 
                 return items
             },
+            playedMovies: async (parent, { page, period }, context, info) => {
+                let items
+                const getImages = !!graphqlFields(info).items.images
+                const getUserData = !!graphqlFields(info).items.user_data
+
+                try {
+                    items = await functions.general.movies.played(page, period)
+                    if (
+                        getImages &&
+                        items &&
+                        items.items &&
+                        items.items.length > 0
+                    ) {
+                        await functions.general.movies.imagesBULK(items.items)
+                    }
+                } catch (err) {
+                    if (err.toString().includes('404')) {
+                        throw new Error(errorName.ITEM_NOT_EXIST)
+                    } else {
+                        throw new Error(errorName.UNKNOWN)
+                    }
+                }
+
+                if (
+                    context.req.isAuthenticated() &&
+                    getUserData &&
+                    items &&
+                    items.items &&
+                    items.items.length > 0
+                ) {
+                    const uuid = context.req.user.uuid
+                    await Promise.all([
+                        functions.user.watch_data.getMovieBULK(
+                            items.items,
+                            uuid
+                        ),
+                        functions.user.watchlist_data.getBULK(
+                            items.items,
+                            'movie',
+                            uuid
+                        )
+                    ])
+                }
+
+                return items
+            },
+
             searchShows: async (parent, { page, query }, context, info) => {
                 let items
                 const getImages = !!graphqlFields(info).items.images
@@ -690,6 +737,52 @@ module.exports = (pgp, db, dbFunctions, functions) => {
 
                 try {
                     items = await functions.general.shows.popular(page)
+                    if (
+                        getImages &&
+                        items &&
+                        items.items &&
+                        items.items.length > 0
+                    ) {
+                        await functions.general.shows.imagesBULK(items.items)
+                    }
+                } catch (err) {
+                    if (err.toString().includes('404')) {
+                        throw new Error(errorName.ITEM_NOT_EXIST)
+                    } else {
+                        throw new Error(errorName.UNKNOWN)
+                    }
+                }
+
+                if (
+                    context.req.isAuthenticated() &&
+                    getUserData &&
+                    items &&
+                    items.items &&
+                    items.items.length > 0
+                ) {
+                    const uuid = context.req.user.uuid
+                    await Promise.all([
+                        functions.user.watch_data.getShowBULK(
+                            items.items,
+                            uuid
+                        ),
+                        functions.user.watchlist_data.getBULK(
+                            items.items,
+                            'show',
+                            uuid
+                        )
+                    ])
+                }
+
+                return items
+            },
+            playedShows: async (parent, { page, period }, context, info) => {
+                let items
+                const getImages = !!graphqlFields(info).items.images
+                const getUserData = !!graphqlFields(info).items.user_data
+
+                try {
+                    items = await functions.general.shows.played(page, period)
                     if (
                         getImages &&
                         items &&

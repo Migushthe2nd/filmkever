@@ -1,6 +1,6 @@
 <template>
     <div>
-        <resultsList />
+        <resultsList :items="searchShowsItems" :load-results="loadResults" />
     </div>
 </template>
 
@@ -18,13 +18,11 @@ export default {
         return {
             title: `Show Search Results`,
             mediatype: 'show',
+            params: {},
             displayResultsCount: true,
             displayItemRank: false,
             autoLoadMoreResults: true
         }
-    },
-    created() {
-        this.loadResults()
     },
     methods: {
         loadResults() {

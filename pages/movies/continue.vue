@@ -1,6 +1,9 @@
 <template>
     <div>
-        <resultsList />
+        <resultsList
+            :items="continueMoviesItems"
+            :load-results="loadContinueMovies"
+        />
     </div>
 </template>
 
@@ -18,6 +21,7 @@ export default {
             title: 'Movies you are watching',
             subtitle: 'Ordered by last modified',
             mediatype: 'movie',
+            params: {},
             displayResultsCount: false,
             displayItemRank: false,
             autoLoadMoreResults: true
@@ -26,14 +30,6 @@ export default {
     beforeCreate() {
         if (!this.$store.state.loggedIn) {
             this.$router.replace('/')
-        }
-    },
-    created() {
-        this.loadResults()
-    },
-    methods: {
-        loadResults() {
-            this.loadContinueMovies()
         }
     }
 }
