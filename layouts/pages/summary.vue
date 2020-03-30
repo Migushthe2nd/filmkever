@@ -12,18 +12,22 @@
                 class="px-3 pt-3 pb-3"
             >
                 <v-skeleton-loader
+                    hover
                     class="mx-auto"
                     type="list-item-two-line"
                 ></v-skeleton-loader>
                 <v-skeleton-loader
+                    hover
                     class="mx-auto"
                     type="list-item-two-line"
                 ></v-skeleton-loader>
                 <v-skeleton-loader
+                    hover
                     class="mx-auto"
                     type="list-item-two-line"
                 ></v-skeleton-loader>
                 <v-skeleton-loader
+                    hover
                     class="mx-auto"
                     type="list-item-two-line"
                 ></v-skeleton-loader>
