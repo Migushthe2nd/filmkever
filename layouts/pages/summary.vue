@@ -180,7 +180,32 @@ export default {
                         finished,
                         length,
                         position
-                    }
+                    },
+                    refetchQueries: [
+                        {
+                            query:
+                                this.mediatype === 'movie'
+                                    ? queries.movie
+                                    : queries.show,
+                            variables: {
+                                traktID: this.summary.ids.trakt
+                            }
+                        },
+                        {
+                            query:
+                                this.mediatype === 'movie'
+                                    ? queries.continueMovies
+                                    : queries.continueShows,
+                            variables: { page: 1 }
+                        },
+                        {
+                            query:
+                                this.mediatype === 'movie'
+                                    ? queries.watchlistMovies
+                                    : queries.watchlistShows,
+                            variables: { page: 1 }
+                        }
+                    ]
                 })
                 .catch((error) => {
                     const parsedError = JSON.parse(JSON.stringify(error))

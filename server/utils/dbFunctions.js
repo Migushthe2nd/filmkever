@@ -41,19 +41,19 @@ module.exports = (pgp, db) => {
                             )
                             const results = await db.any(
                                 `
-                                SELECT sub.traktid, MIN(time_modified) as min_time, array_agg(sub.watch_data) as watch_data
+                                SELECT sub.traktid, MIN(time_modified) as min_time, sub.watch_data as watch_data
                                 FROM (
                                     SELECT a.showid as traktid, MAX(b.time_modified) as time_modified,
-                                    json_build_object(
-                                        'traktid', MAX(b.traktid),
-                                        'time_modified', MAX(b.time_modified),
-                                        'length', MAX(b.length),
-                                        'position', MAX(b.position),
-                                        'time_watched', MAX(b.time_watched),
-                                        'season', MAX(a.season),
-                                        'episode_number', MAX(a.episode_number),
-                                        'finished', MAX(b.time_watched) IS NOT NULL
-                                    ) as watch_data
+                                    array_agg(jsonb_build_object(
+                                        'traktid', b.traktid,
+                                        'time_modified', b.time_modified,
+                                        'length', b.length,
+                                        'position', b.position,
+                                        'time_watched', b.time_watched,
+                                        'season', a.season,
+                                        'episode_number', a.episode_number,
+                                        'finished', b.time_watched IS NOT NULL
+                                    ) ORDER BY b.time_modified DESC) as watch_data
                                     FROM trakt_episodes a
                                     INNER JOIN users_watch_data b
                                     on a.traktid = b.traktid
@@ -68,11 +68,10 @@ module.exports = (pgp, db) => {
                                             WHERE b.uuid = $1
                                                 AND b.mediatype = $2
                                                 AND CASE WHEN $4 IS NOT NULL THEN b.time_modified > to_timestamp($4::bigint/1000) ELSE false END
-                                            GROUP BY a.showid
                                         )
                                     GROUP BY a.showid
                                 ) sub
-                                GROUP BY sub.traktid
+                                GROUP BY sub.traktid, sub.watch_data
                                 ORDER BY min_time DESC
                                 LIMIT 12
                                 `,
