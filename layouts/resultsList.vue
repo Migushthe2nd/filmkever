@@ -81,7 +81,11 @@
                                         )
                                     "
                                 />
-                                <LogoShort v-else class="logo" />
+                                <v-img
+                                    v-else
+                                    lazy-src="/images/posterPlaceholder.png"
+                                    src="/images/posterPlaceholder.png"
+                                />
                             </v-avatar>
 
                             <v-flex fluid class="d-flex flex-column">
@@ -145,14 +149,12 @@
 
 <script>
 import Error from '@/layouts/error.vue'
-import LogoShort from '@/assets/images/logo_short.svg'
 import imageFunctions from '@/web_utils/imageFunctions.js'
 import progressFunctions from '@/web_utils/progressFunctions.js'
 
 export default {
     components: {
-        Error,
-        LogoShort
+        Error
     },
     mixins: [imageFunctions, progressFunctions],
     props: {
