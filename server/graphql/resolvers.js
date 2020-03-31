@@ -959,7 +959,8 @@ module.exports = (pgp, db, dbFunctions, functions) => {
                                 context.req.session.passport.user.preferences = args
                                 resolve(true)
                             })
-                        } catch {
+                        } catch (error) {
+                          consola.error(error)
                             resolve(new Error(errorName.UNKNOWN))
                         }
                     })
