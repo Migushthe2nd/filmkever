@@ -62,14 +62,18 @@ passport.use(
                     if (bcryptErr) {
                         done(new Error(errorName.UNKNOWN), null)
                     } else if (bcryptResult) {
-                        done(null, {
+                        const user = {
                             uuid: res.uuid,
                             username: res.username,
                             email: res.email,
                             joined: res.joined,
                             last_logged_in: res.last_logged_in,
                             role: res.role
-                        })
+                        }
+                        if (res.preferences) {
+                            user.preferences = res.preferences
+                        }
+                        done(null, user)
                     } else {
                         done(new Error(errorName.USER_PASSWORD_INCORRECT), null)
                     }

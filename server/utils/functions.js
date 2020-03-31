@@ -1475,7 +1475,6 @@ module.exports = (db, dbFunctions, Trakt) => {
                                                       .traktid
                                                 : null
                                     }
-                                    consola.log(newItems.pagination)
                                     resolve(newItems)
                                 })
                             }

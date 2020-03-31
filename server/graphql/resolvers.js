@@ -949,6 +949,23 @@ module.exports = (pgp, db, dbFunctions, functions) => {
                 } else {
                     throw new Error(errorName.UNAUTHORIZED)
                 }
+            },
+            preferences: (parent, args, context, info) => {
+                if (context.req.isAuthenticated()) {
+                    const uuid = context.req.user.uuid
+                    return new Promise((resolve, reject) => {
+                        try {
+                            dbFunctions.user.preferences.set(uuid, args, () => {
+                                context.req.session.passport.user.preferences = args
+                                resolve(true)
+                            })
+                        } catch {
+                            resolve(new Error(errorName.UNKNOWN))
+                        }
+                    })
+                } else {
+                    throw new Error(errorName.UNAUTHORIZED)
+                }
             }
         }
     }

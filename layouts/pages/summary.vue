@@ -64,6 +64,8 @@ export default {
             seasons: [],
             loader: null,
             sourceFinderSeason: null,
+            sourceFinderEpisode: null,
+            currPlayingTraktID: null,
             displaySourceFinder: false,
             sourceFinderStep: 0,
             isWatchlist: null,
@@ -175,6 +177,7 @@ export default {
             this.windowHeight = window.innerHeight
         },
         mediaProgress(mediatype, traktID, finished, length, position) {
+            console.log('sending position!')
             this.$apollo
                 .mutate({
                     mutation: queries.progress,
@@ -185,31 +188,34 @@ export default {
                         length,
                         position
                     },
-                    refetchQueries: [
-                        {
-                            query:
-                                this.mediatype === 'movie'
-                                    ? queries.movie
-                                    : queries.show,
-                            variables: {
-                                traktID: this.summary.ids.trakt
-                            }
-                        },
-                        {
-                            query:
-                                this.mediatype === 'movie'
-                                    ? queries.continueMovies
-                                    : queries.continueShows,
-                            variables: { page: 1 }
-                        },
-                        {
-                            query:
-                                this.mediatype === 'movie'
-                                    ? queries.watchlistMovies
-                                    : queries.watchlistShows,
-                            variables: { page: 1 }
-                        }
-                    ]
+                    refetchQueries:
+                        !position && position !== 0
+                            ? [
+                                  {
+                                      query:
+                                          this.mediatype === 'movie'
+                                              ? queries.movie
+                                              : queries.show,
+                                      variables: {
+                                          traktID: this.summary.ids.trakt
+                                      }
+                                  },
+                                  {
+                                      query:
+                                          this.mediatype === 'movie'
+                                              ? queries.continueMovies
+                                              : queries.continueShows,
+                                      variables: { page: 1 }
+                                  },
+                                  {
+                                      query:
+                                          this.mediatype === 'movie'
+                                              ? queries.watchlistMovies
+                                              : queries.watchlistShows,
+                                      variables: { page: 1 }
+                                  }
+                              ]
+                            : []
                 })
                 .catch((error) => {
                     const parsedError = JSON.parse(JSON.stringify(error))

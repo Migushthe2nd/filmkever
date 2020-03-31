@@ -1,0 +1,348 @@
+body, html {
+    background-color: black;
+    color: white;
+    letter-spacing: normal !important;
+    overflow-y: hidden;
+}
+
+* {
+    background-repeat: no-repeat;
+    padding: 0;
+    margin: 0;
+    outline: none !important;
+}
+
+#player {
+    overflow: hidden;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    margin: 0px;
+    height: 100%;
+    width: 100%;
+}
+
+.jw-player>* {
+    outline: none !important;
+}
+
+.jw-player>* {
+    outline: none !important;
+}
+
+.jw-nextup {
+    will-change: transform;
+    transition: .25s cubic-bezier(0, .25, .25, 1);
+    transition-property: opacity, visibility;
+    transition-delay: 0s;
+    z-index: 99999;
+    pointer-events: auto;
+    position: absolute;
+    margin: 28px 28px 74px;
+    bottom: 0;
+    right: 0;
+    padding: 1em;
+    background-color: rgba(0, 0, 0, .5);
+    border: 1px solid transparent;
+    border-left: 3px solid red
+}
+
+/* .jw-nextup .next {
+display: flex;
+pointer-events: all
+} */
+
+.jw-nextup:hover {
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    border: 1px solid hsla(0, 0%, 100%, .3);
+    border-left: 3px solid green;
+    cursor: pointer
+}
+
+/* Fit preview image */
+
+.jwplayer .jw-preview, .jw-error .jw-preview {
+    background-size: cover !important;
+}
+
+/* Controls shadow overlay
+.jw-controls-info-backdrop {
+display: block;
+background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4) 77%, rgba(0,0,0,0.4) 100%) 100% 100% / 100% 240px no-repeat transparent !important;
+transition: opacity 250ms cubic-bezier(0, .25, .25, 1),background-size 250ms cubic-bezier(0, .25, .25, 1);
+pointer-events: none;
+} */
+
+/* Custom icons */
+
+/* .jw-svg-icon-rewind path {	
+display: none;
+fill: #FFFFFFcc
+}
+.jw-svg-icon-rewind {
+background-image: url('https://fonts.gstatic.com/s/i/materialicons/replay_10/v2/24px.svg');
+background-size: contain;
+background-repeat: no-repeat;
+filter: invert(80%);
+} */
+
+/* Remove playlist icon */
+
+.jw-related-btn, .jw-icon-next {
+    display: none !important;
+}
+
+/* episode info*/
+
+/* Hide metadata */
+
+.jw-flag-controls-hidden .player-episode-info, .jw-flag-ads-vpaid .player-episode-info, .jw-flag-user-inactive.jw-state-playing .player-episode-info, .jw-flag-user-inactive.jw-state-buffering .player-episode-info {
+    visibility: hidden;
+    pointer-events: none;
+    opacity: 0;
+    transition-delay: 0s, 250ms;
+}
+
+.player-episode-info {
+    will-change: transform;
+    transition: .25s cubic-bezier(0, .25, .25, 1);
+    transition-property: opacity, visibility;
+    transition-delay: 0s;
+    pointer-events: none;
+    position: absolute;
+    width: 50%;
+    display: flex;
+    align-items: flex-start;
+    text-align: left
+}
+
+.player-episode-info .title-info {
+    position: absolute;
+    padding: 2.1875vw;
+    top: 0;
+    left: 0;
+    text-shadow: 0 0 8px #000
+}
+
+.player-episode-info {
+    top: 0;
+    border-left: 2px solid red
+}
+
+.text-no-wrap, .text-truncate {
+    white-space: nowrap !important
+}
+
+.text-truncate {
+    overflow: visible !important;
+    text-overflow: ellipsis !important;
+    line-height: 1.1 !important
+}
+
+.display-1, .headline {
+    font-weight: bold;
+    letter-spacing: normal !important;
+}
+
+.headline {
+    font-size: 2.5vw;
+}
+
+.subheading {
+    font-size: 1.6666vw;
+    font-weight: normal;
+}
+
+@media screen and (min-width: 1280px) {
+    .player-episode-info .title-info {
+        padding: 28px;
+    }
+    .headline {
+        font-size: 32px;
+    }
+    .subheading {
+        font-size: 21.3333px;
+    }
+}
+
+.text-uppercase {
+    text-transform: uppercase !important
+}
+
+/* Rightnav */
+
+/* Hide icons */
+
+.jw-flag-controls-hidden .player-episode-rightnav, .jw-flag-ads-vpaid .player-episode-rightnav, .jw-flag-user-inactive.jw-state-playing .player-episode-rightnav, .jw-flag-user-inactive.jw-state-buffering .player-episode-rightnav {
+    visibility: hidden;
+    pointer-events: none;
+    opacity: 0;
+    transition-delay: 0s, 250ms;
+}
+
+.player-episode-rightnav {
+    pointer-events: auto;
+    top: 0;
+    right: 0;
+    text-align: center !important;
+    padding: 1.5em;
+    position: absolute;
+    width: 88px;
+    display: inline-table;
+}
+
+@media screen and (max-width: 1280px) {
+    .player-episode-rightnav {
+        padding: 0.5em;
+        width: 40px;
+    }
+}
+
+.layout {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: nowrap;
+    min-width: 0;
+}
+
+.layout.row {
+    flex-direction: row;
+}
+
+.layout.wrap {
+    flex-wrap: wrap;
+}
+
+.child-flex>*, .flex {
+    flex: 1 1 auto;
+    max-width: 100%;
+}
+
+/* button styling rightnav */
+
+.material-icons {
+    color: #fff !important;
+    caret-color: #fff !important;
+}
+
+button, input, optgroup, select, textarea {
+    font: inherit;
+}
+
+button {
+    overflow: visible;
+}
+
+button, input, select, textarea {
+    background-color: transparent;
+    border-style: none;
+    color: inherit;
+}
+
+.white--text {
+    color: #fff !important;
+    caret-color: #fff !important;
+}
+
+[role=button], [type=button], [type=reset], [type=submit], button {
+    cursor: pointer;
+}
+
+.v-btn {
+    align-items: center;
+    border-radius: 2px;
+    display: inline-flex;
+    height: 36px;
+    flex: 0 0 auto;
+    font-size: 14px;
+    font-weight: 500;
+    justify-content: center;
+    margin: 6px 8px;
+    min-width: 88px;
+    outline: 0;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: .3s cubic-bezier(.25, .8, .5, 1), color 1ms;
+    position: relative;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.v-btn--small {
+    font-size: 13px;
+    height: 28px;
+    padding: 0 8px;
+}
+
+.v-btn--icon {
+    background: 0 0;
+    box-shadow: none !important;
+    border-radius: 50%;
+    justify-content: center;
+    min-width: 0;
+    width: 36px;
+    padding: 0;
+}
+
+[type=reset], [type=submit], button, html [type=button] {
+    -webkit-appearance: button;
+}
+
+.v-btn--icon.v-btn--small {
+    width: 28px;
+}
+
+.v-btn__content {
+    align-items: center;
+    border-radius: inherit;
+    color: inherit;
+    display: flex;
+    flex: 1 0 auto;
+    justify-content: center;
+    margin: 0 auto;
+    position: relative;
+    transition: .3s cubic-bezier(.25, .8, .5, 1);
+    white-space: nowrap;
+    width: inherit;
+}
+
+.v-icon {
+    align-items: center;
+    display: inline-flex;
+    font-feature-settings: "liga";
+    font-size: 24px;
+    justify-content: center;
+    line-height: 1;
+    transition: .3s cubic-bezier(.25, .8, .5, 1);
+    vertical-align: text-bottom;
+}
+
+.v-btn .v-btn__content .v-icon {
+    color: inherit;
+    text-shadow: 0 0 8px #000;
+}
+
+.upload-sub {
+    color: inherit;
+    background-color: transparent;
+    padding: 0;
+    margin: 0;
+    width: inherit;
+    float: none;
+    /* font-family: Arial,Helvetica,sans-serif; */
+    font-size: 1em;
+    line-height: 1em;
+    list-style: none;
+    text-transform: none;
+    vertical-align: baseline;
+    border: 0;
+    font-variant: inherit;
+    font-stretch: inherit;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+}

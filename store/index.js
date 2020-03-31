@@ -1,6 +1,17 @@
 export const state = () => ({
     loggedIn: false,
-    user: null,
+    user: {
+        uuid: null,
+        username: null,
+        email: null,
+        joined: null,
+        last_logged_in: null,
+        role: null,
+        preferences: {
+            // Defaults here
+            finishPercentage: 80
+        }
+    },
     searchQuery: null,
     currSearchType: null,
 
@@ -11,7 +22,7 @@ export const state = () => ({
 export const mutations = {
     SET_USER(state, user) {
         state.loggedIn = true
-        state.user = user
+        Object.assign(state.user, user)
     },
     REMOVE_USER(state) {
         state.loggedIn = false

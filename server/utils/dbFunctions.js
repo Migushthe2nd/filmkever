@@ -3,6 +3,27 @@ const consola = require('consola')
 module.exports = (pgp, db) => {
     return {
         user: {
+            preferences: {
+                set: async (uuid, preferencesJSON, callback) => {
+                    try {
+                        const results = await db.oneOrNone(
+                            `
+                            UPDATE users
+                            SET preferences = $2
+                            WHERE uuid = $1
+                        `,
+                            [uuid, JSON.stringify(preferencesJSON)]
+                        )
+                        if (results) {
+                            callback(null, results)
+                        } else {
+                            callback(null, null)
+                        }
+                    } catch (error) {
+                        consola.error(error)
+                    }
+                }
+            },
             watch_data: {
                 getAll: async (
                     mediatype,
@@ -32,13 +53,6 @@ module.exports = (pgp, db) => {
                                 callback(null)
                             }
                         } else if (mediatype === 'show') {
-                            consola.log(
-                                mediatype,
-                                uuid,
-                                pageSize,
-                                lastTime,
-                                lastID
-                            )
                             const results = await db.any(
                                 `
                                 SELECT sub.traktid, MIN(time_modified) as min_time, sub.watch_data as watch_data
@@ -84,7 +98,6 @@ module.exports = (pgp, db) => {
                                 ]
                             )
                             if (results) {
-                                consola.log(results)
                                 callback(results)
                             } else {
                                 callback(null)
@@ -171,7 +184,7 @@ module.exports = (pgp, db) => {
                                     'season', a.season,
                                     'episode_number', a.episode_number,
                                     'finished', b.time_watched IS NOT NULL
-                                ) ORDER BY b.time_modified) as watch_data
+                                ) ORDER BY b.time_modified DESC) as watch_data
                                 FROM trakt_episodes a
                                 INNER JOIN users_watch_data b
                                 on a.traktid = b.traktid
@@ -240,10 +253,6 @@ module.exports = (pgp, db) => {
                     callback
                 ) => {
                     try {
-                        let timeWatched = null
-                        if (finished) {
-                            timeWatched = Date.now()
-                        }
                         if (finished === false) {
                             const results = await db.none(
                                 `
@@ -271,7 +280,8 @@ module.exports = (pgp, db) => {
     
                                 UPDATE users_watch_data
                                 SET time_modified = NOW(), 
-                                    time_watched = to_timestamp($4),
+                                
+                                    time_watched = CASE WHEN $4 THEN NOW() END,
                                     length = $5, position = $6
                                 WHERE uuid = $1
                                     AND mediatype = $2
@@ -282,7 +292,7 @@ module.exports = (pgp, db) => {
                                     uuid,
                                     mediatype,
                                     traktID,
-                                    timeWatched,
+                                    finished,
                                     length,
                                     position
                                 ]

@@ -135,8 +135,20 @@
                         class="mt-2"
                         color="primary"
                         @click="
+                            $parent.currPlayingTraktID =
+                                $parent.mediatype === 'movie'
+                                    ? summary.ids.trakt
+                                    : $parent.mediatype === 'show'
+                                    ? summary.user_data.watch_data[0].traktid
+                                    : null
+                            $parent.sourceFinderEpisode =
+                                $parent.mediatype === 'show'
+                                    ? summary.user_data.watch_data[0].episode
+                                    : null
                             $parent.sourceFinderSeason =
-                                summary.user_data.watch_data[0].season
+                                $parent.mediatype === 'show'
+                                    ? summary.user_data.watch_data[0].season
+                                    : null
                             $parent.displaySourceFinder = true
                         "
                     >
@@ -157,7 +169,16 @@
                         class="mt-2"
                         color="primary"
                         @click="
-                            $parent.sourceFinderSeason = 1
+                            $parent.currPlayingTraktID =
+                                $parent.mediatype === 'movie'
+                                    ? summary.ids.trakt
+                                    : $parent.mediatype === 'show'
+                                    ? $parent.seasons[0].episodes[0].ids.trakt
+                                    : null
+                            $parent.sourceFinderEpisode =
+                                $parent.mediatype === 'show' ? 1 : null
+                            $parent.sourceFinderSeason =
+                                $parent.mediatype === 'show' ? 1 : null
                             $parent.displaySourceFinder = true
                         "
                     >
@@ -171,7 +192,16 @@
                         class="mt-2"
                         color="primary"
                         @click="
-                            $parent.sourceFinderSeason = 1
+                            $parent.currPlayingTraktID =
+                                $parent.mediatype === 'movie'
+                                    ? summary.ids.trakt
+                                    : $parent.mediatype === 'show'
+                                    ? $parent.seasons[0].episodes[0].ids.trakt
+                                    : null
+                            $parent.sourceFinderEpisode =
+                                $parent.mediatype === 'show' ? 1 : null
+                            $parent.sourceFinderSeason =
+                                $parent.mediatype === 'show' ? 1 : null
                             $parent.displaySourceFinder = true
                         "
                     >

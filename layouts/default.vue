@@ -100,20 +100,20 @@
                             </v-list-item-subtitle>
                         </v-list-item-content>
                     </template>
-                    <v-list-item dense router exact to="/account">
+                    <!-- <v-list-item dense router exact to="/account">
                         <v-list-item-title>Profile</v-list-item-title>
                         <v-list-item-icon>
                             <v-icon>mdi-face</v-icon>
                         </v-list-item-icon>
-                    </v-list-item>
-                    <v-list-item dense router exact to="/party">
+                    </v-list-item> -->
+                    <!-- <v-list-item dense router exact to="/party">
                         <v-list-item-title>Party</v-list-item-title>
                         <v-list-item-icon>
                             <v-icon>mdi-account-group</v-icon>
                         </v-list-item-icon>
-                    </v-list-item>
-                    <v-list-item dense router exact to="/account/settings">
-                        <v-list-item-title>Settings</v-list-item-title>
+                    </v-list-item> -->
+                    <v-list-item dense router exact to="/account/preferences">
+                        <v-list-item-title>Preferences</v-list-item-title>
                         <v-list-item-icon>
                             <v-icon>mdi-account-cog</v-icon>
                         </v-list-item-icon>
@@ -159,7 +159,7 @@
                     </v-flex>
                 </v-layout>
             </v-list>
-            <v-divider />
+            <v-divider class="hidden-md-and-up" />
             <v-list nav>
                 <v-list-group
                     v-for="type in types"

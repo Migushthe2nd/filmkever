@@ -69,6 +69,9 @@
                                                     episode.user_data &&
                                                         episode.user_data
                                                             .watch_data &&
+                                                        !episode.user_data
+                                                            .watch_data[0]
+                                                            .finished &&
                                                         episode.user_data
                                                             .watch_data[0]
                                                             .position > 0
@@ -210,6 +213,10 @@
                                             "
                                             color="primary"
                                             @click="
+                                                $parent.currPlayingTraktID =
+                                                    episode.ids.trakt
+                                                $parent.sourceFinderEpisode =
+                                                    episode.number
                                                 $parent.sourceFinderSeason =
                                                     season.number
                                                 $parent.displaySourceFinder = true
@@ -231,6 +238,10 @@
                                             "
                                             color="primary"
                                             @click="
+                                                $parent.currPlayingTraktID =
+                                                    episode.ids.trakt
+                                                $parent.sourceFinderEpisode =
+                                                    episode.number
                                                 $parent.sourceFinderSeason =
                                                     season.number
                                                 $parent.displaySourceFinder = true
@@ -245,6 +256,10 @@
                                             v-else
                                             color="primary"
                                             @click="
+                                                $parent.currPlayingTraktID =
+                                                    episode.ids.trakt
+                                                $parent.sourceFinderEpisode =
+                                                    episode.number
                                                 $parent.sourceFinderSeason =
                                                     season.number
                                                 $parent.displaySourceFinder = true
@@ -393,6 +408,10 @@
                             "
                             color="primary"
                             @click="
+                                $parent.currPlayingTraktID =
+                                    episodeSummary.ids.trakt
+                                $parent.sourceFinderEpisode =
+                                    episodeSummary.number
                                 $parent.sourceFinderSeason =
                                     episodeSummary.season
                                 $parent.displaySourceFinder = true
@@ -415,6 +434,10 @@
                             "
                             color="primary"
                             @click="
+                                $parent.currPlayingTraktID =
+                                    episodeSummary.ids.trakt
+                                $parent.sourceFinderEpisode =
+                                    episodeSummary.number
                                 $parent.sourceFinderSeason =
                                     episodeSummary.season
                                 $parent.displaySourceFinder = true
@@ -429,6 +452,10 @@
                             v-else
                             color="primary"
                             @click="
+                                $parent.currPlayingTraktID =
+                                    episodeSummary.ids.trakt
+                                $parent.sourceFinderEpisode =
+                                    episodeSummary.number
                                 $parent.sourceFinderSeason =
                                     episodeSummary.season
                                 $parent.displaySourceFinder = true
