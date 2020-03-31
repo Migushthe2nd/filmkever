@@ -342,6 +342,7 @@
                             :src="w1280(image)"
                             :lazy-src="w92(image)"
                             height="100%"
+                            position="0% 20%"
                         />
                     </v-carousel-item>
                 </v-carousel>
