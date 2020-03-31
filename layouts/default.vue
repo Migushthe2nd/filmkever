@@ -14,6 +14,26 @@
             <!-- <img
                 src="https://i.pinimg.com/originals/bb/b8/8e/bbb88ec618f806c87a7c4b0230bcdbb4.jpg"
             /> -->
+            <div class="waveWrapper waveAnimation">
+                <div class="waveWrapperInner bgTop">
+                    <div
+                        class="wave waveTop"
+                        style="background-image: url('/images/wave-top.png')"
+                    ></div>
+                </div>
+                <div class="waveWrapperInner bgMiddle">
+                    <div
+                        class="wave waveMiddle"
+                        style="background-image: url('/images/wave-mid.png')"
+                    ></div>
+                </div>
+                <div class="waveWrapperInner bgBottom">
+                    <div
+                        class="wave waveBottom"
+                        style="background-image: url('/images/wave-bot.png')"
+                    ></div>
+                </div>
+            </div>
         </div>
 
         <v-navigation-drawer
@@ -107,6 +127,39 @@
                 </v-list-group>
             </v-list>
             <v-divider />
+            <v-list class="pa-0">
+                <v-layout hidden-md-and-up>
+                    <v-flex xs12>
+                        <form @submit.prevent="submitSearch()">
+                            <v-text-field
+                                v-model="searchQuery"
+                                autocomplete="off"
+                                style="border-radius: 0;"
+                                append-icon="mdi-magnify"
+                                hide-details
+                                flat
+                                required
+                                label="Search"
+                                solo-inverted
+                            >
+                            </v-text-field>
+                        </form>
+                    </v-flex>
+                    <v-flex class="searchTypeSelector">
+                        <v-select
+                            v-model="currSearchType"
+                            :items="searchTypes"
+                            :menu-props="{ offsetY: true }"
+                            style="border-radius: 0;"
+                            flat
+                            label="Type"
+                            hide-details
+                            solo
+                        ></v-select>
+                    </v-flex>
+                </v-layout>
+            </v-list>
+            <v-divider />
             <v-list nav>
                 <v-list-group
                     v-for="type in types"
@@ -124,8 +177,14 @@
                     </template>
                     <template v-for="page in type.pages">
                         <v-list-item
-                            v-if="needsAuth(page)"
                             :key="page.title"
+                            :disabled="
+                                page.needsAuth
+                                    ? $store.state.loggedIn
+                                        ? false
+                                        : true
+                                    : false
+                            "
                             :prepend-icon="page.icon"
                             link
                             router
@@ -466,7 +525,10 @@ export default {
             }
         },
         submitSearch() {
-            if (!this.$route.path.includes('/search')) {
+            if (
+                !this.$route.path.includes('/search') ||
+                this.$vuetify.breakpoint.mdAndDown
+            ) {
                 this.$store.commit(
                     'UPDATE_SEARCHTYPE_QUERY',
                     this.currSearchType
@@ -496,11 +558,14 @@ body {
 </style>
 
 <style lang="scss" scoped>
+@import '~vuetify/src/styles/styles.sass';
+
 .background-wrapper {
     width: 100%;
     height: 100%;
-    position: absolute;
+    position: fixed;
     overflow: hidden;
+    z-index: 0;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -524,6 +589,79 @@ body {
 }
 .logo {
     transition: 0.3s ease-in-out;
+}
+
+@keyframes move_wave {
+    0% {
+        transform: translateX(0) translateZ(0) scaleY(1);
+    }
+    50% {
+        transform: translateX(-25%) translateZ(0) scaleY(0.55);
+    }
+    100% {
+        transform: translateX(-50%) translateZ(0) scaleY(1);
+    }
+}
+.waveWrapper {
+    overflow: hidden;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    margin: auto;
+}
+.waveWrapperInner {
+    position: absolute;
+    width: 100%;
+    overflow: hidden;
+    height: 100%;
+    bottom: -1px;
+    background: transparent;
+    // background-image: linear-gradient(
+    //     to top,
+    //     map-get($red, 'accent-4') 20%,
+    //     map-get($material-dark, 'background') 80%
+    // );
+}
+.bgTop {
+    z-index: 15;
+    opacity: 0.5;
+}
+.bgMiddle {
+    z-index: 10;
+    opacity: 0.75;
+}
+.bgBottom {
+    z-index: 5;
+}
+.wave {
+    position: absolute;
+    left: 0;
+    width: 200%;
+    height: 100%;
+    background-repeat: repeat no-repeat;
+    background-position: 0 bottom;
+    transform-origin: center bottom;
+}
+.waveTop {
+    background-size: 50% 120px;
+}
+.waveAnimation .waveTop {
+    animation: move-wave 3s;
+    animation-delay: 1s;
+}
+.waveMiddle {
+    background-size: 50% 140px;
+}
+.waveAnimation .waveMiddle {
+    animation: move_wave 10s linear infinite;
+}
+.waveBottom {
+    background-size: 50% 120px;
+}
+.waveAnimation .waveBottom {
+    animation: move_wave 15s linear infinite;
 }
 </style>
 
