@@ -1,7 +1,5 @@
 // import graphql from 'graphql'
 const { createServer } = require('http')
-const { execute, subscribe } = 'graphql'
-const { SubscriptionServer } = require('subscriptions-transport-ws')
 const consola = require('consola')
 const express = require('express')
 const app = express()
