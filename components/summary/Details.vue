@@ -102,19 +102,21 @@
                 </div>
 
                 <v-divider class="mx-4 my-2"></v-divider>
-                <v-flex
-                    v-if="displayProgress(summary, $parent.isWatchlist)"
-                    class="mx-4 mt-2"
-                >
-                    <v-progress-linear
-                        :value="progressValue(summary, $parent.mediatype)"
-                        height="20"
-                        rounded
-                        class="subtitle-2 text-capitalize font-weight-regular"
+                <v-fade-transition>
+                    <v-flex
+                        v-if="displayProgress(summary, $parent.isWatchlist)"
+                        class="mx-4 mt-2"
                     >
-                        {{ progressText(summary, $parent.mediatype) }}
-                    </v-progress-linear>
-                </v-flex>
+                        <v-progress-linear
+                            :value="progressValue(summary, $parent.mediatype)"
+                            height="20"
+                            rounded
+                            class="subtitle-2 text-capitalize font-weight-regular"
+                        >
+                            {{ progressText(summary, $parent.mediatype) }}
+                        </v-progress-linear>
+                    </v-flex>
+                </v-fade-transition>
 
                 <div class="text-center">
                     <v-btn
