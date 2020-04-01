@@ -118,6 +118,9 @@
                                             stuff)</span
                                         >
                                     </v-tooltip>
+                                    <v-list-item-subtitle v-if="source.message">
+                                        {{ source.message }}
+                                    </v-list-item-subtitle>
                                 </v-list-item-title>
                                 <v-list-item-subtitle>
                                     <v-tooltip
@@ -411,6 +414,7 @@ export default {
             sources: [
                 {
                     name: 'MovieFiles',
+                    message: 'Most new movies',
                     native: true,
                     movie: true,
                     show: false,
@@ -442,7 +446,8 @@ export default {
                     ]
                 },
                 {
-                    name: 'FilePursuit (many!)',
+                    name: 'FilePursuit (A lot!)',
+                    message: 'Source is undergoing issues',
                     native: true,
                     movie: true,
                     show: true,
@@ -471,6 +476,7 @@ export default {
                 },
                 {
                     name: 'Bia2HD',
+                    message: 'Could be a Persian dub',
                     native: true,
                     movie: true,
                     show: true,
