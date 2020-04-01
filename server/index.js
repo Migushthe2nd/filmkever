@@ -1,7 +1,11 @@
 // import graphql from 'graphql'
+const { createServer } = require('http')
+const { execute, subscribe } = 'graphql'
+const { SubscriptionServer } = require('subscriptions-transport-ws')
 const consola = require('consola')
 const express = require('express')
 const app = express()
+const { ApolloServer } = require('apollo-server-express')
 const session = require('express-session')
 const PgSession = require('connect-pg-simple')(session)
 const { Nuxt, Builder } = require('nuxt')
@@ -12,7 +16,6 @@ const joinMonsterAdapt = require('join-monster-graphql-tools-adapter')
 const bcrypt = require('bcryptjs')
 const { makeExecutableSchema } = require('graphql-tools')
 // const { importSchema } = require('graphql-import')
-const graphqlHTTP = require('express-graphql')
 const passport = require('passport')
 const { GraphQLLocalStrategy, buildContext } = require('graphql-passport')
 const config = require('../nuxt.config.js')
@@ -31,19 +34,8 @@ const typeDefs = require('./graphql/typeDefs')
 const { errorName, errorType } = require('./utils/errorTypes')
 const getErrorCode = (errorName) => errorType[errorName]
 
-app.use(
-    session({
-        store: new PgSession({
-            pgPromise: db,
-            tableName: 'sessions'
-        }),
-        secret: process.env.SESSION_SECRET,
-        resave: false,
-        saveUninitialized: false,
-        // cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 } // 30 days
-        cookie: { expires: new Date(253402300000000) } // 30 days
-    })
-)
+// Listen the server
+// app.listen(port, host)
 
 passport.use(
     new GraphQLLocalStrategy((email, password, done) => {
@@ -100,17 +92,76 @@ passport.deserializeUser((user, done) => {
     )
 })
 
+app.use(
+    session({
+        store: new PgSession({
+            pgPromise: db,
+            tableName: 'sessions'
+        }),
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
+        // cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 } // 30 days
+        cookie: { expires: new Date(253402300000000) } // 2099
+    })
+)
+
 app.use(passport.initialize())
 app.use(passport.session())
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
+
+const schema = makeExecutableSchema({
+    typeDefs,
+    resolvers
+})
+
+const server = new ApolloServer({
+    // Options: https://www.apollographql.com/docs/apollo-server/api/apollo-server/
+    schema,
+    context: ({ req, res }) => buildContext({ req, res }),
+    playground: {
+        settings: {
+            'request.credentials': 'same-origin'
+        }
+    },
+    subscriptions: {
+        path: '/subscription'
+    },
+    formatError: (err) => {
+        consola.error(err.message)
+        let error = ''
+
+        if (getErrorCode(err.message)) {
+            error = getErrorCode(err.message)
+        } else if (err.message.includes('Cannot query field')) {
+            const fieldREGEX = /".*?"/
+            // const typeREGEX = /".+"/
+            error = getErrorCode('INVALID_FIELD')(
+                fieldREGEX.exec(err.message)[0].replace(/"/g, ''),
+                ''
+            )
+        } else {
+            error = getErrorCode('UNKNOWN')
+        }
+        return {
+            message: error.message,
+            statusCode: error.statusCode
+        }
+    }
+})
+
+server.applyMiddleware({ app, path: '/api' })
+
+const httpServer = createServer(app)
+server.installSubscriptionHandlers(httpServer)
 
 // Import and Set Nuxt.js options
 config.dev = process.env.NODE_ENV !== 'production'
 consola.log(process.env.APP_TITLE)
 
 // build webpages?
-const buildWeb = true
+const buildWeb = false
 
 async function start() {
     // Init Nuxt.js
@@ -124,26 +175,7 @@ async function start() {
         await builder.build()
     }
 
-    const schema = makeExecutableSchema({
-        typeDefs,
-        resolvers
-    })
-
     joinMonsterAdapt(schema, joinMonsterMetadata)
-
-    const extensions = ({
-        document,
-        variables,
-        operationName,
-        result,
-        context
-    }) => {
-        return config.dev
-            ? {
-                  runTime: Date.now() - context.startTime
-              }
-            : null
-    }
 
     app.get('/logout', function(req, res) {
         req.logout()
@@ -228,44 +260,6 @@ async function start() {
     //     )
     // })
 
-    app.use(
-        '/api',
-        graphqlHTTP((req, res) => {
-            return {
-                schema,
-                context: buildContext({ req, res }),
-                // context: ({ req, res }) => {
-                //     return buildContext({ req, res })
-                //     // startTime: Date.now()
-                // },
-                graphiql: true,
-                pretty: true,
-                customFormatErrorFn: (err) => {
-                    consola.error(err.message)
-                    let error = ''
-
-                    if (getErrorCode(err.message)) {
-                        error = getErrorCode(err.message)
-                    } else if (err.message.includes('Cannot query field')) {
-                        const fieldREGEX = /".*?"/
-                        // const typeREGEX = /".+"/
-                        error = getErrorCode('INVALID_FIELD')(
-                            fieldREGEX.exec(err.message)[0].replace(/"/g, ''),
-                            ''
-                        )
-                    } else {
-                        error = getErrorCode('UNKNOWN')
-                    }
-                    return {
-                        message: error.message,
-                        statusCode: error.statusCode
-                    }
-                },
-                extensions
-            }
-        })
-    )
-
     app.get('/logout', function(req, res) {
         req.logout()
         req.session.destroy()
@@ -275,11 +269,15 @@ async function start() {
     // Give nuxt middleware to express
     app.use(nuxt.render)
 
-    // Listen the server
-    app.listen(port, host)
-    consola.ready({
-        message: `Server listening on http://${host}:${port}`,
-        badge: true
+    httpServer.listen({ port, host }, () => {
+        consola.ready({
+            message: `🚀 Server ready at http://${host}:${port}${server.graphqlPath}`,
+            badge: true
+        })
+        consola.ready({
+            message: `🚀 Subscriptions ready at http://${host}:${port}${server.subscriptionsPath}`,
+            badge: true
+        })
     })
 }
 start()

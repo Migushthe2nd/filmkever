@@ -101,10 +101,9 @@ module.exports = {
         clientConfigs: {
             default: {
                 httpEndpoint: process.env.VUE_APP_httpEndpoint,
-                wsEndpoint: null
                 // // You can use `wss` for secure connection (recommended in production)
                 // // Use `null` to disable subscriptions
-                // wsEndpoint: 'ws://localhost:4000', // optional
+                wsEndpoint: process.env.VUE_APP_wsEndpoint // optional
                 // // Use websockets for everything (no HTTP)
                 // // You need to pass a `wsEndpoint` for this to work
                 // websocketsOnly: false // Optional
