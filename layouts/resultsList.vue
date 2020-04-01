@@ -142,8 +142,9 @@
                     </v-card>
                 </v-hover>
             </v-col>
-            <v-fade-transition>
-                <v-container v-if="loading" class="text-center">
+
+            <v-container class="text-center">
+                <v-fade-transition v-if="loading">
                     <v-progress-circular
                         v-model="loading"
                         color="white"
@@ -151,8 +152,17 @@
                         size="64"
                     >
                     </v-progress-circular>
-                </v-container>
-            </v-fade-transition>
+                </v-fade-transition>
+
+                <v-fade-transition>
+                    <h3 v-if="empty && items.length === 0" pt-5>
+                        It's empty here
+                        <v-icon large>
+                            mdi-bookshelf
+                        </v-icon>
+                    </h3>
+                </v-fade-transition>
+            </v-container>
         </v-row>
         <Error v-if="error" />
     </v-container>
@@ -180,7 +190,8 @@ export default {
     },
     data() {
         return {
-            loading: true
+            loading: true,
+            empty: false
         }
     },
     computed: {
@@ -190,7 +201,14 @@ export default {
     },
     created() {
         if (!this.$parent.limitReached) this.loading = true
-        this.loadResults(null, () => {})
+        this.loadResults(null, () => {
+            if (this.$parent.limitReached) {
+                this.loading = false
+                setTimeout(() => {
+                    this.empty = true
+                }, 500)
+            }
+        })
     },
     methods: {
         loadMoreResults(entries, observer, isIntersecting) {

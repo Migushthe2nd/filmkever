@@ -5786,7 +5786,7 @@ window.jwplayer = function(e) {
     t.default = re
 }]).default;
 
-
+// Key: https://content.jwplatform.com/libraries/QpLbHLbV.js
 var jwDefaults = {
     "aspectratio": "16:9",
     "autostart": true,
@@ -5795,12 +5795,12 @@ var jwDefaults = {
     "displaytitle": true,
     "flashplayer": "//ssl.p.jwpcdn.com/player/v/8.13.0/jwplayer.flash.swf",
     "height": 260,
-    "key": "JPMnHE9KYtM/L5XyzKjkasQaVNSJyCLwWjO7K/fSVcNUsIPCXFg/kMBbX/i9Sqac",
+    "key": "PLXM2avU1nZmc8BFw7IAQjrMZmCPysRFYMo0mSKqP7cLn1ZW3I3i5Q==",
     "mute": false,
     "ph": 1,
     "pid": "wr6i4gal",
     "playbackRateControls": false,
-    "preload": "metadata",
+    "preload": "auto",
     "repeat": false,
     "stagevideo": false,
     "stretching": "uniform",

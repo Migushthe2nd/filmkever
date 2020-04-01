@@ -587,7 +587,8 @@ export default {
             playerConfig: null,
             sourceConfig: null,
             hidden: null,
-            visibilityChange: null
+            visibilityChange: null,
+            lastPosition: null
         }
     },
     computed: {
@@ -677,28 +678,38 @@ export default {
             this.userInputDLLink = null
             this.playerConfig = null
             this.sourceConfig = null
+            this.lastPosition = null
         },
         receiveMessage(event) {
             if (event.origin !== 'null') return
 
+            const sendPosition = () => {
+                this.$parent.mediaProgress(
+                    this.$parent.mediatype === 'movie' ? 'movie' : 'episode',
+                    this.$parent.currPlayingTraktID,
+                    (event.data.position / event.data.length) * 100 >
+                        this.$store.state.user.preferences.finishPercentage
+                        ? true
+                        : null,
+                    event.data.length,
+                    event.data.position
+                )
+                this.lastPosition = event.data.position
+            }
+
             switch (event.data.name) {
                 case 'position':
                     if (this.$store.state.loggedIn) {
-                        this.$parent.mediaProgress(
-                            this.$parent.mediatype === 'movie'
-                                ? 'movie'
-                                : 'episode',
-                            this.$parent.currPlayingTraktID,
-
-                            (event.position / event.length) * 100 >
-                                this.$store.state.user.preferences
-                                    .finishPercentage
-                                ? true
-                                : null,
-                            event.data.length,
-                            event.data.position
-                        )
+                        if (
+                            this.selectedSource.name === 'MovieFiles' &&
+                            event.data.position > this.lastPosition
+                        ) {
+                            sendPosition()
+                        } else {
+                            sendPosition()
+                        }
                     }
+                    break
             }
         },
         findTraktID(episodeNr) {
@@ -815,12 +826,23 @@ export default {
             }
 
             let starttime = null
-            if (
+            if (this.lastPosition) {
+                starttime = this.lastPosition
+            } else if (
                 this.$parent.summary.user_data &&
                 this.$parent.summary.user_data.watch_data &&
                 this.$parent.summary.user_data.watch_data.length > 0
             ) {
-                starttime = this.$parent.summary.user_data.watch_data.position
+                if (this.$parent.mediatype === 'movie') {
+                    starttime = this.$parent.summary.user_data.watch_data[0]
+                        .position
+                } else if (
+                    this.$parent.summary.user_data.watch_data[0].traktid ===
+                    this.$parent.currPlayingTraktID
+                ) {
+                    starttime = this.$parent.summary.user_data.watch_data[0]
+                        .position
+                }
             }
 
             const vttURLS = []
@@ -845,12 +867,15 @@ export default {
                 playlist: [
                     {
                         file: process.env.APP_HOST + '/media/intro.mp4',
-                        type: 'mp4'
+                        type: 'mp4',
+                        starttime: 5
                     },
                     {
                         sources: [
                             {
-                                file: videoUrl,
+                                // file: videoUrl,
+                                file:
+                                    'https://file-examples.com/wp-content/uploads/2017/04/file_example_MP4_1920_18MG.mp4',
                                 type: 'mp4',
                                 default: true
                             }

@@ -217,6 +217,126 @@ export default {
                               ]
                             : []
                 })
+                .then(() => {
+                    if (this.mediatype === 'movie') {
+                        if (!this.summary.user_data.watch_data) {
+                            this.summary.user_data.watch_data = []
+                        }
+                        if (
+                            this.summary.user_data.watch_data.length > 0 &&
+                            !this.summary.user_data.watch_data[0].finished
+                        ) {
+                            this.summary.user_data.watch_data[0] = {
+                                finished,
+                                length,
+                                position,
+                                time_modified: Date.now(),
+                                time_watched: finished ? Date.now() : null
+                            }
+                        } else {
+                            this.summary.user_data.watch_data.unshift({
+                                finished,
+                                length,
+                                position,
+                                time_modified: Date.now(),
+                                time_watched: finished ? Date.now() : null
+                            })
+                        }
+                    } else {
+                        let totalEpisode = 1
+                        let isFound = false
+                        for (let i = 0; i < this.seasons.length; i++) {
+                            for (
+                                let j = 0;
+                                j < this.seasons[i].episodes.length;
+                                j++
+                            ) {
+                                if (
+                                    this.seasons[i].episodes[j].ids.trakt ===
+                                    this.currPlayingTraktID
+                                ) {
+                                    if (
+                                        !this.seasons[i].episodes[j].user_data
+                                            .watch_data
+                                    ) {
+                                        this.seasons[i].episodes[
+                                            j
+                                        ].user_data.watch_data = []
+                                    }
+                                    if (
+                                        this.seasons[i].episodes[j].user_data
+                                            .watch_data.length > 0 &&
+                                        !this.seasons[i].episodes[j].user_data
+                                            .watch_data[0].finished
+                                    ) {
+                                        this.seasons[i].episodes[
+                                            j
+                                        ].user_data.watch_data[0] = {
+                                            episode_number: totalEpisode,
+                                            finished,
+                                            length,
+                                            position,
+                                            season: this.sourceFinderSeason,
+                                            time_modified: Date.now(),
+                                            time_watched: finished
+                                                ? Date.now()
+                                                : null,
+                                            traktid: this.currPlayingTraktID
+                                        }
+                                    } else {
+                                        this.seasons[i].episodes[
+                                            j
+                                        ].user_data.watch_data.unshift({
+                                            finished,
+                                            length,
+                                            position,
+                                            time_modified: Date.now(),
+                                            time_watched: finished
+                                                ? Date.now()
+                                                : null
+                                        })
+                                    }
+                                    isFound = true
+                                } else if (
+                                    !isFound &&
+                                    this.seasons[i].number !== 0
+                                ) {
+                                    totalEpisode++
+                                }
+                            }
+                        }
+
+                        if (!this.summary.user_data.watch_data) {
+                            this.summary.user_data.watch_data = []
+                        }
+                        if (
+                            this.summary.user_data.watch_data.length > 0 &&
+                            !this.summary.user_data.watch_data[0].finished
+                        ) {
+                            this.summary.user_data.watch_data[0] = {
+                                episode_number: totalEpisode,
+                                finished,
+                                length,
+                                position,
+                                season: this.sourceFinderSeason,
+                                time_modified: Date.now(),
+                                time_watched: finished ? Date.now() : null,
+                                traktid: this.currPlayingTraktID
+                            }
+                        } else {
+                            this.summary.user_data.watch_data.unshift({
+                                episode_number: totalEpisode,
+                                finished,
+                                length,
+                                position,
+                                season: this.sourceFinderSeason,
+                                time_modified: Date.now(),
+                                time_watched: finished ? Date.now() : null,
+                                traktid: this.currPlayingTraktID
+                            })
+                        }
+                    }
+                })
                 .catch((error) => {
                     const parsedError = JSON.parse(JSON.stringify(error))
                     if (
