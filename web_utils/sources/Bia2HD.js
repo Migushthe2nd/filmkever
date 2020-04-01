@@ -53,10 +53,12 @@ export default {
                         } else {
                             this.sourceSnackbarNoResults()
                         }
+                        this.loading = false
                     }
                 })
                 .catch(() => {
                     this.sourceSnackbarErrorResults()
+                    this.loading = false
                 })
         },
         qualityBia2HD(index) {
@@ -169,9 +171,11 @@ export default {
                     } else {
                         this.sourceSnackbarNoResults()
                     }
+                    this.loading = false
                 })
                 .catch(() => {
                     this.sourceSnackbarErrorResults()
+                    this.loading = false
                 })
         },
         itemsBia2HD(index) {
@@ -183,9 +187,11 @@ export default {
                 this.itemsResponse = this.qualityResponse[index].episodes
                 this.$parent.sourceFinderStep = 2
             }
+            this.loading = false
         },
         playlistBia2HD(index) {
             this.makeIframePlayer(this.itemsResponse[index].url)
+            this.loading = false
         }
     }
 }

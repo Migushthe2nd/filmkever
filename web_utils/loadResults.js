@@ -55,7 +55,7 @@ export default {
                     .replace('GraphQL error: ', '')
             }
         },
-        loadSearchMovies(query) {
+        loadSearchMovies(query, callback) {
             this.$apollo
                 .query({
                     query: queries.searchMovies,
@@ -78,12 +78,14 @@ export default {
                     this.searchMoviesItems = this.searchMoviesItems.concat(
                         response.data.searchMovies.items
                     )
+                    callback()
                 })
                 .catch((error) => {
                     this.parseErrors(error)
+                    callback()
                 })
         },
-        loadSearchShows(query) {
+        loadSearchShows(query, callback) {
             this.$apollo
                 .query({
                     query: queries.searchShows,
@@ -106,12 +108,14 @@ export default {
                     this.searchShowsItems = this.searchShowsItems.concat(
                         response.data.searchShows.items
                     )
+                    callback()
                 })
                 .catch((error) => {
                     this.parseErrors(error)
+                    callback()
                 })
         },
-        loadContinueMovies() {
+        loadContinueMovies(params, callback) {
             this.$apollo
                 .query({
                     query: queries.continueMovies,
@@ -136,12 +140,14 @@ export default {
                     this.continueMoviesItems = this.continueMoviesItems.concat(
                         response.data.continueMovies.items
                     )
+                    callback()
                 })
                 .catch((error) => {
                     this.parseErrors(error)
+                    callback()
                 })
         },
-        loadContinueShows() {
+        loadContinueShows(params, callback) {
             this.$apollo
                 .query({
                     query: queries.continueShows,
@@ -169,12 +175,14 @@ export default {
                     this.continueShowsItems = this.continueShowsItems.concat(
                         response.data.continueShows.items
                     )
+                    callback()
                 })
                 .catch((error) => {
                     this.parseErrors(error)
+                    callback()
                 })
         },
-        loadWatchlistMovies() {
+        loadWatchlistMovies(params, callback) {
             this.$apollo
                 .query({
                     query: queries.watchlistMovies,
@@ -199,12 +207,14 @@ export default {
                     this.watchlistMoviesItems = this.watchlistMoviesItems.concat(
                         response.data.watchlistMovies.items
                     )
+                    callback()
                 })
                 .catch((error) => {
                     this.parseErrors(error)
+                    callback()
                 })
         },
-        loadWatchlistShows() {
+        loadWatchlistShows(params, callback) {
             this.$apollo
                 .query({
                     query: queries.watchlistShows,
@@ -229,12 +239,14 @@ export default {
                     this.watchlistShowsItems = this.watchlistShowsItems.concat(
                         response.data.watchlistShows.items
                     )
+                    callback()
                 })
                 .catch((error) => {
                     this.parseErrors(error)
+                    callback()
                 })
         },
-        loadTrendingMovies() {
+        loadTrendingMovies(params, callback) {
             this.$apollo
                 .query({
                     query: queries.trendingMovies,
@@ -256,12 +268,14 @@ export default {
                     this.trendingMoviesItems = this.trendingMoviesItems.concat(
                         response.data.trendingMovies.items
                     )
+                    callback()
                 })
                 .catch((error) => {
                     this.parseErrors(error)
+                    callback()
                 })
         },
-        loadTrendingShows() {
+        loadTrendingShows(params, callback) {
             this.$apollo
                 .query({
                     query: queries.trendingShows,
@@ -283,12 +297,14 @@ export default {
                     this.trendingShowsItems = this.trendingShowsItems.concat(
                         response.data.trendingShows.items
                     )
+                    callback()
                 })
                 .catch((error) => {
                     this.parseErrors(error)
+                    callback()
                 })
         },
-        loadBoxofficeMovies() {
+        loadBoxofficeMovies(params, callback) {
             this.$apollo
                 .query({
                     query: queries.boxofficeMovies,
@@ -311,12 +327,14 @@ export default {
                     this.boxofficeMoviesItems = this.boxofficeMoviesItems.concat(
                         response.data.boxofficeMovies.items
                     )
+                    callback()
                 })
                 .catch((error) => {
                     this.parseErrors(error)
+                    callback()
                 })
         },
-        loadPopularMovies() {
+        loadPopularMovies(params, callback) {
             this.$apollo
                 .query({
                     query: queries.popularMovies,
@@ -338,12 +356,14 @@ export default {
                     this.popularMoviesItems = this.popularMoviesItems.concat(
                         response.data.popularMovies.items
                     )
+                    callback()
                 })
                 .catch((error) => {
                     this.parseErrors(error)
+                    callback()
                 })
         },
-        loadPopularShows() {
+        loadPopularShows(params, callback) {
             this.$apollo
                 .query({
                     query: queries.popularShows,
@@ -365,12 +385,14 @@ export default {
                     this.popularShowsItems = this.popularShowsItems.concat(
                         response.data.popularShows.items
                     )
+                    callback()
                 })
                 .catch((error) => {
                     this.parseErrors(error)
+                    callback()
                 })
         },
-        loadPlayedMovies({ period }) {
+        loadPlayedMovies({ period }, callback) {
             this.$apollo
                 .query({
                     query: queries.playedMovies,
@@ -393,12 +415,14 @@ export default {
                     this.playedMoviesItems = this.playedMoviesItems.concat(
                         response.data.playedMovies.items
                     )
+                    callback()
                 })
                 .catch((error) => {
                     this.parseErrors(error)
+                    callback()
                 })
         },
-        loadPlayedShows({ period }) {
+        loadPlayedShows({ period }, callback) {
             this.$apollo
                 .query({
                     query: queries.playedShows,
@@ -421,9 +445,11 @@ export default {
                     this.playedShowsItems = this.playedShowsItems.concat(
                         response.data.playedShows.items
                     )
+                    callback()
                 })
                 .catch((error) => {
                     this.parseErrors(error)
+                    callback()
                 })
         }
     }

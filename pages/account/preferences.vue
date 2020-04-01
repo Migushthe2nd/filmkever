@@ -1,5 +1,38 @@
 <template>
     <v-container v-if="$store.state.loggedIn">
+        <v-fade-transition>
+            <v-overlay v-model="loading">
+                <v-flex>
+                    <v-progress-circular
+                        color="primary"
+                        indeterminate
+                        size="64"
+                    >
+                        <v-icon
+                            v-if="doneLoading"
+                            :color="msg === 'ok' ? 'success' : 'error'"
+                            large
+                        >
+                            {{ msg === 'ok' ? 'mdi-check' : 'mdi-close' }}
+                        </v-icon>
+                    </v-progress-circular>
+                </v-flex>
+                <v-snackbar
+                    v-model="doneLoading"
+                    bottom
+                    :timeout="0"
+                    :color="msg === 'ok' ? 'green' : 'error'"
+                >
+                    {{
+                        msg === 'ok'
+                            ? 'Success! Reloading now...'
+                            : error
+                            ? error
+                            : 'An error occurred...'
+                    }}
+                </v-snackbar>
+            </v-overlay>
+        </v-fade-transition>
         <v-layout column justify-center pa-3>
             <v-flex mt-5 xs12>
                 <v-layout row wrap>
@@ -55,27 +88,18 @@
                     </template>
                 </v-list-item> -->
                 </v-list>
-                <v-flex mt-5>
+                <v-flex mt-3>
                     <v-layout>
                         <v-spacer />
-                        <v-tooltip
-                            top
-                            :open-on-hover="false"
-                            :disabled="submitNotification() ? false : true"
-                            :value="submitNotification() ? true : false"
-                        >
-                            <template v-slot:activator="{ on }">
-                                <v-btn
-                                    color="primary"
-                                    depressed
-                                    :loading="loading"
-                                    v-on="on"
-                                    @click="savePreferences()"
-                                    >Save changes
-                                </v-btn>
-                            </template>
-                            <span>{{ submitNotification() }}</span>
-                        </v-tooltip>
+                        <template>
+                            <v-btn
+                                color="primary"
+                                depressed
+                                :loading="loading"
+                                @click="savePreferences()"
+                                >Save changes
+                            </v-btn>
+                        </template>
                     </v-layout>
                 </v-flex>
             </v-flex>
@@ -114,11 +138,13 @@ import queries from '@/web_utils/queries.gql'
 export default {
     data() {
         return {
-            error: '',
+            error: null,
             preferences: this.$store.state.loggedIn
                 ? JSON.parse(JSON.stringify(this.$store.state.user.preferences))
                 : null,
-            loading: false
+            loading: false,
+            doneLoading: false,
+            msg: null
         }
     },
     beforeMount() {
@@ -137,14 +163,19 @@ export default {
                     }
                 })
                 .then((response) => {
-                    this.loading = false
-                    this.$router.push({ query: { msg: 'success' } })
+                    this.msg = 'ok'
+                    this.doneLoading = true
                     setTimeout(() => {
                         this.$router.go()
                     }, 2800)
                 })
                 .catch((error) => {
-                    this.loading = false
+                    this.msg = 'nok'
+                    this.doneLoading = true
+                    setTimeout(() => {
+                        this.loading = false
+                        this.doneLoading = false
+                    }, 2800)
                     const parsedError = JSON.parse(JSON.stringify(error))
                     if (
                         parsedError.graphQLErrors &&
@@ -156,12 +187,6 @@ export default {
                         this.error = thisError.message
                     }
                 })
-        },
-        submitNotification() {
-            setTimeout(() => {
-                this.$router.push({ query: {} })
-            }, 3000)
-            if (this.$route.query.msg === 'success') return 'Success!'
         }
     }
 }

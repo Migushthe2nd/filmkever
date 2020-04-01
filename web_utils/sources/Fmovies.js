@@ -66,10 +66,12 @@ export default {
                         } else {
                             this.sourceSnackbarNoResults()
                         }
+                        this.loading = false
                     }
                 })
                 .catch(() => {
                     this.sourceSnackbarErrorResults()
+                    this.loading = false
                 })
         },
         itemsFmovies(index) {
@@ -107,9 +109,11 @@ export default {
                     } else {
                         this.sourceSnackbarNoResults()
                     }
+                    this.loading = false
                 })
                 .catch(() => {
                     this.sourceSnackbarErrorResults()
+                    this.loading = false
                 })
         },
         playlistFmovies(index) {
@@ -190,15 +194,18 @@ export default {
                                     } else {
                                         self.sourceSnackbarErrorResults()
                                     }
+                                    this.loading = false
                                 }
                             })
                             .catch(() => {
                                 self.sourceSnackbarErrorResults()
+                                this.loading = false
                             })
                     }, 400)
                 })
                 .catch(() => {
                     this.sourceSnackbarErrorResults()
+                    this.loading = false
                 })
         }
     }

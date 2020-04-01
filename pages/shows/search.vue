@@ -25,11 +25,14 @@ export default {
         }
     },
     methods: {
-        loadResults() {
+        loadResults(callback) {
             if (this.$store.state.searchQuery) {
                 this.loadSearchShows(
                     this.$store.state.searchQuery ||
-                        decodeURIComponent(this.$route.query.s)
+                        decodeURIComponent(this.$route.query.s),
+                    () => {
+                        callback()
+                    }
                 )
             }
         },

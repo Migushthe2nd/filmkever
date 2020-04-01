@@ -78,6 +78,7 @@ export default {
                 .catch(() => {
                     this.sourceSnackbarErrorResults()
                 })
+            this.loading = false
         },
         itemsSoap2Day(index) {
             let url
@@ -99,6 +100,7 @@ export default {
                 } else {
                     this.sourceSnackbarNoResults()
                 }
+                this.loading = false
             } else if (this.$parent.mediatype === 'show') {
                 url =
                     'https://soap2day.to/tv_' +
@@ -141,9 +143,11 @@ export default {
                             } else {
                                 this.sourceSnackbarNoResults()
                             }
+                            this.loading = false
                         })
                         .catch(() => {
                             this.sourceSnackbarErrorResults()
+                            this.loading = false
                         })
                 }, 1000)
             }
@@ -228,9 +232,11 @@ export default {
                             playlist,
                             referer: self.itemsResponse[index].url
                         }
+                        this.loading = false
                     })
                     .catch(() => {
                         this.sourceSnackbarErrorResults()
+                        this.loading = false
                     })
             }, 400)
         }

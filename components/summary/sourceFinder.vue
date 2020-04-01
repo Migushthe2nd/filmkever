@@ -53,6 +53,18 @@
                     class="text-center"
                     :vertical="false"
                 >
+                    <v-fade-transition>
+                        <v-overlay v-model="loading" absolute>
+                            <v-flex>
+                                <v-progress-circular
+                                    color="primary"
+                                    indeterminate
+                                    size="64"
+                                >
+                                </v-progress-circular>
+                            </v-flex>
+                        </v-overlay>
+                    </v-fade-transition>
                     <v-window-item :value="0">
                         <v-list>
                             <v-list-item
@@ -60,6 +72,7 @@
                                 v-show="source[$parent.mediatype]"
                                 :key="source.name"
                                 @click="
+                                    loading = true
                                     selectedSource = source
                                     selectedSource !== source
                                         ? resetPlayerData()
@@ -122,6 +135,7 @@
                                     :elevation="hover ? 16 : null"
                                     class="ma-2"
                                     @click="
+                                        loading = true
                                         selectedSource.qualityFunction(index)
                                     "
                                 >
@@ -177,7 +191,10 @@
                                         quality.size +
                                         quality.group || null
                                 "
-                                @click="selectedSource.itemsFunction(index)"
+                                @click="
+                                    loading = true
+                                    selectedSource.itemsFunction(index)
+                                "
                             >
                                 <v-list-item-title>
                                     {{ quality.quality }}
@@ -205,6 +222,7 @@
                                     :key="item.name"
                                     class="ma-1"
                                     @click="
+                                        loading = true
                                         findTraktID(item.name)
                                         selectedSource.playlistFunction(index)
                                     "
@@ -366,6 +384,7 @@ export default {
             useUserInput: false,
             userInputDLLink: null,
             windowIsFocussed: true,
+            loading: false,
             sources: [
                 {
                     name: 'MovieFiles',

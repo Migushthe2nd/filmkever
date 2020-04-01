@@ -11,6 +11,12 @@
             </v-flex>
         </v-layout>
         <v-layout grouped row wrap>
+            <v-fade-transition>
+                <v-container v-if="loading" class="text-center">
+                    <v-progress-circular color="white" indeterminate size="64">
+                    </v-progress-circular>
+                </v-container>
+            </v-fade-transition>
             <v-flex
                 v-for="item in $parent[row.items]"
                 :key="item.ids.trakt"
@@ -88,7 +94,8 @@ export default {
     },
     data() {
         return {
-            anyHovered: false
+            anyHovered: false,
+            loading: false
         }
     },
     computed: {
@@ -97,11 +104,15 @@ export default {
         }
     },
     created() {
+        this.loading = true
         this.loadResults()
     },
     methods: {
         loadResults() {
-            this.row.loadResultsFunction(this.row.params)
+            this.loading = true
+            this.row.loadResultsFunction(this.row.params, () => {
+                this.loading = false
+            })
         }
     }
 }

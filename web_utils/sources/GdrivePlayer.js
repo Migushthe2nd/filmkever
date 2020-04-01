@@ -21,6 +21,7 @@ export default {
                 !this.$parent.summary.ids.tmdb
             ) {
                 this.sourceSnackbarNoResults()
+                this.loading = false
             } else if (this.$parent.mediatype === 'movie') {
                 this.iframeIsLoading = true
                 this.playerIframeSource =
@@ -28,12 +29,14 @@ export default {
                     this.$parent.summary.ids.imdb
                 this.displayPlayerIframe = true
                 this.$parent.displaySourceFinder = false
+                this.loading = false
             } else if (this.$parent.mediatype === 'show') {
                 let seasonsAmount = 0
                 let seasonString = null
 
                 if (this.$parent.sourceFinderSeason === 0) {
                     this.sourceSnackbarNoResults()
+                    this.loading = false
                 } else {
                     for (let i = 0; i < this.$parent.seasons.length; i++) {
                         if (this.$parent.seasons[i].number !== 0) {
@@ -75,8 +78,10 @@ export default {
                                 if (resultsArray.length > 0) {
                                     this.searchResponse = resultsArray
                                     this.$parent.sourceFinderStep++
+                                    this.loading = false
                                 } else {
                                     this.sourceSnackbarNoResults()
+                                    this.loading = false
                                 }
                             } else {
                                 if (seasonsAmount > 10) {
@@ -129,14 +134,17 @@ export default {
                                         } else {
                                             this.sourceSnackbarNoResults()
                                         }
+                                        this.loading = false
                                     })
                                     .catch(() => {
                                         this.sourceSnackbarErrorResults()
+                                        this.loading = false
                                     })
                             }
                         })
                         .catch(() => {
                             this.sourceSnackbarErrorResults()
+                            this.loading = false
                         })
                 }
             }
@@ -168,16 +176,18 @@ export default {
                     } else {
                         this.sourceSnackbarNoResults()
                     }
+                    this.loading = false
                 })
                 .catch(() => {
                     this.sourceSnackbarErrorResults()
+                    this.loading = false
                 })
         },
         playlistGdrivePlayer(index) {
             this.iframeIsLoading = true
             this.playerIframeSource = this.itemsResponse[index].url
             this.displayPlayerIframe = true
-            this.$parent.displaySourceFinder = false
+            this.loading = false
         }
     }
 }

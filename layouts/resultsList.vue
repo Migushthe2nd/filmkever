@@ -1,5 +1,5 @@
 <template>
-    <v-container :class="{ 'mb-12': !$parent.limitReached }">
+    <v-container>
         <h1 class="display-1 font-weight-bold">
             {{ $parent.title }}
             <span
@@ -142,6 +142,17 @@
                     </v-card>
                 </v-hover>
             </v-col>
+            <v-fade-transition>
+                <v-container v-if="loading" class="text-center">
+                    <v-progress-circular
+                        v-model="loading"
+                        color="white"
+                        indeterminate
+                        size="64"
+                    >
+                    </v-progress-circular>
+                </v-container>
+            </v-fade-transition>
         </v-row>
         <Error v-if="error" />
     </v-container>
@@ -167,18 +178,26 @@ export default {
             default: null
         }
     },
+    data() {
+        return {
+            loading: true
+        }
+    },
     computed: {
         error() {
             return this.$parent.error
         }
     },
     created() {
-        this.loadResults()
+        if (!this.$parent.limitReached) this.loading = true
+        this.loadResults(null, () => {})
     },
     methods: {
         loadMoreResults(entries, observer, isIntersecting) {
             if (isIntersecting) {
-                this.loadResults(this.$parent.params)
+                this.loadResults(this.$parent.params, () => {
+                    if (this.$parent.limitReached) this.loading = false
+                })
             }
         },
         rankColor(i) {

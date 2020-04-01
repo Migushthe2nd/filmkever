@@ -37,7 +37,8 @@ export default {
                     },
                     autoLoadMoreResults: false,
                     loadResultsFunction: this.loadPlayedMovies,
-                    items: 'playedMoviesItems'
+                    items: 'playedMoviesItems',
+                    loading: true
                 },
                 {
                     title: 'Most played shows',
@@ -48,7 +49,8 @@ export default {
                     },
                     autoLoadMoreResults: false,
                     loadResultsFunction: this.loadPlayedShows,
-                    items: 'playedShowsItems'
+                    items: 'playedShowsItems',
+                    loading: true
                 }
             ]
         }

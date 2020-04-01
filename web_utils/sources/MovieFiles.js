@@ -23,6 +23,7 @@ export default {
                 encodeURIComponent(searchQuery.replace(/[^a-zA-Z \d.]/gm, ''))
             this.useUserInput = true
             this.displayPlayerIframe = true
+            this.loading = false
         }
     }
 }

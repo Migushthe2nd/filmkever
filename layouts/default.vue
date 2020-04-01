@@ -649,7 +649,7 @@ body {
 }
 .waveAnimation .waveTop {
     animation: move-wave 3s;
-    animation-delay: 1s;
+    animation-delay: 2s;
 }
 .waveMiddle {
     background-size: 50% 140px;
