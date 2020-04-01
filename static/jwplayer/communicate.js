@@ -1,15 +1,26 @@
-playerInstance.on('ready', function () {
+playerInstance.on('ready', function() {
     $('.jw-slider-time').css('display', 'none')
     $('.jw-text-elapsed').css('visibility', 'hidden')
     $('.jw-text-duration').css('visibility', 'hidden')
-    //Add playerinfo
-    $('<div></div>', { 'class': 'player-episode-info' })
-        .append($('<div></div>', { 'class': 'title-info' })
-            .append($('<h4></h4>', { 'class': 'headline text-truncate', 'html': metadata.title }))
-            .append($('<h5></h5>', { 'class': 'subheading text-truncate', 'html': metadata.subtitle }))
+    // Add playerinfo
+    $('<div></div>', { class: 'player-episode-info' })
+        .append(
+            $('<div></div>', { class: 'title-info' })
+                .append(
+                    $('<h4></h4>', {
+                        class: 'headline text-truncate',
+                        html: metadata.title
+                    })
+                )
+                .append(
+                    $('<h5></h5>', {
+                        class: 'subheading text-truncate',
+                        html: metadata.subtitle
+                    })
+                )
         )
         .prependTo('.jw-controls.jw-reset')
-    //Add upper right buttons
+    // Add upper right buttons
     // $('<div></div>', { 'class': 'player-episode-rightnav' })
     //     .append($('<div></div>', { 'class': 'layout row wrap' })
     //         .append($('<div></div>', { 'class': 'flex btn-group' })
@@ -23,28 +34,31 @@ playerInstance.on('ready', function () {
     //         )
     //     )
     //     .prependTo('.jw-controls.jw-reset')
-});
+})
 
-playerInstance.once('play', function () {
+playerInstance.once('play', function() {
     $('.jw-icon-rewind').css('display', 'none')
-    playerInstance.on('playlistItem', function () {
+    playerInstance.on('playlistItem', function() {
         $('.jw-slider-time').css('display', 'flex')
         $('.jw-icon-rewind').css('display', 'flex')
         $('.jw-text-elapsed').css('visibility', 'unset')
         $('.jw-text-duration').css('visibility', 'unset')
-        playerInstance.once('play', function () {
+        playerInstance.once('play', function() {
             // if (metadata.userdata.position) {
             //     playerInstance.seek(parseFloat(metadata.userdata.position))
             // }
-            window.setInterval(function () {
+            window.setInterval(function() {
                 if (playerInstance.getState() === 'playing') {
-                    parent.postMessage({ 
-                        name: 'position',
-                        length: Math.floor(playerInstance.getDuration()),
-                        position: Math.floor(playerInstance.getPosition())
-                    }, APP_HOST)
+                    parent.postMessage(
+                        {
+                            name: 'position',
+                            length: Math.floor(playerInstance.getDuration()),
+                            position: Math.floor(playerInstance.getPosition())
+                        },
+                        APP_HOST
+                    )
                 }
-            }, 5000);
+            }, 5000)
         })
     })
-});
+})

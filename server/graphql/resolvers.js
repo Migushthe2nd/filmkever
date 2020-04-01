@@ -960,7 +960,7 @@ module.exports = (pgp, db, dbFunctions, functions) => {
                                 resolve(true)
                             })
                         } catch (error) {
-                          consola.error(error)
+                            consola.error(error)
                             resolve(new Error(errorName.UNKNOWN))
                         }
                     })
