@@ -834,14 +834,22 @@ export default {
                 this.$parent.summary.user_data.watch_data.length > 0
             ) {
                 if (this.$parent.mediatype === 'movie') {
-                    starttime = this.$parent.summary.user_data.watch_data[0]
-                        .position
+                    if (
+                        !this.$parent.summary.user_data.watch_data[0].finished
+                    ) {
+                        starttime = this.$parent.summary.user_data.watch_data[0]
+                            .position
+                    }
                 } else if (
-                    this.$parent.summary.user_data.watch_data[0].traktid ===
-                    this.$parent.currPlayingTraktID
+                    this.$parent.summary.user_data.watch_data.find((o) => {
+                        return (
+                            !o.finished && o.traktid === this.currPlayingTraktID
+                        )
+                    })
                 ) {
-                    starttime = this.$parent.summary.user_data.watch_data[0]
-                        .position
+                    this.$parent.summary.user_data.watch_data.find((o) => {
+                        starttime = o.position
+                    })
                 }
             }
 

@@ -403,6 +403,8 @@
                                     episodeSummary.user_data.watch_data &&
                                     episodeSummary.user_data.watch_data.length >
                                         0 &&
+                                    !episodeSummary.user_data.watch_data[0]
+                                        .finished &&
                                     episodeSummary.user_data.watch_data[0]
                                         .position
                             "
