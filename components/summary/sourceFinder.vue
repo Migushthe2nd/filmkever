@@ -826,7 +826,6 @@ export default {
             }
 
             let starttime = null
-            console.log('ga')
             if (
                 this.$parent.summary.user_data &&
                 this.$parent.summary.user_data.watch_data &&

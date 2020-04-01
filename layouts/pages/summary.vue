@@ -177,7 +177,6 @@ export default {
             this.windowHeight = window.innerHeight
         },
         mediaProgress(mediatype, traktID, finished, length, position) {
-            console.log('sending position!')
             this.$apollo
                 .mutate({
                     mutation: queries.progress,
