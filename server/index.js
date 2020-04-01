@@ -159,7 +159,7 @@ config.dev = process.env.NODE_ENV !== 'production'
 consola.log(process.env.APP_TITLE)
 
 // build webpages?
-const buildWeb = false
+const buildWeb = true
 
 async function start() {
     // Init Nuxt.js

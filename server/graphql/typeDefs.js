@@ -9,6 +9,7 @@ module.exports = gql`
         joined: String!
         last_logged_in: String
         role: String
+        preferences: String
     }
 
     type UserInfo {
@@ -198,8 +199,14 @@ module.exports = gql`
         pagination: Pagination
     }
 
+    type MediaSource {
+        extracted: Boolean
+        hasRDSupport: Boolean
+        url: String
+    }
+
     type Query {
-        allUsers: [User!]
+        # allUsers: [User!]
         me: UserInfo!
         emailAvailable(email: String!): Boolean!
         movie(traktID: Int!): Movie
@@ -229,6 +236,18 @@ module.exports = gql`
         playedShows(page: Int, period: String): ShowPage
     }
 
+    type Subscription {
+        # Sources
+        searchFilePursuit(
+            title: String!
+            mediatype: String!
+            imdb: String!
+            year: Int!
+            season: Int
+            episode: Int
+        ): [MediaSource]
+    }
+
     type Mutation {
         register(
             username: String!
@@ -250,6 +269,7 @@ module.exports = gql`
 
     schema {
         query: Query
+        subscription: Subscription
         mutation: Mutation
     }
 `

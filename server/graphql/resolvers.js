@@ -1,24 +1,26 @@
 const consola = require('consola')
 const bcrypt = require('bcryptjs')
-const joinMonster = require('join-monster').default
 const graphqlFields = require('graphql-fields')
+const { PubSub } = require('apollo-server-express')
+const pubsub = new PubSub()
+const { directSearch } = require('filepursuit')
 const { errorName } = require('../utils/errorTypes')
 
 module.exports = (pgp, db, dbFunctions, functions) => {
     return {
         Query: {
-            allUsers: (parent, args, context, info) => {
-                if (context.req.isAuthenticated()) {
-                    // return joinMonster(info, args, (sql) => {
-                    //     return db.any(sql)
-                    // })
-                }
-            },
+            // allUsers: (parent, args, context, info) => {
+            //     if (context.req.isAuthenticated()) {
+            //         return joinMonster(info, args, (sql) => {
+            //             return db.any(sql)
+            //         })
+            //     }
+            // },
             me: (parent, args, context, info) => {
                 if (context.req.isAuthenticated()) {
-                    return joinMonster(info, context.req.user.uuid, (sql) => {
-                        return db.any(sql)
-                    })
+                    return db.one(`SELECT * from users WHERE uuid = $1`, [
+                        context.req.user.uuid
+                    ])
                 } else {
                     throw new Error(errorName.UNAUTHORIZED)
                 }
@@ -839,6 +841,62 @@ module.exports = (pgp, db, dbFunctions, functions) => {
             //         throw new Error(errorName.UNAUTHORIZED)
             //     }
             // }
+        },
+        Subscription: {
+            // Sources
+            // FilePursuit: (
+            //     parent,
+            //     { title, mediatype, imdb, year, season, episode },
+            //     context,
+            //     info
+            // ) => {
+            //     try {
+            //         directSearch(
+            //             {
+            //                 title,
+            //                 is_movie: mediatype === 'movie',
+            //                 imdb_id: imdb,
+            //                 release_date: year.toString()
+            //             },
+            //             season || 0,
+            //             episode || 0,
+            //             (response) => {
+            //                 return response
+            //             }
+            //         )
+            //     } catch (err) {
+            //         if (err.toString().includes('404')) {
+            //             throw new Error(errorName.ITEM_NOT_EXIST)
+            //         } else {
+            //             throw new Error(errorName.UNKNOWN)
+            //         }
+            //     }
+            // }
+            searchFilePursuit: {
+                subscribe: (
+                    parent,
+                    { title, mediatype, imdb, year, season, episode },
+                    context,
+                    info
+                ) => {
+                    directSearch(
+                        {
+                            title,
+                            is_movie: mediatype === 'movie',
+                            imdb_id: imdb,
+                            release_date: year.toString()
+                        },
+                        season || 0,
+                        episode || 0,
+                        (response) => {
+                            pubsub.publish('searchFilePursuit', {
+                                searchFilePursuit: response
+                            })
+                        }
+                    )
+                    return pubsub.asyncIterator(['searchFilePursuit'])
+                }
+            }
         },
         Mutation: {
             register: async (

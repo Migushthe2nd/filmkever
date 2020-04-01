@@ -62,6 +62,26 @@
                                     size="64"
                                 >
                                 </v-progress-circular>
+                                <h3 class="pt-3" color="primary">
+                                    {{
+                                        videoUrls.length > 0
+                                            ? videoUrls.length + ' results'
+                                            : ''
+                                    }}
+                                </h3>
+                                <v-btn
+                                    color="primary"
+                                    @click="
+                                        loading = false
+                                        querySubscription.unsubscribe()
+                                        makeIframePlayer()
+                                    "
+                                >
+                                    Play
+                                    <v-icon>
+                                        mdi-play-circle-outline
+                                    </v-icon>
+                                </v-btn>
                             </v-flex>
                         </v-overlay>
                     </v-fade-transition>
@@ -363,18 +383,20 @@
 </template>
 
 <script>
+import FilePursuit from '@/web_utils/sources/FilePursuit.js'
 import MovieFiles from '@/web_utils/sources/MovieFiles.js'
 import Bia2HD from '@/web_utils/sources/Bia2HD.js'
 import GdrivePlayer from '@/web_utils/sources/GdrivePlayer.js'
 
 export default {
-    mixins: [MovieFiles, Bia2HD, GdrivePlayer],
+    mixins: [FilePursuit, MovieFiles, Bia2HD, GdrivePlayer],
     data() {
         return {
             selectedSource: null,
             searchResponse: [],
             qualityResponse: [],
             itemsResponse: [],
+            videoUrls: [],
             playlistResponse: null,
             displayPlayerIframe: false,
             iframeIsLoading: true,
@@ -384,6 +406,7 @@ export default {
             useUserInput: false,
             userInputDLLink: null,
             windowIsFocussed: true,
+            querySubscription: null,
             loading: false,
             sources: [
                 {
@@ -415,6 +438,34 @@ export default {
                             prependIcon: 'mdi-file-certificate',
                             description: 'Bitrate is very high!',
                             score: 'good'
+                        }
+                    ]
+                },
+                {
+                    name: 'FilePursuit (many!)',
+                    native: true,
+                    movie: true,
+                    show: true,
+                    searchFunction: this.searchFilePursuit,
+                    icon: null,
+                    properties: [
+                        {
+                            type: 'resolution',
+                            prependIcon: 'mdi-quality-medium',
+                            description: '720p+',
+                            score: 'good'
+                        },
+                        {
+                            type: 'speed',
+                            prependIcon: 'mdi-speedometer-medium',
+                            description: 'Sometimes buffers',
+                            score: 'good'
+                        },
+                        {
+                            type: 'bitrate',
+                            prependIcon: 'mdi-file',
+                            description: 'Bitrate is okay-ish',
+                            score: 'fine'
                         }
                     ]
                 },
@@ -857,6 +908,23 @@ export default {
                 }
             }
 
+            const sources = []
+            if (videoUrl) {
+                sources.push({
+                    file: videoUrl,
+                    label: 'Source 1',
+                    type: 'mp4'
+                })
+            } else {
+                for (let i = 0; i < this.videoUrls.length; i++) {
+                    sources.push({
+                        file: this.videoUrls[i],
+                        label: `Source ${i + 1}`,
+                        type: 'mp4'
+                    })
+                }
+            }
+
             const vttURLS = []
             const tracks = []
             for (const url in vttURLS) {
@@ -879,19 +947,10 @@ export default {
                 playlist: [
                     {
                         file: process.env.APP_HOST + '/media/intro.mp4',
-                        type: 'mp4',
-                        starttime: 5
+                        type: 'mp4'
                     },
                     {
-                        sources: [
-                            {
-                                // file: videoUrl,
-                                file:
-                                    'https://file-examples.com/wp-content/uploads/2017/04/file_example_MP4_1920_18MG.mp4',
-                                type: 'mp4',
-                                default: true
-                            }
-                        ],
+                        sources,
                         starttime,
                         tracks
                     }
