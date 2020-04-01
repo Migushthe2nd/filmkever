@@ -309,31 +309,46 @@ export default {
                         if (!this.summary.user_data.watch_data) {
                             this.summary.user_data.watch_data = []
                         }
-                        if (
-                            this.summary.user_data.watch_data.length > 0 &&
-                            !this.summary.user_data.watch_data[0].finished
+                        for (
+                            let i = 0;
+                            i < this.summary.user_data.watch_data.length;
+                            i++
                         ) {
-                            this.summary.user_data.watch_data[0] = {
-                                episode_number: totalEpisode,
-                                finished,
-                                length,
-                                position,
-                                season: this.sourceFinderSeason,
-                                time_modified: Date.now(),
-                                time_watched: finished ? Date.now() : null,
-                                traktid: this.currPlayingTraktID
+                            if (
+                                this.summary.user_data.watch_data[i].traktid ===
+                                this.currPlayingTraktID
+                            ) {
+                                if (
+                                    !this.summary.user_data.watch_data[i]
+                                        .finished
+                                ) {
+                                    this.summary.user_data.watch_data[0] = {
+                                        episode_number: totalEpisode,
+                                        finished,
+                                        length,
+                                        position,
+                                        season: this.sourceFinderSeason,
+                                        time_modified: Date.now(),
+                                        time_watched: finished
+                                            ? Date.now()
+                                            : null,
+                                        traktid: this.currPlayingTraktID
+                                    }
+                                } else {
+                                    this.summary.user_data.watch_data.unshift({
+                                        episode_number: totalEpisode,
+                                        finished,
+                                        length,
+                                        position,
+                                        season: this.sourceFinderSeason,
+                                        time_modified: Date.now(),
+                                        time_watched: finished
+                                            ? Date.now()
+                                            : null,
+                                        traktid: this.currPlayingTraktID
+                                    })
+                                }
                             }
-                        } else {
-                            this.summary.user_data.watch_data.unshift({
-                                episode_number: totalEpisode,
-                                finished,
-                                length,
-                                position,
-                                season: this.sourceFinderSeason,
-                                time_modified: Date.now(),
-                                time_watched: finished ? Date.now() : null,
-                                traktid: this.currPlayingTraktID
-                            })
                         }
                     }
                 })
