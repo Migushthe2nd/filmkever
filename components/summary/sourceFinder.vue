@@ -826,9 +826,8 @@ export default {
             }
 
             let starttime = null
-            if (this.lastPosition) {
-                starttime = this.lastPosition
-            } else if (
+            console.log('ga')
+            if (
                 this.$parent.summary.user_data &&
                 this.$parent.summary.user_data.watch_data &&
                 this.$parent.summary.user_data.watch_data.length > 0
@@ -843,13 +842,19 @@ export default {
                 } else if (
                     this.$parent.summary.user_data.watch_data.find((o) => {
                         return (
-                            !o.finished && o.traktid === this.currPlayingTraktID
+                            !o.finished &&
+                            o.traktid === this.$parent.currPlayingTraktID
                         )
                     })
                 ) {
-                    this.$parent.summary.user_data.watch_data.find((o) => {
-                        starttime = o.position
-                    })
+                    starttime = this.$parent.summary.user_data.watch_data.find(
+                        (o) => {
+                            return (
+                                !o.finished &&
+                                o.traktid === this.$parent.currPlayingTraktID
+                            )
+                        }
+                    ).position
                 }
             }
 

@@ -25,7 +25,7 @@ export default {
         }
     },
     methods: {
-        loadResults(callback) {
+        loadResults(params, callback) {
             if (this.$store.state.searchQuery) {
                 this.loadSearchMovies(
                     this.$store.state.searchQuery ||

@@ -146,7 +146,7 @@
             <v-container class="text-center">
                 <v-fade-transition v-if="loading">
                     <v-progress-circular
-                        v-model="loading"
+                        v-if="loading"
                         color="white"
                         indeterminate
                         size="64"
