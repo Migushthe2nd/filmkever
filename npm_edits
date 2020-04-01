@@ -1,0 +1,21 @@
+trakt.tv/trakt.js:265 (sanitizer)
+    -- result[prop] = sanitizeString(obj[prop]);
+    ++ // result[prop] = sanitizeString(obj[prop]);
+    ++ // Disable sanitizer for strings to fix '&'
+    ++ result[prop] = obj[prop];
+
+mdata/clients/engines/tmdb.js:6
+    -- minPosterWidth: 780,
+    -- posterSizePath: 'w780',
+    ++ minPosterWidth: 500,
+    ++ posterSizePath: 'w500',
+
+mdata/clients/engines/tmdb.js:87
+    ++ if (images.poster === null) {
+    ++        for (let poster of response.posters) {
+    ++            if (poster.width >= this.images.minPosterWidth) {
+    ++                images.poster = this.buildUrl(poster.file_path, this.images.posterSizePath)
+    ++                break
+    ++            }
+    ++        }
+    ++    }

@@ -48,6 +48,7 @@
     "request": "^2.88.2",
     "restify": "^8.5.1",
     "spider-detector": "^2.0.0",
+    "tar-dependency": "0.0.3",
     "themoviedb-api-client": "^1.1.0",
     "trakt.tv-cached": "^3.0.1",
     "trakt.tv-queued": "^3.0.0",
