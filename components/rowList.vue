@@ -1,5 +1,5 @@
 <template>
-    <v-flex v-if="$parent[row.items].length > 0" mt-5 xs12>
+    <v-flex mt-5 xs12>
         <v-layout row wrap>
             <v-flex pa-2 xs12>
                 <h1 v-if="row.title" class="display-1 font-weight-bold">
@@ -11,14 +11,16 @@
             </v-flex>
         </v-layout>
         <v-layout grouped row wrap>
-            <v-fade-transition>
+            <v-fade-transition hide-on-leave>
                 <v-container v-if="loading" class="text-center">
                     <v-progress-circular color="white" indeterminate size="64">
                     </v-progress-circular>
                 </v-container>
             </v-fade-transition>
+            <div></div>
             <v-flex
                 v-for="item in $parent[row.items]"
+                v-show="$parent[row.items].length > 0"
                 :key="item.ids.trakt"
                 pa-1
                 xs4
