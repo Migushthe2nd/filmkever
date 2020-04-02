@@ -459,11 +459,11 @@ export default {
                     ]
                 },
                 {
-                    name: 'FilePursuit (A lot!)',
-                    message: 'Source is undergoing issues',
+                    name: 'FilePursuit (Multiple!)',
+                    message: 'Source has some issues',
                     native: true,
                     movie: true,
-                    show: true,
+                    show: false,
                     searchFunction: this.searchFilePursuit,
                     icon: null,
                     properties: [
@@ -482,14 +482,14 @@ export default {
                         {
                             type: 'bitrate',
                             prependIcon: 'mdi-file',
-                            description: 'Bitrate is okay-ish',
+                            description: 'Bitrate is fine',
                             score: 'fine'
                         }
                     ]
                 },
                 {
                     name: 'Bia2HD',
-                    message: 'Audio Persian by default',
+                    message: 'Audio could be Persian',
                     native: true,
                     movie: true,
                     show: true,
@@ -508,7 +508,7 @@ export default {
                         },
                         {
                             type: 'speed',
-                            prependIcon: 'mdi-speedometer-medium',
+                            prependIcon: 'mdi-speedometer-slow',
                             description: 'Sometimes buffers',
                             score: 'good'
                         },
@@ -521,7 +521,8 @@ export default {
                     ]
                 },
                 {
-                    name: 'Source 1',
+                    name: 'Alternative 1',
+                    message: 'Close the popup!',
                     native: false,
                     movie: true,
                     show: true,

@@ -55,7 +55,7 @@ playerInstance.once('play', function() {
                             length: Math.floor(playerInstance.getDuration()),
                             position: Math.floor(playerInstance.getPosition())
                         },
-                        APP_HOST
+                        VUE_APP_HOST
                     )
                 }
             }, 5000)
