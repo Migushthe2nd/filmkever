@@ -70,6 +70,18 @@
                                     }}
                                 </h3>
                                 <v-btn
+                                    v-if="videoUrls.length === 0"
+                                    @click="
+                                        loading = false
+                                        querySubscription.unsubscribe()
+                                    "
+                                >
+                                    Cancel
+                                    <v-icon>
+                                        mdi-play-circle-outline
+                                    </v-icon>
+                                </v-btn>
+                                <v-btn
                                     v-if="videoUrls.length > 0"
                                     color="primary"
                                     @click="
@@ -415,7 +427,7 @@ export default {
             sources: [
                 {
                     name: 'MovieFiles',
-                    message: 'Most new movies',
+                    message: `You can't seek in the stream!`,
                     native: true,
                     movie: true,
                     show: false,
@@ -477,7 +489,7 @@ export default {
                 },
                 {
                     name: 'Bia2HD',
-                    message: 'Could be a Persian dub',
+                    message: 'Audio Persian by default',
                     native: true,
                     movie: true,
                     show: true,
