@@ -98,7 +98,7 @@ app.use(
         }),
         secret: process.env.SESSION_SECRET,
         resave: false,
-        saveUninitialized: false,
+        saveUninitialized: true,
         // cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 } // 30 days
         cookie: { expires: new Date(253402300000000) } // 2099
     })
@@ -124,7 +124,9 @@ const server = new ApolloServer({
         }
     },
     subscriptions: {
-        path: '/subscription'
+        path: '/subscription',
+        onConnect: (connectionParams, webSocket, context) => {},
+        onDisconnect: (webSocket, context) => {}
     },
     formatError: (err) => {
         consola.error(err.message)

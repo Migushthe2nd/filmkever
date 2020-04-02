@@ -955,8 +955,8 @@ query playedShows($page: Int, $period: String) {
 
 
 # Providers
-subscription searchFilePursuit($title: String!, $mediatype: String!, $imdb: String!, $year: Int!, $season: Int, $episode: Int) {
-    searchFilePursuit(title: $title, mediatype: $mediatype, imdb: $imdb, year: $year, season: $season, episode: $episode) {
+subscription searchFilePursuit($id: String!, $title: String!, $mediatype: String!, $imdb: String!, $year: Int!, $season: Int, $episode: Int) {
+    searchFilePursuit(id: $id, title: $title, mediatype: $mediatype, imdb: $imdb, year: $year, season: $season, episode: $episode) {
         url
         extracted
     }

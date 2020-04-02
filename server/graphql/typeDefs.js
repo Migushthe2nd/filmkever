@@ -205,6 +205,12 @@ module.exports = gql`
         url: String
     }
 
+    type partyPayload {
+        url: String
+        position: Int
+        playing: Boolean
+    }
+
     type Query {
         # allUsers: [User!]
         me: UserInfo!
@@ -234,11 +240,15 @@ module.exports = gql`
         trendingShows(page: Int): ShowPage
         popularShows(page: Int): ShowPage
         playedShows(page: Int, period: String): ShowPage
+
+        # Party
+        partyStatus(id: String!): partyPayload
     }
 
     type Subscription {
         # Sources
         searchFilePursuit(
+            id: String!
             title: String!
             mediatype: String!
             imdb: String!
@@ -246,6 +256,10 @@ module.exports = gql`
             season: Int
             episode: Int
         ): [MediaSource]
+
+        test(value: String): String
+
+        onPartyAction(id: String!): partyPayload
     }
 
     type Mutation {
@@ -265,6 +279,9 @@ module.exports = gql`
             position: Int
         ): Boolean
         watchlist(mediatype: String!, traktID: Int!, state: Boolean): Boolean
+
+        # Party
+        partyAction(url: String, position: Int, playing: Boolean): partyPayload
     }
 
     schema {

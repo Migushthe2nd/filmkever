@@ -11,6 +11,9 @@ export default {
                 .subscribe({
                     query: queries.searchFilePursuit,
                     variables: {
+                        id: Math.random()
+                            .toString(36)
+                            .substr(2, 9),
                         title: this.$parent.summary.title,
                         mediatype: this.$parent.mediatype,
                         imdb: this.$parent.summary.ids.imdb,

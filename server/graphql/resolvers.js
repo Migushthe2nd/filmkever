@@ -1,10 +1,16 @@
 const consola = require('consola')
 const bcrypt = require('bcryptjs')
 const graphqlFields = require('graphql-fields')
-const { PubSub } = require('apollo-server-express')
+const { PubSub, withFilter } = require('apollo-server-express')
 const pubsub = new PubSub()
 const { directSearch } = require('filepursuit')
 const { errorName } = require('../utils/errorTypes')
+
+setInterval(() => {
+    pubsub.publish('TEN_SECONDS', {
+        test: 'This is the return string'
+    })
+}, 2000)
 
 module.exports = (pgp, db, dbFunctions, functions) => {
     return {
@@ -875,7 +881,7 @@ module.exports = (pgp, db, dbFunctions, functions) => {
             searchFilePursuit: {
                 subscribe: (
                     parent,
-                    { title, mediatype, imdb, year, season, episode },
+                    { id, title, mediatype, imdb, year, season, episode },
                     context,
                     info
                 ) => {
@@ -889,12 +895,47 @@ module.exports = (pgp, db, dbFunctions, functions) => {
                         season || 0,
                         episode || 0,
                         (response) => {
-                            pubsub.publish('searchFilePursuit', {
+                            pubsub.publish('searchFilePursuit_' + id, {
                                 searchFilePursuit: response
                             })
                         }
                     )
-                    return pubsub.asyncIterator(['searchFilePursuit'])
+                    return pubsub.asyncIterator(['searchFilePursuit_' + id])
+                }
+            },
+            test: {
+                resolve: (payload, args, context, info) => {
+                    return { gamer: 'gaming' }
+                },
+                subscribe:
+                    // directSearch(
+                    //     {
+                    //         title,
+                    //         is_movie: mediatype === 'movie',
+                    //         imdb_id: imdb,
+                    //         release_date: year.toString()
+                    //     },
+                    //     season || 0,
+                    //     episode || 0,
+                    //     (response) => {
+                    //         pubsub.publish('searchFilePursuit', {
+                    //             searchFilePursuit: response
+                    //         })
+                    //     }
+                    // )
+                    withFilter(
+                        () => pubsub.asyncIterator(['TEN_SECONDS']),
+                        (payload, args, context) => {
+                            consola.log(context)
+                        }
+                    )
+            },
+            onPartyAction: {
+                subscribe: (parent, { id }, context, info) => {
+                    pubsub.publish('onPartyAction', {
+                        onPartyAction: null
+                    })
+                    return pubsub.asyncIterator(['onPartyAction'])
                 }
             }
         },

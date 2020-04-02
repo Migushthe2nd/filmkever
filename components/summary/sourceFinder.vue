@@ -71,18 +71,17 @@
                                 </h3>
                                 <v-btn
                                     v-if="videoUrls.length === 0"
+                                    class="mt-2"
                                     @click="
                                         loading = false
                                         querySubscription.unsubscribe()
                                     "
                                 >
                                     Cancel
-                                    <v-icon>
-                                        mdi-play-circle-outline
-                                    </v-icon>
                                 </v-btn>
                                 <v-btn
                                     v-if="videoUrls.length > 0"
+                                    class="mt-2"
                                     color="primary"
                                     @click="
                                         loading = false
@@ -705,8 +704,6 @@ export default {
             this.handleVisibilityChange,
             false
         )
-
-        window.addEventListener('message', this.receiveMessage, false)
     },
     beforeDestroy() {
         let visibilityChange = null
@@ -723,7 +720,6 @@ export default {
             visibilityChange,
             this.handleVisibilityChange
         )
-        window.removeEventListener('message', this.receiveMessage)
     },
     methods: {
         handleVisibilityChange() {

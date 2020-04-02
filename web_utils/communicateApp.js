@@ -2,6 +2,12 @@ export default {
     data() {
         return {}
     },
+    mounted() {
+        window.addEventListener('message', this.receiveMessage, false)
+    },
+    beforeDestroy() {
+        window.removeEventListener('message', this.receiveMessage)
+    },
     methods: {
         receiveMessage(event) {
             if (event.origin !== 'null') return
