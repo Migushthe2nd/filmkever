@@ -858,7 +858,10 @@ export default {
 
             const metadata = {
                 title: this.$parent.summary.title,
-                subtitle: null
+                subtitle:
+                    this.$parent.mediatype === 'show'
+                        ? `S${this.$parent.sourceFinderSeason}E${this.$parent.sourceFinderEpisode}`
+                        : null
             }
 
             let starttime = null
