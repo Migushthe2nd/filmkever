@@ -465,6 +465,7 @@ export default {
                     movie: true,
                     show: false,
                     searchFunction: this.searchFilePursuit,
+                    hideElements: [],
                     icon: null,
                     properties: [
                         {
@@ -804,165 +805,198 @@ export default {
         },
         async makeIframePlayer(videoUrl, hideElements) {
             this.resetPlayerData()
+            let playerHTMLWithConfigs = null
 
-            // Plyr player
-            // this.playerConfig = {
-            //     controls: [
-            //         'play-large',
-            //         'play',
-            //         'rewind',
-            //         'fast-forward',
-            //         'progress',
-            //         'current-time',
-            //         'mute',
-            //         'volume',
-            //         'captions',
-            //         'settings',
-            //         'pip',
-            //         'airplay',
-            //         'download',
-            //         'fullscreen'
-            //     ],
-            //     captions: {
-            //         active: true
-            //     },
-            //     autoplay: true,
-            //     volume: 0.3
-            // }
-
-            // this.sourceConfig = {
-            //     type: 'video',
-            //     title: this.$parent.summary.title,
-            //     sources: [
-            //         {
-            //             src: videoUrl
-            //         }
-            //     ]
-            // }
-
-            // this.disablePlyrControl(this.selectedSource.hideElements)
-
-            // const playerHTML =
-            //     '%3C%21DOCTYPE%20html%3E%0A%3Chtml%3E%0A%0A%3Chead%3E%0A%20%20%20%20%3Cscript%20src%3D%22https%3A%2F%2Fcontent.jwplatform.com%2Flibraries%2FQpLbHLbV.js%22%20type%3D%22text%2Fjavascript%22%3E%3C%2Fscript%3E%0A%20%20%20%20%3Cscript%20src%3D%22https%3A%2F%2Fcdn.polyfill.io%2Fv2%2Fpolyfill.min.js%3Ffeatures%3Des6%2CArray.prototype.includes%2CCustomEvent%2CObject.entries%2CObject.values%2CURL%22%20type%3D%22text%2Fjavascript%22%3E%3C%2Fscript%3E%0A%20%20%20%20%3Cscript%20src%3D%22https%3A%2F%2Funpkg.com%2Fplyr%403%22%20type%3D%22text%2Fjavascript%22%3E%3C%2Fscript%3E%0A%20%20%20%20%3Clink%20rel%3D%22stylesheet%22%20type%3D%22text%2Fcss%22%20href%3D%22https%3A%2F%2Funpkg.com%2Fplyr%403%2Fdist%2Fplyr.css%22%3E%0A%20%20%20%20%3Cstyle%20type%3D%22text%2Fcss%22%3E%0A%20%20%20%20%20%20%20%20body%2C%0A%20%20%20%20%20%20%20%20html%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20background%3A%20black%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20margin%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20padding%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20height%3A%20100%25%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20overflow%3A%20hidden%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20%23content%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20position%3A%20absolute%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20left%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20right%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20bottom%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20top%3A%200px%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%3C%2Fstyle%3E%0A%3C%2Fhead%3E%0A%0A%3Cbody%3E%0A%20%20%20%20%3Cvideo%20width%3D%22100%25%22%20height%3D%22100%25%22%20controls%3E%0A%3C%2Fbody%3E%0A%0A%3Cscript%3E%0A%20%20%20%20const%20playerConfig%20%3D%20REPLACEWITH_playerConfig%0A%20%20%20%20const%20sourceConfig%20%3D%20REPLACEWITH_sourceConfig%0A%0A%20%20%20%20console.log%28playerConfig%2C%20sourceConfig%29%0A%0A%20%20%20%20const%20player%20%3D%20new%20Plyr%28%27video%27%2C%20playerConfig%29%3B%0A%0A%20%20%20%20window.player%20%3D%20player%3B%0A%20%20%20%20player.source%20%3D%20sourceConfig%3B%0A%3C%2Fscript%3E%0A%0A%3C%2Fhtml%3E'
-            // const playerHTMLWithConfigs = playerHTML
-            //     .replace(
-            //         'REPLACEWITH_playerConfig',
-            //         JSON.stringify(this.playerConfig)
-            //     )
-            //     .replace(
-            //         'REPLACEWITH_sourceConfig',
-            //         JSON.stringify(this.sourceConfig)
-            //     )
-
-            // const iframeSrc =
-            //     'data:text/html;charset=utf-8,' + playerHTMLWithConfigs
-
-            const metadata = {
-                title: this.$parent.summary.title,
-                subtitle:
-                    this.$parent.mediatype === 'show'
-                        ? `S${this.$parent.sourceFinderSeason}E${this.$parent.sourceFinderEpisode}`
-                        : null
-            }
-
-            let starttime = null
             if (
-                this.$parent.summary.user_data &&
-                this.$parent.summary.user_data.watch_data &&
-                this.$parent.summary.user_data.watch_data.length > 0
+                this.$store.state.loggedIn &&
+                this.$store.state.user.preferences.defaultPlayer === 'Plyr'
             ) {
-                if (this.$parent.mediatype === 'movie') {
-                    if (
-                        !this.$parent.summary.user_data.watch_data[0].finished
-                    ) {
-                        starttime = this.$parent.summary.user_data.watch_data[0]
-                            .position
+                // Plyr player
+                this.playerConfig = {
+                    controls: [
+                        'play-large',
+                        'play',
+                        'rewind',
+                        'fast-forward',
+                        'progress',
+                        'current-time',
+                        'mute',
+                        'volume',
+                        'captions',
+                        'settings',
+                        'pip',
+                        'airplay',
+                        'download',
+                        'fullscreen'
+                    ],
+                    captions: {
+                        active: true
+                    },
+                    autoplay: true,
+                    volume: 0.3,
+                    quality: {
+                        default: 'Source 1',
+                        options: [
+                            4320,
+                            2880,
+                            2160,
+                            1440,
+                            1080,
+                            720,
+                            576,
+                            480,
+                            360,
+                            240
+                        ]
                     }
-                } else if (
-                    this.$parent.summary.user_data.watch_data.find((o) => {
-                        return (
-                            !o.finished &&
-                            o.traktid === this.$parent.currPlayingTraktID
-                        )
+                }
+
+                const sources = []
+                if (videoUrl) {
+                    sources.push({
+                        src: videoUrl
                     })
+                } else {
+                    for (let i = 0; i < this.videoUrls.length; i++) {
+                        sources.push({
+                            src: this.videoUrls[i],
+                            size: this.playerConfig.quality.options[i]
+                        })
+                    }
+                }
+
+                this.sourceConfig = {
+                    type: 'video',
+                    title: this.$parent.summary.title,
+                    sources
+                }
+
+                this.disablePlyrControl(this.selectedSource.hideElements)
+
+                const playerHTML =
+                    '%3C%21DOCTYPE%20html%3E%0A%3Chtml%3E%0A%0A%3Chead%3E%0A%20%20%20%20%3Cscript%20src%3D%22https%3A%2F%2Fcdn.polyfill.io%2Fv2%2Fpolyfill.min.js%3Ffeatures%3Des6%2CArray.prototype.includes%2CCustomEvent%2CObject.entries%2CObject.values%2CURL%22%20type%3D%22text%2Fjavascript%22%3E%3C%2Fscript%3E%0A%20%20%20%20%3Cscript%20src%3D%22https%3A%2F%2Funpkg.com%2Fplyr%403%22%20type%3D%22text%2Fjavascript%22%3E%3C%2Fscript%3E%0A%20%20%20%20%3Clink%20rel%3D%22stylesheet%22%20type%3D%22text%2Fcss%22%20href%3D%22https%3A%2F%2Funpkg.com%2Fplyr%403%2Fdist%2Fplyr.css%22%3E%0A%20%20%20%20%3Cstyle%20type%3D%22text%2Fcss%22%3E%0A%20%20%20%20%20%20%20%20body%2C%0A%20%20%20%20%20%20%20%20html%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20background%3A%20black%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20margin%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20padding%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20height%3A%20100%25%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20overflow%3A%20hidden%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20%23content%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20position%3A%20absolute%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20left%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20right%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20bottom%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20top%3A%200px%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%3C%2Fstyle%3E%0A%3C%2Fhead%3E%0A%0A%3Cbody%3E%0A%20%20%20%20%3Cvideo%20width%3D%22100%25%22%20height%3D%22100%25%22%20controls%3E%0A%3C%2Fbody%3E%0A%0A%3Cscript%3E%0A%20%20%20%20const%20playerConfig%20%3D%20REPLACEWITH_playerConfig%0A%20%20%20%20const%20sourceConfig%20%3D%20REPLACEWITH_sourceConfig%0A%0A%20%20%20%20console.log%28playerConfig%2C%20sourceConfig%29%0A%0A%20%20%20%20const%20player%20%3D%20new%20Plyr%28%27video%27%2C%20playerConfig%29%3B%0A%0A%20%20%20%20window.player%20%3D%20player%3B%0A%20%20%20%20player.source%20%3D%20sourceConfig%3B%0A%3C%2Fscript%3E%0A%0A%3C%2Fhtml%3E'
+                playerHTMLWithConfigs = playerHTML
+                    .replace(
+                        'REPLACEWITH_playerConfig',
+                        JSON.stringify(this.playerConfig)
+                    )
+                    .replace(
+                        'REPLACEWITH_sourceConfig',
+                        JSON.stringify(this.sourceConfig)
+                    )
+            } else {
+                const metadata = {
+                    title: this.$parent.summary.title,
+                    subtitle:
+                        this.$parent.mediatype === 'show'
+                            ? `S${this.$parent.sourceFinderSeason}E${this.$parent.sourceFinderEpisode}`
+                            : null
+                }
+
+                let starttime = null
+                if (
+                    this.$parent.summary.user_data &&
+                    this.$parent.summary.user_data.watch_data &&
+                    this.$parent.summary.user_data.watch_data.length > 0
                 ) {
-                    starttime = this.$parent.summary.user_data.watch_data.find(
-                        (o) => {
+                    if (this.$parent.mediatype === 'movie') {
+                        if (
+                            !this.$parent.summary.user_data.watch_data[0]
+                                .finished
+                        ) {
+                            starttime = this.$parent.summary.user_data
+                                .watch_data[0].position
+                        }
+                    } else if (
+                        this.$parent.summary.user_data.watch_data.find((o) => {
                             return (
                                 !o.finished &&
                                 o.traktid === this.$parent.currPlayingTraktID
                             )
-                        }
-                    ).position
+                        })
+                    ) {
+                        starttime = this.$parent.summary.user_data.watch_data.find(
+                            (o) => {
+                                return (
+                                    !o.finished &&
+                                    o.traktid ===
+                                        this.$parent.currPlayingTraktID
+                                )
+                            }
+                        ).position
+                    }
                 }
-            }
 
-            const sources = []
-            if (videoUrl) {
-                sources.push({
-                    file: videoUrl,
-                    label: 'Source 1',
-                    type: 'mp4'
-                })
-            } else {
-                for (let i = 0; i < this.videoUrls.length; i++) {
+                const sources = []
+                if (videoUrl) {
                     sources.push({
-                        file: this.videoUrls[i],
-                        label: `Source ${i + 1}`,
+                        file: videoUrl,
+                        label: 'Source 1',
                         type: 'mp4'
                     })
-                }
-            }
-
-            const vttURLS = []
-            const tracks = []
-            for (const url in vttURLS) {
-                tracks.push({
-                    file: url,
-                    kind: 'captions',
-                    label: 'eng',
-                    default: true
-                })
-            }
-            const playerConfig = {
-                autostart: true,
-                hlshtml: !![],
-                preload: 'auto',
-                captions: {
-                    edgeStyle: 'raised',
-                    backgroundOpacity: 0
-                },
-                cast: {},
-                playlist: [
-                    {
-                        file: process.env.VUE_APP_HOST + '/media/intro.mp4',
-                        type: 'mp4'
-                    },
-                    {
-                        sources,
-                        starttime,
-                        tracks
+                } else {
+                    for (let i = 0; i < this.videoUrls.length; i++) {
+                        sources.push({
+                            file: this.videoUrls[i],
+                            label: `Source ${i + 1}`,
+                            type: 'mp4'
+                        })
                     }
-                ]
-            }
-            let jwKey = null
-            const keyREGEX = /"key": "(.+)"/g
-            await this.$axios({
-                url: 'https://content.jwplatform.com/libraries/QpLbHLbV.js'
-            }).then((response) => {
-                jwKey = keyREGEX.exec(response.data)[1]
-            })
+                }
 
-            const playerHTML =
-                '%3C%21DOCTYPE%20html%3E%0A%3Chtml%3E%0A%0A%3Chead%3E%0A%20%20%20%20%3Cscript%3E%0A%20%20%20%20%20%20%20%20const%20jwKey%20%3D%20%22REPLACEWITH_JWKEY%22%0A%20%20%20%20%3C%2Fscript%3E%0A%20%20%20%20%3Cscript%20type%3D%22text%2Fjavascript%22%20src%3D%22REPLACEWITH_VUE_APP_HOST%2Fjwplayer%2Fjwplayer.js%22%3E%3C%2Fscript%3E%0A%20%20%20%20%3Cscript%20type%3D%22text%2Fjavascript%22%20src%3D%22https%3A%2F%2Fcode.jquery.com%2Fjquery-3.4.1.slim.min.js%22%3E%3C%2Fscript%3E%0A%20%20%20%20%3Clink%20rel%3D%22stylesheet%22%20type%3D%22text%2Fcss%22%20href%3D%22REPLACEWITH_VUE_APP_HOST%2Fjwplayer%2Fstyle.css%22%3E%0A%3C%2Fhead%3E%0A%0A%3Cbody%3E%0A%20%20%20%20%3Cdiv%20id%3D%22player%22%3E%0A%3C%2Fbody%3E%0A%0A%3Cscript%3E%0A%20%20%20%20const%20metadata%20%3D%20REPLACEWITH_metadata%0A%20%20%20%20const%20playerConfig%20%3D%20REPLACEWITH_playerConfig%0A%20%20%20%20const%20VUE_APP_HOST%20%3D%20%27REPLACEWITH_VUE_APP_HOST%27%0A%0A%20%20%20%20console.log%28metadata%2C%20playerConfig%29%0A%0A%20%20%20%20const%20playerInstance%20%3D%20jwplayer%28%22player%22%29.setup%28playerConfig%29%3B%0A%3C%2Fscript%3E%0A%0A%3Cscript%20type%3D%22text%2Fjavascript%22%20src%3D%22REPLACEWITH_VUE_APP_HOST%2Fjwplayer%2FcommunicateFrame.js%22%3E%3C%2Fscript%3E%0A%0A%3C%2Fhtml%3E'
-            const playerHTMLWithConfigs = playerHTML
-                .replace(/REPLACEWITH_VUE_APP_HOST/gm, process.env.VUE_APP_HOST)
-                .replace('REPLACEWITH_JWKEY', jwKey)
-                .replace('REPLACEWITH_metadata', JSON.stringify(metadata))
-                .replace(
-                    'REPLACEWITH_playerConfig',
-                    JSON.stringify(playerConfig)
-                )
+                const vttURLS = []
+                const tracks = []
+                for (const url in vttURLS) {
+                    tracks.push({
+                        file: url,
+                        kind: 'captions',
+                        label: 'eng',
+                        default: true
+                    })
+                }
+                const playerConfig = {
+                    autostart: true,
+                    hlshtml: !![],
+                    preload: 'auto',
+                    captions: {
+                        edgeStyle: 'raised',
+                        backgroundOpacity: 0
+                    },
+                    cast: {},
+                    playlist: [
+                        {
+                            file: process.env.VUE_APP_HOST + '/media/intro.mp4',
+                            type: 'mp4'
+                        },
+                        {
+                            sources,
+                            starttime,
+                            tracks
+                        }
+                    ]
+                }
+                let jwKey = null
+                const keyREGEX = /"key": "(.+)"/g
+                await this.$axios({
+                    url: 'https://content.jwplatform.com/libraries/QpLbHLbV.js'
+                }).then((response) => {
+                    jwKey = keyREGEX.exec(response.data)[1]
+                })
+
+                const playerHTML =
+                    '%3C%21DOCTYPE%20html%3E%0A%3Chtml%3E%0A%0A%3Chead%3E%0A%20%20%20%20%3Cscript%3E%0A%20%20%20%20%20%20%20%20const%20jwKey%20%3D%20%22REPLACEWITH_JWKEY%22%0A%20%20%20%20%3C%2Fscript%3E%0A%20%20%20%20%3Cscript%20type%3D%22text%2Fjavascript%22%20src%3D%22REPLACEWITH_VUE_APP_HOST%2Fjwplayer%2Fjwplayer.js%22%3E%3C%2Fscript%3E%0A%20%20%20%20%3Cscript%20type%3D%22text%2Fjavascript%22%20src%3D%22https%3A%2F%2Fcode.jquery.com%2Fjquery-3.4.1.slim.min.js%22%3E%3C%2Fscript%3E%0A%20%20%20%20%3Clink%20rel%3D%22stylesheet%22%20type%3D%22text%2Fcss%22%20href%3D%22REPLACEWITH_VUE_APP_HOST%2Fjwplayer%2Fstyle.css%22%3E%0A%3C%2Fhead%3E%0A%0A%3Cbody%3E%0A%20%20%20%20%3Cdiv%20id%3D%22player%22%3E%0A%3C%2Fbody%3E%0A%0A%3Cscript%3E%0A%20%20%20%20const%20metadata%20%3D%20REPLACEWITH_metadata%0A%20%20%20%20const%20playerConfig%20%3D%20REPLACEWITH_playerConfig%0A%20%20%20%20const%20VUE_APP_HOST%20%3D%20%27REPLACEWITH_VUE_APP_HOST%27%0A%0A%20%20%20%20console.log%28metadata%2C%20playerConfig%29%0A%0A%20%20%20%20const%20playerInstance%20%3D%20jwplayer%28%22player%22%29.setup%28playerConfig%29%3B%0A%3C%2Fscript%3E%0A%0A%3Cscript%20type%3D%22text%2Fjavascript%22%20src%3D%22REPLACEWITH_VUE_APP_HOST%2Fjwplayer%2FcommunicateFrame.js%22%3E%3C%2Fscript%3E%0A%0A%3C%2Fhtml%3E'
+                playerHTMLWithConfigs = playerHTML
+                    .replace(
+                        /REPLACEWITH_VUE_APP_HOST/gm,
+                        process.env.VUE_APP_HOST
+                    )
+                    .replace('REPLACEWITH_JWKEY', jwKey)
+                    .replace('REPLACEWITH_metadata', JSON.stringify(metadata))
+                    .replace(
+                        'REPLACEWITH_playerConfig',
+                        JSON.stringify(playerConfig)
+                    )
+            }
 
             this.playerIframeSource =
                 'data:text/html;charset=utf-8,' + playerHTMLWithConfigs

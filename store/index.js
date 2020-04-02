@@ -1,3 +1,5 @@
+import nestedObjectAssign from 'nested-object-assign'
+
 export const state = () => ({
     loggedIn: false,
     user: {
@@ -9,7 +11,8 @@ export const state = () => ({
         role: null,
         preferences: {
             // Defaults here
-            finishPercentage: 80
+            finishPercentage: 80,
+            defaultPlayer: 'JWPlayer'
         }
     },
     searchQuery: null,
@@ -22,7 +25,7 @@ export const state = () => ({
 export const mutations = {
     SET_USER(state, user) {
         state.loggedIn = true
-        Object.assign(state.user, user)
+        state.user = nestedObjectAssign({}, state.user, user)
     },
     REMOVE_USER(state) {
         state.loggedIn = false

@@ -145,7 +145,7 @@
                             </v-text-field>
                         </form>
                     </v-flex>
-                    <v-flex class="searchTypeSelector">
+                    <v-flex class="soloSelectGrey">
                         <v-select
                             v-model="currSearchType"
                             :items="searchTypes"
@@ -267,7 +267,7 @@
                         </v-text-field>
                     </form>
                 </v-flex>
-                <v-flex class="searchTypeSelector">
+                <v-flex class="soloSelectGrey">
                     <v-select
                         v-model="currSearchType"
                         :items="searchTypes"
@@ -552,7 +552,7 @@ body {
     background-color: map-get($material-dark, 'background');
 }
 
-.searchTypeSelector .v-input__control > .v-input__slot {
+.soloSelectGrey .v-input__control > .v-input__slot {
     background: rgba(255, 255, 255, 0.16) !important;
 }
 </style>

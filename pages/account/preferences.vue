@@ -72,6 +72,42 @@
                         </v-list-item-content>
                     </v-list-item>
 
+                    <v-list-item>
+                        <v-list-item-content>
+                            <v-col
+                                class="pa-0"
+                                cols="12"
+                                sm="6"
+                                md="8"
+                                lg="8"
+                                xl="10"
+                            >
+                                <v-list-item-title
+                                    >Default player</v-list-item-title
+                                >
+                                <v-list-item-subtitle
+                                    style="-webkit-line-clamp: unset;"
+                                    >IOS has some trouble with JWPlayer, so you
+                                    could try Plyr. In Plyr, if there are
+                                    multiple, sources are listed as quality
+                                    options, and are not related at
+                                    all.</v-list-item-subtitle
+                                >
+                            </v-col>
+                            <v-col cols="12" sm="6" md="4" lg="4" xl="2">
+                                <v-select
+                                    v-model="preferences.defaultPlayer"
+                                    class="soloSelectGrey"
+                                    :items="availablePlayers"
+                                    :menu-props="{ offsetY: true }"
+                                    label="Player"
+                                    hide-details
+                                    solo
+                                ></v-select>
+                            </v-col>
+                        </v-list-item-content>
+                    </v-list-item>
+
                     <!-- <v-list-item>
                     <template>
                         <v-list-item-action>
@@ -142,6 +178,7 @@ export default {
             preferences: this.$store.state.loggedIn
                 ? JSON.parse(JSON.stringify(this.$store.state.user.preferences))
                 : null,
+            availablePlayers: ['JWPlayer', 'Plyr'],
             loading: false,
             doneLoading: false,
             msg: null
@@ -159,7 +196,8 @@ export default {
                 .mutate({
                     mutation: queries.preferences,
                     variables: {
-                        finishPercentage: this.preferences.finishPercentage
+                        finishPercentage: this.preferences.finishPercentage,
+                        defaultPlayer: this.preferences.defaultPlayer
                     }
                 })
                 .then((response) => {

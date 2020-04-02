@@ -202,8 +202,8 @@ mutation logout {
   logout
 }
 
-mutation preferences($finishPercentage: Int) {
-    preferences(finishPercentage: $finishPercentage)
+mutation preferences($finishPercentage: Int, $defaultPlayer: String) {
+    preferences(finishPercentage: $finishPercentage, defaultPlayer: $defaultPlayer)
 }
 
 mutation progress($mediatype: String!, $traktID: Int!, $finished: Boolean, $length: Int, $position: Int) {

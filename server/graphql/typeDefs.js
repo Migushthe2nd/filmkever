@@ -270,7 +270,7 @@ module.exports = gql`
         ): AuthPayload
         login(email: String!, password: String!): AuthPayload
         logout: String
-        preferences(finishPercentage: Int): Boolean
+        preferences(finishPercentage: Int, defaultPlayer: String): Boolean
         progress(
             mediatype: String!
             traktID: Int!
