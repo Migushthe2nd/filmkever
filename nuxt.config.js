@@ -8,6 +8,7 @@ module.exports = {
         APP_FEEDBACK_URL: process.env.APP_FEEDBACK_URL,
         APP_DISCORD_INVITE: process.env.APP_DISCORD_INVITE,
         APP_BASE_URL: process.env.VUE_APP_BASE_URL || '/',
+        VUE_APP_HOST: process.env.VUE_APP_HOST || 'http://localhost',
         // APP_API_ROOT:
         //     process.env.VUE_APP_ROOT_API || 'http://localhost:3000/api',
         GC_USER_ID: process.env.VUE_APP_GC_USER_ID,
