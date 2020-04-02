@@ -2,9 +2,12 @@
 <html>
 
 <head>
-    <script type="text/javascript" src="REPLACEWITH_APP_HOST/jwplayer/jwplayer.js"></script>
+    <script>
+        const jwKey = "REPLACEWITH_JWKEY"
+    </script>
+    <script type="text/javascript" src="REPLACEWITH_VUE_APP_HOST/jwplayer/jwplayer.js"></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="REPLACEWITH_APP_HOST/jwplayer/style.css">
+    <link rel="stylesheet" type="text/css" href="REPLACEWITH_VUE_APP_HOST/jwplayer/style.css">
 </head>
 
 <body>
@@ -14,13 +17,13 @@
 <script>
     const metadata = REPLACEWITH_metadata
     const playerConfig = REPLACEWITH_playerConfig
-    const APP_HOST = 'REPLACEWITH_APP_HOST'
+    const VUE_APP_HOST = 'REPLACEWITH_VUE_APP_HOST'
 
     console.log(metadata, playerConfig)
 
     const playerInstance = jwplayer("player").setup(playerConfig);
 </script>
 
-<script type="text/javascript" src="REPLACEWITH_APP_HOST/jwplayer/communicateFrame.js"></script>
+<script type="text/javascript" src="REPLACEWITH_VUE_APP_HOST/jwplayer/communicateFrame.js"></script>
 
 </html>

@@ -5795,7 +5795,7 @@ var jwDefaults = {
     "displaytitle": true,
     "flashplayer": "//ssl.p.jwpcdn.com/player/v/8.13.0/jwplayer.flash.swf",
     "height": 260,
-    "key": "PLXM2avU1nZmc8BFw7IAQjrMZmCPysRFYMo0mSKqP7cLn1ZW3I3i5Q==",
+    "key": jwKey,
     "mute": false,
     "ph": 1,
     "pid": "wr6i4gal",
