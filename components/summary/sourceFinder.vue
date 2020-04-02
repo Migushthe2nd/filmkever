@@ -667,7 +667,7 @@ export default {
             return () => {
                 switch (this.$parent.sourceFinderStep) {
                     case 0:
-                        return 'Select a provider'
+                        return 'Select a source'
                     case 1:
                         return 'Select a result'
                     case 1.5:
