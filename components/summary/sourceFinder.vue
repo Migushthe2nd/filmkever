@@ -320,7 +320,7 @@
                         frameborder="0"
                         width="100%"
                         height="100%"
-                        allowfullscreen="allowfullscreen"
+                        allowfullscreen
                         @load="iframeIsLoading = false"
                     />
                     <v-fade-transition>
@@ -848,6 +848,11 @@ export default {
                             360,
                             240
                         ]
+                    },
+                    fullscreen: {
+                        enabled: true,
+                        fallback: true,
+                        iosNative: true
                     }
                 }
 
