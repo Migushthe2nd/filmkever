@@ -320,7 +320,8 @@
                         frameborder="0"
                         width="100%"
                         height="100%"
-                        allowfullscreen
+                        allowfullscreen="allowfullscreen"
+                        allow="fullscreen"
                         @load="iframeIsLoading = false"
                     />
                     <v-fade-transition>
