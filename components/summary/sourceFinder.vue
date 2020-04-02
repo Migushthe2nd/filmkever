@@ -753,6 +753,7 @@ export default {
                 this.$parent.currPlayingTraktID = this.$parent.summary.ids.trakt
             } else if (this.$parent.mediatype === 'show') {
                 if (episodeNr) {
+                    this.$parent.sourceFinderEpisode = parseInt(episodeNr)
                     for (let i = 0; i < this.$parent.seasons.length; i++) {
                         if (
                             this.$parent.seasons[i].number ===
