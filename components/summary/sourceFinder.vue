@@ -70,6 +70,7 @@
                                     }}
                                 </h3>
                                 <v-btn
+                                    v-if="videoUrls.length > 0"
                                     color="primary"
                                     @click="
                                         loading = false

@@ -14,7 +14,7 @@ module.exports = {
         GC_AUTH_TOKEN: process.env.VUE_APP_GC_AUTH_TOKEN
     },
     server: {
-        host: process.env.APP_HOST_DOMAIN || 'localhost',
+        host: process.env.APP_HOST_IP || 'localhost',
         port: process.env.APP_HOST_PORT || 3000
     },
     mode: 'universal',
@@ -103,10 +103,7 @@ module.exports = {
                 httpEndpoint: process.env.VUE_APP_httpEndpoint,
                 // // You can use `wss` for secure connection (recommended in production)
                 // // Use `null` to disable subscriptions
-                wsEndpoint: process.env.VUE_APP_wsEndpoint // optional
-                // // Use websockets for everything (no HTTP)
-                // // You need to pass a `wsEndpoint` for this to work
-                // websocketsOnly: false // Optional
+                wsEndpoint: process.env.VUE_APP_wsEndpoint
             }
         }
     },
