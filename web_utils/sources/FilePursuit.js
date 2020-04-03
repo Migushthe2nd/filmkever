@@ -1,4 +1,21 @@
 import queries from '@/web_utils/queries.gql'
+const skipTheseUrls = [
+    // Vage indische film bij Jumanji
+    /oudvgfbekrtk2yixv5m6evj5l4f7agrjv75ep2vuvdmuwr2ho5k/
+]
+
+function matchInArray(string, expressions) {
+    const len = expressions.length
+    let i = 0
+
+    for (; i < len; i++) {
+        if (string.match(expressions[i])) {
+            return true
+        }
+    }
+
+    return false
+}
 
 export default {
     data() {
@@ -24,7 +41,13 @@ export default {
                 })
                 .subscribe(({ data, loading }) => {
                     for (let i = 0; i < data.searchFilePursuit.length; i++) {
-                        if (data.searchFilePursuit[i].extracted)
+                        if (
+                            data.searchFilePursuit[i].extracted &&
+                            !matchInArray(
+                                data.searchFilePursuit[i].url,
+                                skipTheseUrls
+                            )
+                        )
                             this.videoUrls.push(data.searchFilePursuit[i].url)
                     }
                 })
