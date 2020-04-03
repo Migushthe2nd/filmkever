@@ -38,7 +38,7 @@ export default {
                 item.user_data.watch_data.length > 0
             ) {
                 if (mediatype === 'movie') {
-                    if (item.user_data.watch_data[0].finished === false) {
+                    if (!item.user_data.watch_data[0].finished) {
                         return (
                             ((Math.floor(
                                 item.user_data.watch_data[0].position / 60
@@ -46,7 +46,7 @@ export default {
                                 parseInt(item.runtime)) *
                             100
                         )
-                    } else if (item.user_data.watch_data[0].finished === true) {
+                    } else if (item.user_data.watch_data[0].finished) {
                         return 100
                     } else return 0
                 } else if (mediatype === 'show') {
@@ -84,7 +84,7 @@ export default {
                     item.user_data &&
                     item.user_data.watch_data &&
                     item.user_data.watch_data.length > 0 &&
-                    item.user_data.watch_data[0].finished === false
+                    !item.user_data.watch_data[0].finished
                 ) {
                     return `${this.convertMinsToHrsMins(
                         currPosition || 0
