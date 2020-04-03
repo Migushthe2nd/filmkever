@@ -6,9 +6,8 @@
             </v-card-title>
             <v-card-text>
                 <p>
-                    {{ APP_TITLE }} is a project which aims to be a reliable
-                    source for content. It provides the user with multiple sites
-                    it can choose from and the webapplication finds the right
+                    {{ APP_TITLE }} provides the user with multiple sources it
+                    can choose from and the webapplication scrapes the right
                     media and plays the video, when possible, in a native video
                     player.
                 </p>
@@ -30,11 +29,16 @@
                         >issue board</a
                     >.
                 </p>
-                <div class="text-xs-right">
+                <p>
+                    This site does not store any files on its server. All
+                    contents are scraped in real-time from non-affiliated third
+                    parties.
+                </p>
+                <!-- <div class="text-xs-right">
                     <em>
                         <small>- Migush</small>
                     </em>
-                </div>
+                </div> -->
                 <hr class="my-3" />
             </v-card-text>
         </v-card>
