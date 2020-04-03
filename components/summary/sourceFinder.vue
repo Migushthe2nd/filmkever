@@ -134,7 +134,9 @@
                                         {{ source.message }}
                                     </v-list-item-subtitle>
                                 </v-list-item-title>
-                                <v-list-item-subtitle>
+                                <v-list-item-subtitle
+                                    style="white-space: unset;"
+                                >
                                     <v-tooltip
                                         v-for="property in source.properties"
                                         :key="property.name"
@@ -426,42 +428,42 @@ export default {
             querySubscription: null,
             loading: false,
             sources: [
+                // {
+                //     name: 'MovieFiles',
+                //     message: `You can't seek in the stream!`,
+                //     native: true,
+                //     movie: true,
+                //     show: false,
+                //     searchFunction: this.searchMovieFiles,
+                //     qualityFunction: this.itemsMovieFiles,
+                //     itemsFunction: this.itemsMovieFiles,
+                //     playlistFunction: this.playlistMovieFiles,
+                //     hideElements: ['progress', 'rewind', 'fast-forward'],
+                //     icon: null,
+                //     properties: [
+                //         {
+                //             type: 'resolution',
+                //             prependIcon: 'mdi-quality-high',
+                //             description: '1080p+',
+                //             score: 'good'
+                //         },
+                //         {
+                //             type: 'speed',
+                //             prependIcon: 'mdi-speedometer',
+                //             description: 'Never buffers!',
+                //             score: 'good'
+                //         },
+                //         {
+                //             type: 'bitrate',
+                //             prependIcon: 'mdi-file-certificate',
+                //             description: 'Bitrate is very high!',
+                //             score: 'good'
+                //         }
+                //     ]
+                // },
                 {
-                    name: 'MovieFiles',
-                    message: `You can't seek in the stream!`,
-                    native: true,
-                    movie: true,
-                    show: false,
-                    searchFunction: this.searchMovieFiles,
-                    qualityFunction: this.itemsMovieFiles,
-                    itemsFunction: this.itemsMovieFiles,
-                    playlistFunction: this.playlistMovieFiles,
-                    hideElements: ['progress', 'rewind', 'fast-forward'],
-                    icon: null,
-                    properties: [
-                        {
-                            type: 'resolution',
-                            prependIcon: 'mdi-quality-high',
-                            description: '1080p+',
-                            score: 'good'
-                        },
-                        {
-                            type: 'speed',
-                            prependIcon: 'mdi-speedometer',
-                            description: 'Never buffers!',
-                            score: 'good'
-                        },
-                        {
-                            type: 'bitrate',
-                            prependIcon: 'mdi-file-certificate',
-                            description: 'Bitrate is very high!',
-                            score: 'good'
-                        }
-                    ]
-                },
-                {
-                    name: 'FilePursuit (Multiple!)',
-                    message: 'Source has some issues',
+                    name: 'FilePursuit (multiple)',
+                    message: 'Switch source in player settings',
                     native: true,
                     movie: true,
                     show: false,
@@ -808,6 +810,38 @@ export default {
             this.resetPlayerData()
             let playerHTMLWithConfigs = null
 
+            let starttime = null
+            if (
+                this.$parent.summary.user_data &&
+                this.$parent.summary.user_data.watch_data &&
+                this.$parent.summary.user_data.watch_data.length > 0
+            ) {
+                if (this.$parent.mediatype === 'movie') {
+                    if (
+                        !this.$parent.summary.user_data.watch_data[0].finished
+                    ) {
+                        starttime = this.$parent.summary.user_data.watch_data[0]
+                            .position
+                    }
+                } else if (
+                    this.$parent.summary.user_data.watch_data.find((o) => {
+                        return (
+                            !o.finished &&
+                            o.traktid === this.$parent.currPlayingTraktID
+                        )
+                    })
+                ) {
+                    starttime = this.$parent.summary.user_data.watch_data.find(
+                        (o) => {
+                            return (
+                                !o.finished &&
+                                o.traktid === this.$parent.currPlayingTraktID
+                            )
+                        }
+                    ).position
+                }
+            }
+
             if (
                 this.$store.state.loggedIn &&
                 this.$store.state.user.preferences.defaultPlayer === 'Plyr'
@@ -874,14 +908,19 @@ export default {
                 this.sourceConfig = {
                     type: 'video',
                     title: this.$parent.summary.title,
-                    sources
+                    sources,
+                    starttime
                 }
 
                 this.disablePlyrControl(this.selectedSource.hideElements)
 
                 const playerHTML =
-                    '%3C%21DOCTYPE%20html%3E%0A%3Chtml%3E%0A%0A%3Chead%3E%0A%20%20%20%20%3Cscript%20src%3D%22https%3A%2F%2Fcdn.polyfill.io%2Fv2%2Fpolyfill.min.js%3Ffeatures%3Des6%2CArray.prototype.includes%2CCustomEvent%2CObject.entries%2CObject.values%2CURL%22%20type%3D%22text%2Fjavascript%22%3E%3C%2Fscript%3E%0A%20%20%20%20%3Cscript%20src%3D%22https%3A%2F%2Funpkg.com%2Fplyr%403%22%20type%3D%22text%2Fjavascript%22%3E%3C%2Fscript%3E%0A%20%20%20%20%3Clink%20rel%3D%22stylesheet%22%20type%3D%22text%2Fcss%22%20href%3D%22https%3A%2F%2Funpkg.com%2Fplyr%403%2Fdist%2Fplyr.css%22%3E%0A%20%20%20%20%3Cstyle%20type%3D%22text%2Fcss%22%3E%0A%20%20%20%20%20%20%20%20body%2C%0A%20%20%20%20%20%20%20%20html%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20background%3A%20black%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20margin%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20padding%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20height%3A%20100%25%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20overflow%3A%20hidden%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20%23content%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20position%3A%20absolute%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20left%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20right%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20bottom%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20top%3A%200px%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%3C%2Fstyle%3E%0A%3C%2Fhead%3E%0A%0A%3Cbody%3E%0A%20%20%20%20%3Cvideo%20width%3D%22100%25%22%20height%3D%22100%25%22%20controls%3E%0A%3C%2Fbody%3E%0A%0A%3Cscript%3E%0A%20%20%20%20const%20playerConfig%20%3D%20REPLACEWITH_playerConfig%0A%20%20%20%20const%20sourceConfig%20%3D%20REPLACEWITH_sourceConfig%0A%0A%20%20%20%20console.log%28playerConfig%2C%20sourceConfig%29%0A%0A%20%20%20%20const%20player%20%3D%20new%20Plyr%28%27video%27%2C%20playerConfig%29%3B%0A%0A%20%20%20%20window.player%20%3D%20player%3B%0A%20%20%20%20player.source%20%3D%20sourceConfig%3B%0A%3C%2Fscript%3E%0A%0A%3C%2Fhtml%3E'
+                    '%3C%21DOCTYPE%20html%3E%0A%3Chtml%3E%0A%0A%3Chead%3E%0A%20%20%20%20%3Cscript%20src%3D%22https%3A%2F%2Fcdn.polyfill.io%2Fv2%2Fpolyfill.min.js%3Ffeatures%3Des6%2CArray.prototype.includes%2CCustomEvent%2CObject.entries%2CObject.values%2CURL%22%20type%3D%22text%2Fjavascript%22%3E%3C%2Fscript%3E%0A%20%20%20%20%3Cscript%20src%3D%22https%3A%2F%2Funpkg.com%2Fplyr%403%22%20type%3D%22text%2Fjavascript%22%3E%3C%2Fscript%3E%0A%20%20%20%20%3Clink%20rel%3D%22stylesheet%22%20type%3D%22text%2Fcss%22%20href%3D%22https%3A%2F%2Funpkg.com%2Fplyr%403%2Fdist%2Fplyr.css%22%3E%0A%20%20%20%20%3Cstyle%20type%3D%22text%2Fcss%22%3E%0A%20%20%20%20%20%20%20%20body%2C%0A%20%20%20%20%20%20%20%20html%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20background%3A%20black%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20margin%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20padding%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20height%3A%20100%25%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20overflow%3A%20hidden%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20%23content%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20position%3A%20absolute%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20left%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20right%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20bottom%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20top%3A%200px%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%3C%2Fstyle%3E%0A%3C%2Fhead%3E%0A%0A%3Cbody%3E%0A%20%20%20%20%3Cvideo%20width%3D%22100%25%22%20height%3D%22100%25%22%20controls%3E%0A%3C%2Fbody%3E%0A%0A%3Cscript%3E%0A%20%20%20%20const%20playerConfig%20%3D%20REPLACEWITH_playerConfig%0A%20%20%20%20const%20sourceConfig%20%3D%20REPLACEWITH_sourceConfig%0A%0A%20%20%20%20const%20VUE_APP_HOST%20%3D%20%27REPLACEWITH_VUE_APP_HOST%27%0A%20%20%20%20console.log%28playerConfig%2C%20sourceConfig%29%0A%0A%20%20%20%20const%20player%20%3D%20new%20Plyr%28%27video%27%2C%20playerConfig%29%3B%0A%0A%20%20%20%20window.player%20%3D%20player%3B%0A%20%20%20%20player.source%20%3D%20sourceConfig%3B%0A%0A%20%20%20%20let%20alreadyFirstStart%20%3D%20false%0A%20%20%20%20player.once%28%27playing%27%2C%20function%20%28%29%20%7B%0A%20%20%20%20%20%20%20%20if%20%28%21alreadyFirstStart%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20player.currentTime%20%3D%20sourceConfig.starttime%0A%20%20%20%20%20%20%20%20%20%20%20%20alreadyFirstStart%20%3D%20true%0A%20%20%20%20%20%20%20%20%20%20%20%20window.setInterval%28function%20%28%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20%28player.playing%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20parent.postMessage%28%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20name%3A%20%27position%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20length%3A%20Math.floor%28player.duration%29%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20position%3A%20Math.floor%28player.currentTime%29%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20VUE_APP_HOST%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%29%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%205000%29%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%29%0A%3C%2Fscript%3E%0A%3C%21--%20%3Cscript%20type%3D%22text%2Fjavascript%22%20src%3D%22REPLACEWITH_VUE_APP_HOST%2Fplyr%2FcommunicateFrame.js%22%3E%3C%2Fscript%3E%20--%3E%0A%0A%3C%2Fhtml%3E'
                 playerHTMLWithConfigs = playerHTML
+                    .replace(
+                        /REPLACEWITH_VUE_APP_HOST/gm,
+                        process.env.VUE_APP_HOST
+                    )
                     .replace(
                         'REPLACEWITH_playerConfig',
                         JSON.stringify(this.playerConfig)
@@ -897,40 +936,6 @@ export default {
                         this.$parent.mediatype === 'show'
                             ? `S${this.$parent.sourceFinderSeason}E${this.$parent.sourceFinderEpisode}`
                             : null
-                }
-
-                let starttime = null
-                if (
-                    this.$parent.summary.user_data &&
-                    this.$parent.summary.user_data.watch_data &&
-                    this.$parent.summary.user_data.watch_data.length > 0
-                ) {
-                    if (this.$parent.mediatype === 'movie') {
-                        if (
-                            !this.$parent.summary.user_data.watch_data[0]
-                                .finished
-                        ) {
-                            starttime = this.$parent.summary.user_data
-                                .watch_data[0].position
-                        }
-                    } else if (
-                        this.$parent.summary.user_data.watch_data.find((o) => {
-                            return (
-                                !o.finished &&
-                                o.traktid === this.$parent.currPlayingTraktID
-                            )
-                        })
-                    ) {
-                        starttime = this.$parent.summary.user_data.watch_data.find(
-                            (o) => {
-                                return (
-                                    !o.finished &&
-                                    o.traktid ===
-                                        this.$parent.currPlayingTraktID
-                                )
-                            }
-                        ).position
-                    }
                 }
 
                 const sources = []
@@ -969,6 +974,7 @@ export default {
                         backgroundOpacity: 0
                     },
                     cast: {},
+                    starttime,
                     playlist: [
                         {
                             file: process.env.VUE_APP_HOST + '/media/intro.mp4',
@@ -976,7 +982,6 @@ export default {
                         },
                         {
                             sources,
-                            starttime,
                             tracks
                         }
                     ]

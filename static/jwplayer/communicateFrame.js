@@ -36,6 +36,21 @@ playerInstance.on('ready', function() {
     //     .prependTo('.jw-controls.jw-reset')
 })
 
+playerInstance.on('setupError', function() {
+    console.log('setupError')
+    // playerInstance.next();
+})
+
+playerInstance.on('error', function() {
+    console.log('error')
+    playerInstance.next();
+})
+
+playerInstance.on('playAttemptFailed', function() {
+    console.log('playAttemptFailed')
+    playerInstance.next();
+})
+
 playerInstance.once('play', function() {
     $('.jw-icon-rewind').css('display', 'none')
     playerInstance.on('playlistItem', function() {
@@ -44,9 +59,9 @@ playerInstance.once('play', function() {
         $('.jw-text-elapsed').css('visibility', 'unset')
         $('.jw-text-duration').css('visibility', 'unset')
         playerInstance.once('play', function() {
-            // if (metadata.userdata.position) {
-            //     playerInstance.seek(parseFloat(metadata.userdata.position))
-            // }
+            if (playerConfig.starttime) {
+                playerInstance.seek(parseFloat(playerConfig.starttime))
+            }
             window.setInterval(function() {
                 if (playerInstance.getState() === 'playing') {
                     parent.postMessage(
