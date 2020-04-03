@@ -43,12 +43,12 @@ playerInstance.on('setupError', function() {
 
 playerInstance.on('error', function() {
     console.log('error')
-    playerInstance.next();
+    // playerInstance.next();
 })
 
 playerInstance.on('playAttemptFailed', function() {
     console.log('playAttemptFailed')
-    playerInstance.next();
+    // playerInstance.next();
 })
 
 playerInstance.once('play', function() {

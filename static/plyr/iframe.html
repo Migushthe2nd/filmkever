@@ -60,6 +60,10 @@
             }, 5000)
         }
     })
+
+    player.on('error', function() {
+        player.source = player.source.sources.shift()
+    });
 </script>
 <!-- <script type="text/javascript" src="REPLACEWITH_VUE_APP_HOST/plyr/communicateFrame.js"></script> -->
 
