@@ -6,3 +6,4 @@ git pull
 npm install
 npm run build
 pm2 start ./filmkever.config.js
+pm2 save
