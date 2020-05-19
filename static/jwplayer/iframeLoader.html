@@ -1,104 +1,112 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <style type="text/css">
-        body,
-        html {
-            overflow: auto;
-            height: 100%;
-            width: 100%;
-        }
-
-
-        * {
-            padding: 0px;
-            margin: 0px;
-        }
-
-        #content {
-            width: 100%;
-            height: 100%;
-            background: #000;
-            position: relative;
-            margin: 0 auto;
-        }
-
-        #iframeLoader {
-            width: 100%;
-            height: 100%;
-        }
-    </style>
-</head>
-
-<body>
-    <div id="content">
-        <iframe id="iframeLoader" sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation" frameborder="0" allowfullscreen="allowfullscreen">
-        </iframe>
-    </div>
-</body>
-
-<script>
-    const process_env_APP_HOST = 'http://192.168.178.101:3000/'
-
-    const vttURLS = []
-    const tracks = []
-    for (const url in vttURLS) {
-        tracks.push({
-            file: url,
-            kind: 'captions',
-            label: 'eng',
-            default: true
-        })
-    }
-
-    metadata = {
-        title: 'Title of video',
-        subtitle: '1080p'
-    }
-    playerConfig = {
-        autostart: true,
-        hlshtml: !![],
-        preload: 'auto',
-        captions: {
-            edgeStyle: 'raised',
-            backgroundOpacity: 0
-        },
-        cast: {},
-        playlist: [
-            {
-                file: process_env_APP_HOST + '/media/intro.mp4',
-                type: 'mp4'
-            },
-            {
-                sources: [
-                    {
-                        file: 'https://file-examples.com/wp-content/uploads/2017/04/file_example_MP4_1920_18MG.mp4',
-                        type: 'mp4',
-                        default: true
-                    },
-                ],
-                starttime: 10,
-                tracks
+    <head>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <style type="text/css">
+            body,
+            html {
+                overflow: auto;
+                height: 100%;
+                width: 100%;
             }
-        ]
-    }
 
-    const playerHTML = `%3C%21DOCTYPE%20html%3E%0A%3Chtml%3E%0A%0A%3Chead%3E%0A%20%20%20%20%3Cscript%20type%3D%22text%2Fjavascript%22%20src%3D%22REPLACEWITH_APP_HOST%2Fjwplayer%2Fjwplayer.js%22%3E%3C%2Fscript%3E%0A%20%20%20%20%3Cscript%20type%3D%22text%2Fjavascript%22%20src%3D%22https%3A%2F%2Fcode.jquery.com%2Fjquery-3.4.1.slim.min.js%22%3E%3C%2Fscript%3E%0A%20%20%20%20%3Clink%20rel%3D%22stylesheet%22%20type%3D%22text%2Fcss%22%20href%3D%22REPLACEWITH_APP_HOST%2Fjwplayer%2Fstyle.css%22%3E%0A%3C%2Fhead%3E%0A%0A%3Cbody%3E%0A%20%20%20%20%3Cdiv%20id%3D%22player%22%3E%0A%3C%2Fbody%3E%0A%0A%3Cscript%3E%0A%20%20%20%20const%20metadata%20%3D%20REPLACEWITH_metadata%0A%20%20%20%20const%20playerConfig%20%3D%20REPLACEWITH_playerConfig%0A%20%20%20%20const%20APP_HOST%20%3D%20%27REPLACEWITH_APP_HOST%27%0A%0A%20%20%20%20console.log%28metadata%2C%20playerConfig%29%0A%0A%20%20%20%20const%20playerInstance%20%3D%20jwplayer%28%22player%22%29.setup%28playerConfig%29%3B%0A%3C%2Fscript%3E%0A%0A%3Cscript%20type%3D%22text%2Fjavascript%22%20src%3D%22REPLACEWITH_APP_HOST%2Fjwplayer%2FcommunicateFrame.js%22%3E%3C%2Fscript%3E%0A%0A%3C%2Fhtml%3E`
-    const playerHTMLWithConfigs = playerHTML.replace(/REPLACEWITH_APP_HOST/gm, process_env_APP_HOST).replace('REPLACEWITH_metadata', JSON.stringify(metadata)).replace('REPLACEWITH_playerConfig', JSON.stringify(playerConfig))
-    document.getElementById('iframeLoader').src =
-        'data:text/html;charset=utf-8,' + playerHTMLWithConfigs
-    console.log(document.getElementById('iframeLoader').src)
+            * {
+                padding: 0px;
+                margin: 0px;
+            }
 
-    window.addEventListener("message", receiveMessage, false);
+            #content {
+                width: 100%;
+                height: 100%;
+                background: #000;
+                position: relative;
+                margin: 0 auto;
+            }
 
-    function receiveMessage(event) {
-        if (event.origin !== null) return;
-        if (event.data.name === "position") {
-            console.log(event.data.length, event.data.position)
+            #iframeLoader {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="content">
+            <iframe
+                id="iframeLoader"
+                sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"
+                frameborder="0"
+                allowfullscreen="allowfullscreen"
+            >
+            </iframe>
+        </div>
+    </body>
+
+    <script>
+        const process_env_APP_HOST = '//192.168.178.101:3000/'
+        const jwKey = 'XnOBnenbnzqKbHtj4urC4Gc2dZE7HF9n7LtkE3uOfuTyIRVWzFUSMA=='
+
+        const vttURLS = []
+        const tracks = []
+        for (const url in vttURLS) {
+            tracks.push({
+                file: url,
+                kind: 'captions',
+                label: 'eng',
+                default: true
+            })
         }
-    }
-</script>
 
+        metadata = {
+            title: 'Title of video',
+            subtitle: '1080p'
+        }
+        playerConfig = {
+            autostart: true,
+            hlshtml: !![],
+            preload: 'auto',
+            captions: {
+                edgeStyle: 'raised',
+                backgroundOpacity: 0
+            },
+            cast: {},
+            playlist: [
+                {
+                    file: process_env_APP_HOST + '/media/intro.mp4',
+                    type: 'mp4'
+                },
+                {
+                    sources: [
+                        {
+                            file:
+                                '//file-examples.com/wp-content/uploads/2017/04/file_example_MP4_1920_18MG.mp4',
+                            type: 'mp4',
+                            default: true
+                        }
+                    ],
+                    starttime: 10,
+                    tracks
+                }
+            ]
+        }
+
+        const playerHTML = `%3C%21DOCTYPE%20html%3E%0A%3Chtml%3E%0A%0A%3Chead%3E%0A%20%20%20%20%3Cscript%3E%0A%20%20%20%20%20%20%20%20const%20jwKey%20%3D%20%22REPLACEWITH_JWKEY%22%0A%20%20%20%20%3C%2Fscript%3E%0A%20%20%20%20%3Cscript%20type%3D%22text%2Fjavascript%22%20src%3D%22REPLACEWITH_VUE_APP_HOST%2Fjwplayer%2Fjwplayer.js%22%3E%3C%2Fscript%3E%0A%20%20%20%20%3Cscript%20type%3D%22text%2Fjavascript%22%20src%3D%22%2F%2Fcode.jquery.com%2Fjquery-3.4.1.slim.min.js%22%3E%3C%2Fscript%3E%0A%20%20%20%20%3Clink%20rel%3D%22stylesheet%22%20type%3D%22text%2Fcss%22%20href%3D%22REPLACEWITH_VUE_APP_HOST%2Fjwplayer%2Fstyle.css%22%3E%0A%3C%2Fhead%3E%0A%0A%3Cbody%3E%0A%20%20%20%20%3Cdiv%20id%3D%22player%22%3E%0A%3C%2Fbody%3E%0A%0A%3Cscript%3E%0A%20%20%20%20const%20metadata%20%3D%20REPLACEWITH_metadata%0A%20%20%20%20const%20playerConfig%20%3D%20REPLACEWITH_playerConfig%0A%20%20%20%20const%20VUE_APP_HOST%20%3D%20%27REPLACEWITH_VUE_APP_HOST%27%0A%0A%20%20%20%20console.log%28metadata%2C%20playerConfig%29%0A%0A%20%20%20%20const%20playerInstance%20%3D%20jwplayer%28%22player%22%29.setup%28playerConfig%29%3B%0A%3C%2Fscript%3E%0A%0A%3Cscript%20type%3D%22text%2Fjavascript%22%20src%3D%22REPLACEWITH_VUE_APP_HOST%2Fjwplayer%2FcommunicateFrame.js%22%3E%3C%2Fscript%3E%0A%0A%3C%2Fhtml%3E`
+        const playerHTMLWithConfigs = playerHTML
+            .replace(/REPLACEWITH_APP_HOST/gm, process_env_APP_HOST)
+            .replace(/REPLACEWITH_JWKEY/gm, jwKey)
+            .replace('REPLACEWITH_metadata', JSON.stringify(metadata))
+            .replace('REPLACEWITH_playerConfig', JSON.stringify(playerConfig))
+        document.getElementById('iframeLoader').src =
+            'data:text/html;charset=utf-8,' + playerHTMLWithConfigs
+        console.log(document.getElementById('iframeLoader').src)
+
+        window.addEventListener('message', receiveMessage, false)
+
+        function receiveMessage(event) {
+            if (event.origin !== null) return
+            if (event.data.name === 'position') {
+                console.log(event.data.length, event.data.position)
+            }
+        }
+    </script>
 </html>
