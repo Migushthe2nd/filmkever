@@ -727,6 +727,13 @@ export default {
         )
     },
     methods: {
+        isIOS() {
+            if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                return true
+            } else {
+                return false
+            }
+        },
         handleVisibilityChange() {
             if (document[this.hidden]) {
                 this.windowIsFocussed = false
@@ -843,8 +850,10 @@ export default {
             }
 
             if (
-                this.$store.state.loggedIn &&
-                this.$store.state.user.preferences.defaultPlayer === 'Plyr'
+                (this.$store.state.loggedIn &&
+                    this.$store.state.user.preferences.defaultPlayer ===
+                        'Plyr') ||
+                this.isIOS()
             ) {
                 // Plyr player
                 this.playerConfig = {

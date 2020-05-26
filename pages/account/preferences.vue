@@ -88,9 +88,9 @@
                                 <v-list-item-subtitle
                                     style="-webkit-line-clamp: unset;"
                                     >IOS has some trouble with JWPlayer, so you
-                                    could try Plyr. In Plyr, if there are
-                                    multiple, sources are listed as quality
-                                    options, and are not related at
+                                    could try Plyr. In Plyr, sources (if there
+                                    are multiple) are listed as quality options
+                                    and don't represent them at
                                     all.</v-list-item-subtitle
                                 >
                             </v-col>
