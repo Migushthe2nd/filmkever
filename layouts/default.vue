@@ -287,11 +287,11 @@
             </v-btn> -->
         </v-app-bar>
 
-        <v-content>
+        <v-main>
             <v-container fluid pa-0 style="height: 100%">
                 <nuxt />
             </v-container>
-        </v-content>
+        </v-main>
 
         <Login v-model="login_dialog" />
         <v-navigation-drawer

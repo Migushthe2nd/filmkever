@@ -45,7 +45,7 @@ passport.use(
             if (!res) {
                 done(new Error(errorName.USER_NOT_EXIST), null)
             } else {
-                bcrypt.compare(password, res.password_hash, function(
+                bcrypt.compare(password, res.password_hash, function (
                     bcryptErr,
                     bcryptResult
                 ) {
@@ -125,8 +125,8 @@ const server = new ApolloServer({
     },
     subscriptions: {
         path: '/subscription',
-        onConnect: (connectionParams, webSocket, context) => {},
-        onDisconnect: (webSocket, context) => {}
+        onConnect: (connectionParams, webSocket, context) => { },
+        onDisconnect: (webSocket, context) => { }
     },
     formatError: (err) => {
         consola.error(err.message)
@@ -163,7 +163,7 @@ consola.log(process.env.APP_TITLE)
 // build webpages?
 const buildWeb = true
 
-async function start() {
+async function start () {
     // Init Nuxt.js
     const nuxt = new Nuxt(config)
 
@@ -177,13 +177,13 @@ async function start() {
 
     joinMonsterAdapt(schema, joinMonsterMetadata)
 
-    app.get('/logout', function(req, res) {
+    app.get('/logout', function (req, res) {
         req.logout()
         req.session.destroy()
         res.redirect('/')
     })
 
-    app.post('/proxyframe', function(req, res) {
+    app.post('/proxyframe', function (req, res) {
         const headers = {}
         if (req.query.origin) {
             headers.origin = req.query.origin
@@ -209,7 +209,7 @@ async function start() {
             })
     })
 
-    app.get('/proxyframe', function(req, res) {
+    app.get('/proxyframe', function (req, res) {
         const headers = {}
         if (req.query.origin) {
             headers.origin = req.query.origin
@@ -260,7 +260,7 @@ async function start() {
     //     )
     // })
 
-    app.get('/logout', function(req, res) {
+    app.get('/logout', function (req, res) {
         req.logout()
         req.session.destroy()
         res.redirect('/')
