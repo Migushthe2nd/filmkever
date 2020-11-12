@@ -1,6 +1,6 @@
 <template>
     <v-app dark>
-        <div class="background-wrapper" app fixed>
+        <div class="background-wrapper">
             <!-- <iframe
                 class="backgroundvideoiframe"
                 width="100%"
@@ -179,11 +179,7 @@
                         <v-list-item
                             :key="page.title"
                             :disabled="
-                                page.needsAuth
-                                    ? $store.state.loggedIn
-                                        ? false
-                                        : true
-                                    : false
+                                page.needsAuth ? !$store.state.loggedIn : false
                             "
                             :prepend-icon="page.icon"
                             link
@@ -238,6 +234,7 @@
                     class="logo d-block mx-2"
                     height="30"
                     width="auto"
+                    fill
                 />
             </router-link>
             <!-- <v-toolbar-items>
@@ -306,8 +303,8 @@
                         <v-icon light>mdi-repeat</v-icon>
                     </v-list-item-action>
                     <v-list-item-title
-                        >Switch drawer (click me)</v-list-item-title
-                    >
+                    >Switch drawer (click me)
+                    </v-list-item-title>
                 </v-list-item>
             </v-list>
         </v-navigation-drawer>
@@ -451,13 +448,13 @@ export default {
                     this.$route.path.split('/')[1].toLowerCase()
             )
                 ? this.searchTypes.find(
-                      (arrayItem) =>
-                          arrayItem.toLowerCase() ===
-                          this.$route.path.split('/')[1].toLowerCase()
-                  )
+                    (arrayItem) =>
+                        arrayItem.toLowerCase() ===
+                        this.$route.path.split('/')[1].toLowerCase()
+                )
                 : this.$store.state.currSearchType
-                ? this.$store.state.currSearchType
-                : this.searchTypes[0]
+                    ? this.$store.state.currSearchType
+                    : this.searchTypes[0]
         }
     },
     watch: {
@@ -484,8 +481,8 @@ export default {
                 .mutate({
                     mutation: queries.logout
                 })
-                .then((response) => {
-                    this.$router.go()
+                .then(() => {
+                    this.$router.go(0)
                     this.step = 0
                 })
                 .catch((error) => {
@@ -501,9 +498,7 @@ export default {
         },
         needsAuth(element) {
             if (element.needsAuth) {
-                if (this.$store.state.loggedIn) {
-                    return true
-                } else return false
+                return this.$store.state.loggedIn
             } else return true
         },
         updateSearchQuery() {
@@ -547,6 +542,7 @@ export default {
 
 <style lang="scss">
 @import '~vuetify/src/styles/styles.sass';
+
 html,
 body {
     background-color: map-get($material-dark, 'background');
@@ -581,12 +577,15 @@ body {
         background-size: cover;
     }
 }
+
 .v-app-bar {
     backdrop-filter: blur(8px);
+
     .blur {
         filter: blur(8px);
     }
 }
+
 .logo {
     transition: 0.3s ease-in-out;
 }
@@ -602,6 +601,7 @@ body {
         transform: translateX(-50%) translateZ(0) scaleY(1);
     }
 }
+
 .waveWrapper {
     overflow: hidden;
     position: absolute;
@@ -611,6 +611,7 @@ body {
     top: 0;
     margin: auto;
 }
+
 .waveWrapperInner {
     position: absolute;
     width: 100%;
@@ -624,17 +625,21 @@ body {
     //     map-get($material-dark, 'background') 80%
     // );
 }
+
 .bgTop {
     z-index: 15;
     opacity: 0.5;
 }
+
 .bgMiddle {
     z-index: 10;
     opacity: 0.75;
 }
+
 .bgBottom {
     z-index: 5;
 }
+
 .wave {
     position: absolute;
     left: 0;
@@ -644,22 +649,28 @@ body {
     background-position: 0 bottom;
     transform-origin: center bottom;
 }
+
 .waveTop {
     background-size: 50% 120px;
 }
+
 .waveAnimation .waveTop {
     animation: move-wave 3s;
     animation-delay: 2s;
 }
+
 .waveMiddle {
     background-size: 50% 140px;
 }
+
 .waveAnimation .waveMiddle {
     animation: move_wave 10s linear infinite;
 }
+
 .waveBottom {
     background-size: 50% 120px;
 }
+
 .waveAnimation .waveBottom {
     animation: move_wave 15s linear infinite;
 }
@@ -667,6 +678,7 @@ body {
 
 <style lang="scss">
 @import '~vuetify/src/styles/styles.sass';
+
 .logo {
     user-select: none;
     width: auto;

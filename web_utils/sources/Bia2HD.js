@@ -133,7 +133,6 @@ export default {
                                     .replace(/^0/, '')
                             )
 
-                            console.log(seasonInDocument)
                             if (
                                 seasonInDocument ===
                                 self.$parent.sourceFinderSeason

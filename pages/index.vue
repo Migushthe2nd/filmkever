@@ -5,6 +5,7 @@
                 class="intro-title logo d-block ml-1 mr-1"
                 height="60"
                 width="auto"
+                fill
             />
             <div v-for="row in rows" :key="row.title">
                 <rowList :row="row" />

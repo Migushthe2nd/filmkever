@@ -18,7 +18,6 @@ module.exports = {
         host: process.env.APP_HOST_IP || 'localhost',
         port: process.env.APP_HOST_PORT || 3000
     },
-    mode: 'universal',
     /*
      ** Headers of the page
      */
