@@ -114,7 +114,7 @@
 
                     <v-window-item :value="2">
                         <div class="pa-4 text-center">
-                            <LogoShort class="logo" height="100" width="auto" />
+                            <LogoShort class="logo" height="100" width="auto" fill/>
                             <h3 class="title font-weight-light mb-2">
                                 Welcome to {{ APP_TITLE }} {{ username }}!
                             </h3>
