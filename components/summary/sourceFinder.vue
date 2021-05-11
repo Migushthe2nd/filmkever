@@ -319,10 +319,12 @@
                         style="outline: none !important;"
                         :src="playerIframeSource"
                         sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"
-                        frameborder="0"
                         width="100%"
                         height="100%"
-                        allowfullscreen="allowfullscreen"
+                        frameborder="0"
+                        allowFullScreen="true"
+                        webkitallowfullscreen="true"
+                        mozallowfullscreen="true"
                         allow="fullscreen"
                         @load="iframeIsLoading = false"
                     />
@@ -428,39 +430,39 @@ export default {
             querySubscription: null,
             loading: false,
             sources: [
-                // {
-                //     name: 'MovieFiles',
-                //     message: `You can't seek in the stream!`,
-                //     native: true,
-                //     movie: true,
-                //     show: false,
-                //     searchFunction: this.searchMovieFiles,
-                //     qualityFunction: this.itemsMovieFiles,
-                //     itemsFunction: this.itemsMovieFiles,
-                //     playlistFunction: this.playlistMovieFiles,
-                //     hideElements: ['progress', 'rewind', 'fast-forward'],
-                //     icon: null,
-                //     properties: [
-                //         {
-                //             type: 'resolution',
-                //             prependIcon: 'mdi-quality-high',
-                //             description: '1080p+',
-                //             score: 'good'
-                //         },
-                //         {
-                //             type: 'speed',
-                //             prependIcon: 'mdi-speedometer',
-                //             description: 'Never buffers!',
-                //             score: 'good'
-                //         },
-                //         {
-                //             type: 'bitrate',
-                //             prependIcon: 'mdi-file-certificate',
-                //             description: 'Bitrate is very high!',
-                //             score: 'good'
-                //         }
-                //     ]
-                // },
+                {
+                    name: 'MovieFiles',
+                    message: `You can't seek in the stream!`,
+                    native: true,
+                    movie: true,
+                    show: false,
+                    searchFunction: this.searchMovieFiles,
+                    qualityFunction: this.itemsMovieFiles,
+                    itemsFunction: this.itemsMovieFiles,
+                    playlistFunction: this.playlistMovieFiles,
+                    hideElements: ['progress', 'rewind', 'fast-forward'],
+                    icon: null,
+                    properties: [
+                        {
+                            type: 'resolution',
+                            prependIcon: 'mdi-quality-high',
+                            description: '1080p+',
+                            score: 'good'
+                        },
+                        {
+                            type: 'speed',
+                            prependIcon: 'mdi-speedometer',
+                            description: 'Never buffers!',
+                            score: 'good'
+                        },
+                        {
+                            type: 'bitrate',
+                            prependIcon: 'mdi-file-certificate',
+                            description: 'Bitrate is very high!',
+                            score: 'good'
+                        }
+                    ]
+                },
                 {
                     name: 'FilePursuit (multiple)',
                     message: 'Switch source in player settings',

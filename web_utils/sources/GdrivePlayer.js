@@ -25,7 +25,7 @@ export default {
             } else if (this.$parent.mediatype === 'movie') {
                 this.iframeIsLoading = true
                 this.playerIframeSource =
-                    'http://database.gdriveplayer.us/player.php?imdb=' +
+                    'https://database.gdriveplayer.us/player.php?imdb=' +
                     this.$parent.summary.ids.imdb
                 this.displayPlayerIframe = true
                 this.$parent.displaySourceFinder = false

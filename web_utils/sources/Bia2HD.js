@@ -10,7 +10,7 @@ export default {
         searchBia2HD() {
             this.$axios({
                 url: this.makeProxyUrl(
-                    'http://bia2hd.ga/wp-admin/admin-ajax.php?action=live_func&keyword=' +
+                    'https://bia2hd.ga/wp-admin/admin-ajax.php?action=live_func&keyword=' +
                         encodeURIComponent(
                             this.$parent.summary.title.replace(
                                 /\([^()]*\)/gm,
@@ -66,7 +66,7 @@ export default {
                     encodeURIComponent(
                         unescape(this.searchResponse[index].url)
                     ),
-                    'http://bia2hd.ga/'
+                    'https://bia2hd.ga/'
                 )
             })
                 .then((response) => {
